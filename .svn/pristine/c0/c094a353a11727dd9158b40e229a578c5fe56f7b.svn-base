@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="@color/white"
+    tools:context=".v.productReturn.ProductReturnSelectActivity">
+    <com.a1magway.bgg.widget.TitleBar
+        android:id="@+id/select_title_bar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:titleText="@string/product_return_select" />
+    
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <ScrollView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+        <LinearLayout
+            android:background="@color/gray_c10"
+            android:layout_width="match_parent"
+            android:layout_height="15dp"/>
+            
+            <LinearLayout
+                android:gravity="center_vertical"
+                android:layout_width="match_parent"
+                android:layout_height="44dp">
+                <TextView
+                    android:id="@+id/return_product_date"
+                    android:paddingLeft="15dp"
+                    android:text="2018-3-03 15:33"
+                    android:textSize="13sp"
+                    android:textColor="@color/black"
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:layout_height="wrap_content" />
+                <TextView
+                    android:id="@+id/return_product_number"
+                    android:gravity="center"
+                    android:paddingLeft="15dp"
+                    android:text="数量：1"
+                    android:textSize="13sp"
+                    android:textColor="@color/black"
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:layout_height="wrap_content" />
+                <TextView
+                    android:id="@+id/return_product_price"
+                    android:paddingRight="15dp"
+                    android:text="实付款：¥ 90000"
+                    android:textSize="13sp"
+                    android:gravity="end"
+                    android:textColor="@color/black"
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:layout_height="wrap_content" />
+            </LinearLayout>
+<LinearLayout
+    android:background="@color/gray_c10"
+    android:layout_width="match_parent"
+    android:layout_height="1dp">
+</LinearLayout>
+
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/select_rv"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+        </android.support.v7.widget.RecyclerView>
+
+
+
+            <LinearLayout
+                android:background="@color/gray_c10"
+                android:layout_width="match_parent"
+                android:layout_height="1dp"/>
+
+            <LinearLayout
+                android:layout_marginBottom="44dp"
+                android:gravity="center_vertical"
+                android:layout_width="match_parent"
+                android:layout_height="44dp">
+
+                <ImageView
+                    android:id="@+id/return_product_all_select"
+                    android:layout_marginLeft="15dp"
+                    android:src="@mipmap/is_select_normal"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" />
+
+
+                <TextView
+                    android:layout_marginLeft="15dp"
+                    android:text="全选"
+                    android:textSize="13sp"
+                    android:textColor="@color/black"
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:layout_height="wrap_content" />
+
+                <TextView
+                    android:id="@+id/return_product_select"
+                    android:layout_marginRight="15dp"
+                    android:text="已选商品：2"
+                    android:textSize="13sp"
+                    android:textColor="@color/black"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" />
+            </LinearLayout>
+        </LinearLayout>
+
+        </ScrollView>
+
+        <Button
+            android:id="@+id/select_ok_btn"
+            android:text="@string/product_return_select_ok"
+            android:textColor="@color/white"
+            android:textSize="14sp"
+            android:layout_gravity="bottom"
+            android:background="@color/black"
+            android:layout_width="match_parent"
+            android:layout_height="44dp" />
+    </FrameLayout>
+
+</LinearLayout>

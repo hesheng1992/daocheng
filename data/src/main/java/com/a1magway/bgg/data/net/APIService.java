@@ -1,0 +1,942 @@
+package com.a1magway.bgg.data.net;
+
+
+import com.a1magway.bgg.data.entity.APIResponse;
+import com.a1magway.bgg.data.entity.AccountBankCardData;
+import com.a1magway.bgg.data.entity.AccountUserData;
+import com.a1magway.bgg.data.entity.AccountWalletData;
+import com.a1magway.bgg.data.entity.ActivityData;
+import com.a1magway.bgg.data.entity.AddressData;
+import com.a1magway.bgg.data.entity.AddressDData;
+import com.a1magway.bgg.data.entity.AddressSelectedDataBean;
+import com.a1magway.bgg.data.entity.AfterSaleBean;
+import com.a1magway.bgg.data.entity.AppNavigationData;
+import com.a1magway.bgg.data.entity.BankCardData;
+import com.a1magway.bgg.data.entity.BindPhoneVerificationCodeData;
+import com.a1magway.bgg.data.entity.BrandMuseumMap;
+import com.a1magway.bgg.data.entity.CartNum;
+import com.a1magway.bgg.data.entity.CartProduct;
+import com.a1magway.bgg.data.entity.CateItem;
+import com.a1magway.bgg.data.entity.CheckOrderProResult;
+import com.a1magway.bgg.data.entity.CollectionData;
+import com.a1magway.bgg.data.entity.FilterCate1;
+import com.a1magway.bgg.data.entity.FoundTitleData;
+import com.a1magway.bgg.data.entity.GoodsRecommendData;
+import com.a1magway.bgg.data.entity.HomeSubjectBean;
+import com.a1magway.bgg.data.entity.HuanXinLoginInfo;
+import com.a1magway.bgg.data.entity.InvitationCodeData;
+import com.a1magway.bgg.data.entity.InvitationData;
+import com.a1magway.bgg.data.entity.InviteFriendData;
+import com.a1magway.bgg.data.entity.IsCollectionData;
+import com.a1magway.bgg.data.entity.LoginData;
+import com.a1magway.bgg.data.entity.LogisticsInfoData;
+import com.a1magway.bgg.data.entity.MemberRegisterGift;
+import com.a1magway.bgg.data.entity.MemberUpgradeInfo;
+import com.a1magway.bgg.data.entity.MorePingtuanData;
+import com.a1magway.bgg.data.entity.MyCreateArticle;
+import com.a1magway.bgg.data.entity.OrderAliPay;
+import com.a1magway.bgg.data.entity.OrderCommitResult;
+import com.a1magway.bgg.data.entity.OrderCommodity;
+import com.a1magway.bgg.data.entity.OrderDetails;
+import com.a1magway.bgg.data.entity.OrderItem;
+import com.a1magway.bgg.data.entity.PingtuanBannerData;
+import com.a1magway.bgg.data.entity.Product;
+import com.a1magway.bgg.data.entity.ProductBean;
+import com.a1magway.bgg.data.entity.ProductItem;
+import com.a1magway.bgg.data.entity.ReturnGoodsDetailBean;
+import com.a1magway.bgg.data.entity.ReturnGoodsReasonBean;
+import com.a1magway.bgg.data.entity.ReturnLogInfoBean;
+import com.a1magway.bgg.data.entity.ShardXcxQRCode;
+import com.a1magway.bgg.data.entity.UpgradePayData;
+import com.a1magway.bgg.data.entity.UploadPicBean;
+import com.a1magway.bgg.data.entity.WXPayData;
+
+
+import java.util.List;
+import java.util.Map;
+
+import io.reactivex.Observable;
+import okhttp3.MultipartBody;
+import retrofit2.http.Field;
+import retrofit2.http.FieldMap;
+import retrofit2.http.FormUrlEncoded;
+import retrofit2.http.Multipart;
+import retrofit2.http.POST;
+import retrofit2.http.Part;
+
+/**
+ * 请求接口地址
+ * Created by jph on 2016/11/18.
+ */
+@SuppressWarnings("JavaDoc")
+public interface APIService {
+
+    // 商品分类条目
+    @FormUrlEncoded
+    @POST("/android/search/bannerTypeList")
+    Observable<APIResponse<List<CateItem>>> getCates(@Field("type") int type);
+
+
+    @FormUrlEncoded
+    @POST("/android/search/activityList_v2")
+    Observable<APIResponse<List<ActivityData>>> getActivities(@Field("type") int type);
+
+
+    @FormUrlEncoded
+    @POST("/android/search/secKill")
+    Observable<APIResponse<List<ProductItem>>> getSecKills(@FieldMap Map<String, Object> map);
+
+    @FormUrlEncoded
+    @POST("/android/memberProduct/memberProductSearch")
+    Observable<APIResponse<List<ProductItem>>> getMemberGoods(@FieldMap Map<String, Object> map);
+
+    @POST("/android/brandSearch/getBrandList")
+    Observable<APIResponse<BrandMuseumMap>> getBrandMuseum();
+
+    /**
+     * 登录接口v2
+     * <p>
+     * v2 接口增加用户会员相关信息
+     * </p>
+     *
+     * @param phone 手机号
+     * @param pwd   密码
+     */
+    @FormUrlEncoded
+    @POST("/android/user/login_v2")
+    Observable<APIResponse<LoginData>> login(@Field("telephone") String phone, @Field("password") String pwd);
+
+    /**
+     * 第三方验证时注册
+     *
+     * @param cover
+     * @param nick_name
+     * @param open_id
+     * @param platform_type
+     * @param sex
+     * @return
+     */
+    @FormUrlEncoded
+    @POST("/user/thirdUserRegister")
+    Observable<APIResponse<LoginData>> thirdpartiesRegister(@Field("cover") String cover,
+                                                            @Field("nick_name") String nick_name,
+                                                            @Field("open_id") String open_id,
+                                                            @Field("platform_type") String platform_type,
+                                                            @Field("sex") String sex);
+
+    /**
+     * 第三方登录
+     *
+     * @param open_id
+     * @return
+     */
+    @FormUrlEncoded
+    @POST("/thirdUser/thirdUserLogin")
+    Observable<APIResponse<LoginData>> thirdpartiesLoginLogin(@Field("open_id") String open_id);
+
+    /**
+     * 绑定邀请码
+     *
+     * @param id
+     * @param invited_code
+     * @return
+     */
+    @FormUrlEncoded
+    @POST("/invitationController/boundInviteCode")
+    Observable<APIResponse<InvitationData>> setInvitationCode(@Field("id") String id, @Field("invited_code") String invited_code);
+
+    /**
+     * 发送验证码
+     *
+     * @param phone
+     * @param type  类型（0:注册,1:忘记密码）
+     * @return
+     */
+    @FormUrlEncoded
+    @POST("/android/user/verificationCode")
+    Observable<APIResponse> sendVerificationCode(@Field("telephone") String phone, @Field("type") int type);
+
+    /**
+     * 检查验证码
+     *
+     * @param phone 手机号
+     * @param code  验证码
+     * @return
+     */
+    @FormUrlEncoded
+    @POST("/android/user/verifyCode")
+    Observable<APIResponse> checkVerificationCode(@Field("telephone") String phone, @Field("certificationCode") String code);
+
+    /**
+     * 设置密码
+     *
+     * @param phone 电话
+     * @param pwd   密码
+     * @param type  类型  0注册 1忘记密码
+     * @return
+     */
+    @FormUrlEncoded
+    @POST("/android/user/setUserPassword")
+    Observable<APIResponse> setPassWord(@Field("telephone") String phone, @Field("password") String pwd, @Field("type") int type);
+
+    @FormUrlEncoded
+    @POST("/android/search/productSearch_v3")
+    Observable<APIResponse<List<ProductBean>>> searchProduct(@FieldMap Map<String, Object> map);
+
+    @POST("/android/categorySearch/getCategory")
+    Observable<APIResponse<List<FilterCate1>>> getFilterCates();
+
+    @FormUrlEncoded
+    @POST("/android/product/detail")
+    Observable<APIResponse<Product>> getProductDetails(@Field("productId") int productId);
+
+    @FormUrlEncoded
+    @POST("/android/product/detail")
+    Observable<APIResponse<Product>> getProductDetails(@Field("productId") int productId, @Field("subject_id") int subject_id);
+
+    @FormUrlEncoded
+    @POST("/android/shopcart/add")
+    Observable<APIResponse> add2Product(@Field("userId") int userId,
+                                        @Field("productId") int productId,
+                                        @Field("skuId") int skuId,
+                                        @Field("count") int count);
+
+    @POST("/android/categorySearch/getCategory")
+    Observable<APIResponse<Object>> test();
+
+    @FormUrlEncoded
+    @POST("/android/user/updateUserInfo")
+    Observable<APIResponse> updateUserInfo(@FieldMap Map<String, Object> map);
+
+    @FormUrlEncoded
+    @POST("/android/user/changePassword")
+    Observable<APIResponse> changePassword(@Field("telephone") String phone, @Field("oldPassword") String oldPwd, @Field("password") String pwd);
+
+
+    @FormUrlEncoded
+    @POST("/android/shopcart/getList")
+    Observable<APIResponse<List<CartProduct>>> getCart(@Field("userId") int userId,
+                                                       @Field("shopCartId") int lastCartProId);
+
+
+    @FormUrlEncoded
+    @POST("/android/shopcart/addOrReduce")
+    Observable<APIResponse<Void>> changeCartProCount(@Field("userId") int userId,
+                                                     @Field("type") int type,
+                                                     @Field("shopCartId") int shopCartId);
+
+    @FormUrlEncoded
+    @POST("/android/shopcart/addOrReduce")
+    Observable<APIResponse<Void>> changeCartProCount(@Field("userId") int userId,
+                                                     @Field("type") int type,
+                                                     @Field("shopCartId") int shopCartId,
+                                                     @Field("count") int count);
+
+    @FormUrlEncoded
+    @POST("/android/shopcart/delete")
+    Observable<APIResponse<Void>> deleteCartPro(@Field("userId") int userId,
+                                                @Field("shopCartId") int shopCartId);
+
+    @FormUrlEncoded
+    @POST("/android/order/orderList")
+    Observable<APIResponse<List<OrderItem>>> getOrderList(@Field("user_id") int user_id,
+                                                          @Field("type") int type,
+                                                          @Field("order_id") int lastOrderId);
+
+    @FormUrlEncoded
+    @POST("/android/order/cancel")
+    Observable<APIResponse> cancelOrder(@Field("userId") int userId,
+                                        @Field("orderId") int orderId);
+
+    @FormUrlEncoded
+    @POST("/android/order/delete")
+    Observable<APIResponse> deleteOrder(@Field("userId") int userId,
+                                        @Field("orderId") int orderId);
+
+    @FormUrlEncoded
+    @POST("/android/order/orderDetail")
+    Observable<APIResponse<OrderDetails>> getOrderDetails(@Field("user_id") int userId,
+                                                          @Field("orderNum") String orderNumber);
+
+    @FormUrlEncoded
+    @POST("/android/order/orderDetail")
+    Observable<APIResponse<OrderDetails>> getSaleOrderDetails(@Field("user_id") int userId,
+                                                              @Field("creator_id") int creator_id,
+                                                              @Field("orderNum") String orderNumber);
+
+
+    @FormUrlEncoded
+    @POST("/android/aliPay/aliPay")
+    Observable<APIResponse<OrderAliPay>> getPreAliPayData(@Field("outtradeno") String orderNum);
+
+
+    /**
+     * 订单支付验签
+     */
+    @FormUrlEncoded
+    @POST("/android/aliPay/aliVerify")
+    Observable<APIResponse> checkAliPayOrderResult(@Field("resultStatus") String resultStatus,
+                                                   @Field("result") String result);
+
+    /**
+     * 会员支付验签
+     */
+    @FormUrlEncoded
+    @POST("/android//member/aliVerify")
+    Observable<APIResponse> checkAliPayMemberResult(@Field("resultStatus") String resultStatus,
+                                                    @Field("result") String result);
+
+    @FormUrlEncoded
+    @POST("/android/weChatPay/weChatPay")
+    Observable<APIResponse<WXPayData>> getPreWXPayData(@Field("outtradeno") String orderNum);
+
+
+    @FormUrlEncoded
+    @POST("/android/shopcart/checkSkuInfo")
+    Observable<APIResponse<CheckOrderProResult>> checkOrderPro(@Field("skuIds") String skuIds,
+                                                               @Field("counts") String counts,
+                                                               @Field("shopCartIds") String shopCartIds,
+                                                               @Field("buyStatus") String buyStatus);
+
+    @FormUrlEncoded
+    @POST("/android/order/creatOrder_v3")
+    Observable<APIResponse<OrderCommitResult>> commitOrder(@FieldMap Map<String, Object> map);
+
+
+    @POST("/android/search/messageInfo")
+    Observable<APIResponse<CartNum>> getCartNum();
+
+    /**
+     * 查询地址list
+     *
+     * @param userId
+     * @param addressId
+     * @return
+     */
+    @FormUrlEncoded
+    @POST("/android/address/queryForList")
+    Observable<APIResponse<List<AddressData>>> queryAddressList(@Field("userId") int userId, @Field("addressId") int addressId);
+
+    /**
+     * 查询地址list
+     *
+     * @param userId
+     * @param addressId
+     * @return
+     */
+    @FormUrlEncoded
+    @POST("/android/address/manage")
+    Observable<APIResponse<AddressDData>> managerAddress(@Field("userId") int userId, @Field("addressId") int addressId, @Field("type") int type);
+
+    /**
+     * 添加新地址
+     *
+     * @param map
+     * @return
+     */
+    @FormUrlEncoded
+    @POST("/android/address/add")
+    Observable<APIResponse> addAddress(@FieldMap Map<String, Object> map);
+
+    /**
+     * 编辑地址
+     *
+     * @param map
+     * @return
+     */
+    @FormUrlEncoded
+    @POST("/android/address/edit")
+    Observable<APIResponse> editAddress(@FieldMap Map<String, Object> map);
+
+    /**
+     * 编辑地址
+     *
+     * @param map
+     * @return
+     */
+    @FormUrlEncoded
+    @POST("/android/member/memberInfo")
+    Observable<APIResponse<MemberUpgradeInfo>> getMemberUpgradeInfo(@FieldMap Map<String, Object> map);
+
+    /**
+     * 获取注册会员礼品
+     */
+    @POST("/android/member/memberGift")
+    Observable<APIResponse<List<MemberRegisterGift>>> getMemberRegisterGift();
+
+    /**
+     * 注册会员请求
+     */
+    @FormUrlEncoded
+    @POST("/android/member/registerMember")
+    Observable<APIResponse<Object>> registerMemberInfo(@FieldMap Map<String, Object> map);
+
+    /**
+     * 获取用户信息
+     */
+    @FormUrlEncoded
+    @POST("/android/user/getUserInfo_v2")
+    Observable<APIResponse<LoginData>> getUserInfo(@Field("userId") String userId);
+
+    /**
+     * 获取秒杀当前专场的截至时间
+     */
+    @POST("/android/search/countdown")
+    Observable<APIResponse<String>> getSeckillCountdown();
+
+    /**
+     * 商品是否被关注
+     *
+     * @param pId
+     * @param userId
+     * @return
+     */
+    @FormUrlEncoded
+    @POST("/attentionController/isAttention")
+    Observable<APIResponse<IsCollectionData>> isAttention(@Field("sku_id") int pId, @Field("user_id") int userId);
+
+    /**
+     * 商品添加关注
+     *
+     * @param pId
+     * @param userId
+     * @return
+     */
+    @FormUrlEncoded
+    @POST("/attentionController/insertAttention")
+    Observable<APIResponse<String>> addAttention(@Field("pid") int pId, @Field("user_id") int userId);
+
+
+    /**
+     * 商品取消关注
+     *
+     * @param id
+     * @return
+     */
+    @FormUrlEncoded
+    @POST("/attentionController/cancelArrention")
+    Observable<APIResponse> cancelAttention(@Field("id") String id);
+
+    /**
+     * 获取商品关注列表
+     *
+     * @param userId
+     * @return
+     */
+    @FormUrlEncoded
+    @POST("/attentionController/getAttentionList")
+    Observable<APIResponse<List<CollectionData>>> getAttentionList(@Field("user_id") int userId);
+
+    /**
+     * 获取环信登录信息
+     *
+     * @return
+     */
+    @POST("/easemobController/getHxUser")
+    Observable<APIResponse<HuanXinLoginInfo>> hxLoginInfo();
+
+    /**
+     * 环信注册
+     *
+     * @param id 需要释放的环信用户id
+     * @return
+     */
+    @FormUrlEncoded
+    @POST("/easemobController/releaseHxUser")
+    Observable<APIResponse> hxLoginInfoRelease(@Field("id") int id);
+
+    /**
+     * 绑定银行卡之前获取用户数据
+     *
+     * @param userid
+     * @return
+     */
+    @FormUrlEncoded
+    @POST("/userBankCardController/userInfo")
+    Observable<APIResponse<AccountUserData>> userInfo(@Field("userid") int userid);
+
+    /**
+     * 绑定银行卡
+     *
+     * @param userid
+     * @param realname
+     * @param bank_name
+     * @param idNumber
+     * @param accountNumber
+     * @param accountType
+     * @param abbreviation
+     * @param phoneNumber
+     * @param verification
+     * @param sessionId
+     * @return
+     */
+    @FormUrlEncoded
+    @POST("/userBankCardController/insertBankCard")
+    Observable<APIResponse> insertBankCard(@Field("userid") int userid,
+                                           @Field("realname") String realname,
+                                           @Field("bank_name") String bank_name,
+                                           @Field("idNumber") String idNumber,
+                                           @Field("accountNumber") String accountNumber,
+                                           @Field("accountType") String accountType,
+                                           @Field("abbreviation") String abbreviation,
+                                           @Field("phoneNumber") String phoneNumber,
+                                           @Field("verification") String verification,
+                                           @Field("sessionId") String sessionId);
+
+    /**
+     * 用户获取银行卡列表
+     *
+     * @param userid
+     * @return
+     */
+    @FormUrlEncoded
+    @POST("/userBankCardController/getBankCardList")
+    Observable<APIResponse<List<AccountBankCardData>>> getBankCardList(@Field("userid") int userid);
+
+    /**
+     * 银行卡解绑
+     *
+     * @param id 需要解绑的信息id
+     * @return
+     */
+    @FormUrlEncoded
+    @POST("/userBankCardController/removeCard")
+    Observable<APIResponse> removeCard(@Field("id") int id);
+
+    /**
+     * 银行卡前六位查询银行卡归属信息
+     *
+     * @param id 银行卡号前六位
+     * @return
+     */
+    @FormUrlEncoded
+    @POST("/bankCardBinController/queryCardBin")
+    Observable<APIResponse<BankCardData>> queryCardBin(@Field("card_bin") String id);
+
+    /**
+     * 使用完整银行卡号查询银行卡信息
+     *
+     * @param account_number
+     * @return
+     */
+    @FormUrlEncoded
+    @POST("/bankCardBinController/bankcardcore")
+    Observable<APIResponse<BankCardData>> queryCardBinFull(@Field("account_number") String account_number);
+
+    /**
+     * 绑定银行卡时发送验证码
+     *
+     * @param phone
+     * @return
+     */
+    @FormUrlEncoded
+    @POST("/verificationController/sendVerification")
+    Observable<APIResponse<String>> sendVerification(@Field("phone") String phone);
+
+    /**
+     * 查询用户账户信息
+     *
+     * @param userId
+     * @return
+     */
+    @FormUrlEncoded
+    @POST("/userAccountController/getUserAccount")
+    Observable<APIResponse<AccountWalletData>> getUserAccount(@Field("user_id") int userId, @Field("page_id") int page_id);
+
+    /**
+     * 用户发起提现
+     *
+     * @param userid
+     * @param money
+     * @param remark
+     * @param accountNumber
+     * @param accountType
+     * @return
+     */
+    @FormUrlEncoded
+    @POST("/userExtractController/withdrawal")
+    Observable<APIResponse> withdrawal(@Field("user_id") int userid,
+                                       @Field("money") String money,
+                                       @Field("remark") String remark,
+                                       @Field("accountNumber") String accountNumber,
+                                       @Field("accountType") String accountType);
+
+
+    /**
+     * 获取APP首页导航栏
+     *
+     * @return
+     */
+    @POST("/subject/getAppNavigation")
+    Observable<APIResponse<List<AppNavigationData>>> getAppNavigation();
+
+    /**
+     * 获取主题列表
+     *
+     * @param type
+     * @return
+     */
+    @FormUrlEncoded
+    @POST("/subject/getSubjectList")
+    Observable<APIResponse<List<HomeSubjectBean>>> getSubjectList(@Field("type") int type);
+
+
+    /**
+     * 获取主题详情
+     *
+     * @param user_id
+     * @param id
+     * @param order_by
+     * @param asc_desc
+     * @return
+     */
+    @FormUrlEncoded
+    @POST("/subject/getSubject")
+    Observable<APIResponse<GoodsRecommendData>> getSubject(@Field("user_id") int user_id,
+                                                           @Field("id") int id,
+                                                           @Field("order_by") int order_by,
+                                                           @Field("asc_desc") int asc_desc,
+                                                           @Field("current_page") int page_id,
+                                                           @Field("page_num") int page_num);
+
+    /**
+     * 获取好货推荐列表
+     *
+     * @param user_id
+     * @param order_by
+     * @param asc_desc
+     * @return
+     */
+    @FormUrlEncoded
+    @POST("/subject/getGoodGoodsRecommendsList")
+    Observable<APIResponse<GoodsRecommendData>> getGoodGoodsRecommendsList(@Field("user_id") int user_id,
+                                                                           @Field("type") int type,
+                                                                           @Field("order_by") int order_by,
+                                                                           @Field("asc_desc") int asc_desc,
+                                                                           @Field("current_page") int current_page,
+                                                                           @Field("page_num") int page_num);
+
+
+    /**
+     * 获取我的邀请码
+     *
+     * @param user_id
+     * @return
+     */
+    @FormUrlEncoded
+    @POST("/android/user/getInviteCode")
+    Observable<APIResponse<InvitationCodeData>> getInviteCode(@Field("user_id") int user_id);
+
+    /**
+     * 刷新二维码
+     *
+     * @param user_id
+     * @return
+     */
+    @FormUrlEncoded
+    @POST("/android/user/refreshQrcode")
+    Observable<APIResponse<InvitationCodeData>> refreshQrcode(@Field("user_id") int user_id);
+
+    /**
+     * 获取销售订单列表
+     *
+     * @param type
+     * @param lastOrderId
+     * @return
+     */
+    @FormUrlEncoded
+    @POST("/android/order/saleOrderList")
+    Observable<APIResponse<List<OrderItem>>> getSaleOrderList(@Field("type") int type, @Field("order_id") int lastOrderId);
+
+    /**
+     * 获取物流信息
+     *
+     * @param outtradeno
+     * @return
+     */
+    @FormUrlEncoded
+    @POST("/logistics/logistics")
+    Observable<APIResponse<List<LogisticsInfoData>>> getLogistics(@Field("outtradeno") String outtradeno);
+
+    /**
+     * 确认收货
+     *
+     * @param orderId
+     * @return
+     */
+    @FormUrlEncoded
+    @POST("/order/finish")
+    Observable<APIResponse> confirmFinish(@Field("orderId") int orderId);
+
+
+    /**
+     * 得到分享的二维码图片信息
+     *
+     * @param goodsId
+     * @param inviteCode
+     * @return
+     */
+    @FormUrlEncoded
+    @POST("/user/getXcxQRCode")
+    Observable<ShardXcxQRCode> getShardQRCodeImage(@Field("goodsId") int goodsId, @Field("inviteCode") String inviteCode);
+
+
+    /**
+     * 得到添加到第一张的分享图片
+     */
+    @POST("/picturesController/getShareUrl")
+    Observable<ShardXcxQRCode> getAddHeadShardImage();
+
+    /**
+     * 得到城市列表
+     */
+    @POST("/city/getList")
+    Observable<AddressSelectedDataBean> getCityList();
+
+    @POST("/article/getDiscoverNavigation")
+    Observable<APIResponse<List<FoundTitleData>>> getFoundList();
+
+
+    /**
+     * 发送验证码（绑定手机号时）
+     *
+     * @return
+     */
+    @FormUrlEncoded
+    @POST("/verificationController/sendBoundPhoneCode")
+    Observable<BindPhoneVerificationCodeData> sendBindPhoneVerificationCode(@Field("phone") String phone);
+
+
+    /**
+     * 绑定手机号
+     *
+     * @return
+     */
+    @FormUrlEncoded
+    @POST("/user/boundPhone")
+    Observable<APIResponse> bindPhoneNumber(@Field("user_id") int user_id,
+                                            @Field("phoneNumber") String phoneNumber,
+                                            @Field("verification") String verification,
+                                            @Field("sessionId") String sessionId);
+
+    /**
+     * 微信购买会员升级服务
+     */
+    @FormUrlEncoded
+    @POST("/weChatPay/weChatPayService")
+    Observable<APIResponse<WXPayData>> weixinPayUpgrade(@Field("user_id") String user_id, @Field("type") String type);
+
+
+    /**
+     * 支付宝购买会员升级服务
+     */
+    @FormUrlEncoded
+    @POST("/aliPay/aliPayService")
+    Observable<UpgradePayData> aliPayUpgrade(@Field("user_id") String user_id, @Field("type") String type);
+
+    /**
+     * 查询我的下线
+     */
+    @FormUrlEncoded
+    @POST("/android/user/getMyFriends")
+    Observable<APIResponse<List<InviteFriendData>>> getMyFriends(@Field("user_id") String user_id);
+
+    /**
+     * 邀请好友升级
+     */
+    @FormUrlEncoded
+    @POST("/android/user/inviteMyFriends")
+    Observable<APIResponse<String>> inviteMyFriendUpgrade(@Field("user_id") String user_id, @Field("ids") String ids);
+
+
+    /**
+     * 用户实名认证
+     */
+    @FormUrlEncoded
+    @POST("/user/Certification")
+    Observable<APIResponse<String>> userCertification(@Field("realName") String realName, @Field("idCard") String idCard);
+
+    /**
+     * 收货地址增加实名信息
+     */
+    @FormUrlEncoded
+    @POST("/adress/autonym")
+    Observable<APIResponse<String>> adressAutonym(@Field("user_id") int user_id,
+                                                  @Field("realName") String realName,
+                                                  @Field("idCard") String idCard,
+                                                  @Field("addressId") String addressId);
+
+    /**
+     * 得到首页拼团轮播图数据
+     */
+    @FormUrlEncoded
+    @POST("/subject/getCollage")
+    Observable<APIResponse<PingtuanBannerData>> getPingtuanBannerData(@Field("type") int type);
+
+
+    /**
+     * 获取更多拼团商品
+     */
+    @FormUrlEncoded
+    @POST("/subject/getCollageOrderList")
+    Observable<APIResponse<MorePingtuanData>> getMorePingtuanData(@Field("product_id") int product_id,
+                                                                  @Field("current_page") int current_page,
+                                                                  @Field("page_num") int page_num);
+
+    /**
+     * 拼团支付后调用
+     *
+     * @param user_id
+     * @param order_num 订单号
+     * @return
+     */
+    @FormUrlEncoded
+    @POST("/android/order/executeCollageOrder")
+    Observable<APIResponse> executeCollageOrder(@Field("user_id") int user_id, @Field("order_num") String order_num);
+
+
+    /**
+     * 拼团商品专区
+     *
+     * @param user_id
+     * @param current_page
+     * @param page_num
+     * @param order_by
+     * @param asc_desc
+     * @return
+     */
+    @FormUrlEncoded
+    @POST("/subject/getMoreCollageProductList")
+    public Observable<APIResponse<List<ProductBean>>> getMorePintuanHomeData(@Field("user_id") int user_id,
+                                                                             @Field("current_page") int current_page,
+                                                                             @Field("page_num") int page_num,
+                                                                             @Field("order_by") int order_by,
+                                                                             @Field("asc_desc") int asc_desc);
+
+
+    /**
+     * 获取我发表的文章
+     *
+     * @return
+     */
+    @FormUrlEncoded
+    @POST("/article/getMyArticle")
+    Observable<APIResponse<List<MyCreateArticle>>> getMyArticle(@Field("user_id") int user_id, @Field("type") int type);
+
+
+    /**
+     * 删除我的文章
+     *
+     * @param user_id
+     * @param id      文章id
+     * @return
+     */
+    @FormUrlEncoded
+    @POST("/article/delArticle")
+    Observable<APIResponse> deleteMyArticle(@Field("user_id") int user_id, @Field("id") int id);
+
+    /**
+     * 退货上传凭证
+     * @param partList
+     * @return
+     */
+    @Multipart
+    @POST("/android/order/uploadRefundPictures")
+    Observable<APIResponse<UploadPicBean>> uploadpic(@Part MultipartBody.Part partList);
+
+    /**
+     * 撤销退货申请
+     * @param user_id
+     * @param id 退货id
+     * @return
+     */
+    @FormUrlEncoded
+    @POST("/android/order/cancelRefund")
+    Observable<APIResponse> cheXiaoReturnApply(@Field("user_id") int user_id, @Field("id") int id);
+
+    /**
+     *
+     * @param user_id 用户id
+     * @param id 退货id
+     * @param type 1.选择退款 2.换货 3.未收到货退款
+     * @param order_id 订单id
+     * @param sku_id 商品id，
+     * @param num 商品数量id，
+     * @param phone 电话号码
+     * @param reason_id 退货原因id
+     * @param reason 退货原因
+     * @param photos 照片数组
+     * @return
+     */
+    @FormUrlEncoded
+    @POST("/android/order/orderRefund")
+    Observable<APIResponse> applyRefund(@Field("user_id") int user_id, @Field("id") String id,
+    @Field("type") int type,@Field("order_id") int order_id,@Field("sku_id") String sku_id,
+                                        @Field("num") String num,@Field("phone")String phone,@Field("reason_id")int reason_id
+    ,@Field("reason")String reason,@Field("photos") String photos);
+
+
+    /**
+     * 获取退货理由
+     * @return
+     */
+    @POST("/android/order/getRefundReason")
+    Observable<APIResponse<List<ReturnGoodsReasonBean>>> getReturnReason();
+
+
+    /**
+     *
+     * @param user_id
+     * @param id 退货id
+     * @return
+     */
+    @FormUrlEncoded
+    @POST("/android/order/getRefund")
+    Observable<APIResponse<ReturnGoodsDetailBean>> getRefund(@Field("user_id") int user_id, @Field("id") String id);
+
+    /**
+     * 获取物流公司
+     * @return
+     */
+    @POST("/android/logistics/getCompanyList")
+    Observable<APIResponse<ReturnGoodsReasonBean>> getWuLiuCompanyList();
+
+    /**
+     * 添加退货物流单号
+     * @return
+     */
+    @FormUrlEncoded
+    @POST("/android/order/addRefundLogisticsNum")
+    Observable<APIResponse> addRefundLogisticsNum(@Field("user_id") int user_id,
+                                                                         @Field("id") String id,
+                                                                         @Field("logistics_type") String logistics_type,
+                                                                         @Field("logistics_num") String logistics_num
+    );
+
+    /***
+     *
+     * @param user_id
+     * @param current_page 当前页
+     * @param page_num 每页数量
+     * @param status 1为处理中，2申请记录
+     * @return
+     */
+    @FormUrlEncoded
+    @POST("/android/order/getRefundList")
+    Observable<APIResponse<List<AfterSaleBean>>> getRefundList(@Field("user_id") int user_id,
+                                                               @Field("current_page") int current_page,
+                                                               @Field("page_num")int page_num,
+                                                               @Field("status") int status);
+
+    /**
+     * 获取退货物流
+     * @param refund_id
+     * @return
+     */
+    @FormUrlEncoded
+    @POST("/android/logistics/getRefundLogistics")
+    Observable<APIResponse<ReturnLogInfoBean>> getRefundLogsInfo(@Field("refund_id") String refund_id);
+
+
+
+}

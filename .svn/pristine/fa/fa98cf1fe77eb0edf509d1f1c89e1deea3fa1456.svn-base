@@ -1,0 +1,560 @@
+package com.a1magway.bgg.p.order;
+
+import android.content.Context;
+import android.support.annotation.NonNull;
+import android.util.Log;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.FrameLayout;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
+import android.widget.TextView;
+
+import com.a1magway.bgg.R;
+import com.a1magway.bgg.common.adapter.BaseRecyclerVH;
+import com.a1magway.bgg.data.entity.OrderCommodity;
+import com.a1magway.bgg.data.entity.OrderItem;
+import com.a1magway.bgg.data.entity.OrderStatus;
+import com.a1magway.bgg.okhttp.LogUtil;
+import com.a1magway.bgg.tool.TimeCountDownController;
+import com.a1magway.bgg.util.ImageLoaderUtil;
+import com.a1magway.bgg.util.StringFormatUtil;
+import com.a1magway.bgg.v.order.OrderDetailsActivity;
+import com.a1magway.bgg.v.saleorder.SaleOrderListActivity;
+import com.a1magway.bgg.widget.PingtuanCountDownTextView;
+import com.almagway.common.utils.CollectionUtil;
+import com.almagway.common.utils.TimeUtils;
+import com.mcxtzhang.swipemenulib.SwipeMenuLayout;
+
+import java.util.Date;
+import java.util.List;
+
+import butterknife.BindView;
+import butterknife.BindViews;
+
+/**
+ * 订单列表Item对应的ViewHolder Created by jph on 2017/8/16.
+ */
+public class OrderVH extends BaseRecyclerVH<OrderItem> {
+
+    private OrderListAdapter.ItemOperationListener mItemOperationListener;
+
+    @BindView(R.id.order_txt_time)
+    TextView mTimeTxt;
+
+    @BindView(R.id.order_txt_count)
+    TextView mProCountTxt;
+
+    @BindView(R.id.order_txt_price)
+    TextView mPriceTxt;
+
+    /////// 单个商品
+    @BindView(R.id.order_layout_single)
+    RelativeLayout mSingleProLayout;
+
+    @BindView(R.id.order_img_pro)
+    ImageView mProPicImg;
+
+    @BindView(R.id.order_txt_brand)
+    TextView mBrandTxt;
+
+    @BindView(R.id.order_txt_name)
+    TextView mNameTxt;
+
+    @BindView(R.id.order_txt_sku)
+    TextView mSkuTxt;
+
+    @BindView(R.id.order_txt_an)
+    TextView mCommodityCode;
+
+    @BindView(R.id.order_txt_outtradeno)
+    TextView mOuttradenoTxt;
+
+    ////// 多个商品
+    @BindView(R.id.order_layout_multi)
+    ViewGroup mMultiProLayout; // 多个商品图片
+
+    @BindViews({
+            R.id.order_img_pro_1,
+            R.id.order_img_pro_2,
+            R.id.order_img_pro_3,
+            R.id.order_img_pro_4
+    })
+    ImageView[] mPro1PicImgs;
+
+    @BindView(R.id.order_txt_mutli_complete_hint)
+    TextView order_txt_mutli_complete_hint;
+
+    //订单操作
+    @BindView(R.id.order_operator_layout)
+    FrameLayout mLayoutOrdertOperator;
+
+    @BindView(R.id.order_operator_enable_view)
+    View mOperatorEnableView;
+
+    //代付款
+    @BindView(R.id.oder_layout_wait_pay)
+    LinearLayout mLayoutWaitPay;
+
+    @BindView(R.id.order_txt_pay_count_down)
+    TextView mCountDownTxt; // 倒计时
+
+    @BindView(R.id.order_txt_pay)
+    TextView mPayTxt;
+
+    @BindView(R.id.order_txt_cancel)
+    TextView mCancelTxt;
+
+    //订单失效
+    @BindView(R.id.oder_layout_wait_pay_cancel)
+    LinearLayout mLayoutWaitPayCancel;
+
+    @BindView(R.id.order_txt_delete_pay)
+    TextView mDeleteTxt;
+
+    //待发货
+    @BindView(R.id.oder_layout_wait_deliver)
+    LinearLayout mLayoutWaitDeliver;
+
+    @BindView(R.id.order_remind_deliver_tv)
+    TextView mRemindDeleverTv;
+
+    //已发货
+    @BindView(R.id.oder_layout_delivered)
+    LinearLayout getmLayoutDelivered;
+
+    @BindView(R.id.order_txt_detail)
+    TextView mDetailTv;
+
+    @BindView(R.id.order_txt_delivered_confirm)
+    TextView mDeliveredConfirmTv;
+
+    @BindView(R.id.swipe_layout)
+    SwipeMenuLayout swipeItemLayout;
+
+    @BindView(R.id.right_menu)
+    TextView mDeleteTv;
+
+    @BindView(R.id.ll_root)
+    LinearLayout ll_root;
+
+    @BindView(R.id.order_txt_complete_hint)
+    TextView order_txt_complete_hint;
+
+    @BindView(R.id.bg_order_past0)
+    TextView bg_order_past0;
+
+    @BindView(R.id.bg_order_past1)
+    TextView bg_order_past1;
+
+    @BindView(R.id.order_operator_line)
+    View order_operator_line;
+
+    //拼团相关
+    @BindView(R.id.order_top_info_normal)
+    RelativeLayout order_top_info_normal;
+    @BindView(R.id.order_top_info_pingtuan)
+    RelativeLayout order_top_info_pingtuan;
+    @BindView(R.id.order_top_info_pingtuan_createTime)
+    TextView order_top_info_pingtuan_createTime;
+    @BindView(R.id.order_top_info_pingtuan_count)
+    TextView order_top_info_pingtuan_count;
+    @BindView(R.id.order_top_info_pingtuan_price)
+    TextView order_top_info_pingtuan_price;
+    @BindView(R.id.order_top_info_pingtuan_status)
+    TextView order_top_info_pingtuan_status;
+    @BindView(R.id.order_top_info_pingtuan_downTime)
+    PingtuanCountDownTextView order_top_info_pingtuan_downTime;
+    @BindView(R.id.oder_layout_pingtuan_fail)
+    LinearLayout oder_layout_pingtuan_fail;
+    @BindView(R.id.oder_layout_pingtuan_invite_friend)
+    LinearLayout oder_layout_pingtuan_invite_friend;
+    @BindView(R.id.order_tv_pingtuan_invite_friend)
+    TextView order_tv_pingtuan_invite_friend;
+    @BindView(R.id.pingtuan_fail_cause)
+    TextView pingtuan_fail_cause;
+
+    private boolean mIsSaleOrderList = false;
+
+    public OrderVH(@NonNull ViewGroup parent, boolean isSaleOrderList) {
+        super(parent, R.layout.item_order_swipe);
+        this.mIsSaleOrderList = isSaleOrderList;
+    }
+
+    public void showViewContent(final OrderItem orderItem, OrderListAdapter adapter, int position) {
+        super.showViewContent(orderItem);
+        resetItemView();
+        if (orderItem.getOrderStatus() == OrderStatus.COMPLETED || orderItem.getOrderStatus() == OrderStatus.DELIVERED) {
+            swipeItemLayout.setSwipeEnable(true);
+        } else {
+            swipeItemLayout.setSwipeEnable(false);
+        }
+        //订单已完成则显示文字提示，否则隐藏
+        if (orderItem.getOrderStatus() == OrderStatus.COMPLETED) {
+            order_txt_mutli_complete_hint.setVisibility(View.VISIBLE);
+        } else {
+            order_txt_mutli_complete_hint.setVisibility(View.GONE);
+        }
+
+        if (orderItem.getOrderStatus() != OrderStatus.COMPLETED) {
+            mDeleteTv.setVisibility(View.GONE);
+        }
+        mDeleteTv.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                mItemOperationListener.onItemClickDelete(orderItem);
+            }
+        });
+        //1. 公共显示
+        mTimeTxt.setText(
+                String.format(
+                        getContext().getString(R.string.order_list_format_time),
+                        TimeUtils.dateToStrThread(orderItem.getCreateTime())));
+        mProCountTxt.setText(
+                String.format(
+                        getContext().getString(R.string.order_list_format_count),
+                        orderItem.getCount()));
+        mPriceTxt.setText(StringFormatUtil.getPrice(getContext(), orderItem.getTotalPrice()));
+
+        //2. 根据商品个数不同，显示不同的展示样式
+        if (CollectionUtil.getSize(orderItem.getSkuList()) == 1) {
+            // 单个商品
+            showSinglePro(orderItem.getSkuList().get(0));
+        } else {
+            // 多个商品
+            showMultiPro(orderItem.getSkuList());
+        }
+
+        //3. 显示不同订单状态的特殊状态
+        if (mIsSaleOrderList) {//销售不允许底部的操作，不可滑动
+            mOperatorEnableView.setVisibility(View.VISIBLE);
+            swipeItemLayout.setSwipeEnable(false);
+        } else {
+            mOperatorEnableView.setVisibility(View.INVISIBLE);
+            swipeItemLayout.setSwipeEnable(true);
+        }
+
+        bg_order_past0.setVisibility(View.GONE);
+        bg_order_past1.setVisibility(View.GONE);
+
+        if (orderItem.getOrderStatus() == OrderStatus.COMPLETED) {//已完成
+            order_txt_complete_hint.setText("订单已完成");
+            mLayoutOrdertOperator.setVisibility(View.GONE);
+        } else if (getContext() instanceof SaleOrderListActivity) { //销售订单界面另外处理
+            //样式处理
+            order_txt_mutli_complete_hint.setVisibility(View.VISIBLE);
+            mOperatorEnableView.setVisibility(View.INVISIBLE);
+            mLayoutOrdertOperator.setVisibility(View.GONE);
+            mDeleteTv.setVisibility(View.GONE);
+
+            if (orderItem.getOrderStatus() == OrderStatus.WAIT_PAY) {
+                order_txt_complete_hint.setText("待付款");
+
+            } else if (orderItem.getOrderStatus() == OrderStatus.WAIT_DELIVER) {
+                order_txt_complete_hint.setText("待发货");
+
+            } else if (orderItem.getOrderStatus() == OrderStatus.DELIVERED) {
+                order_txt_complete_hint.setText("待收货");
+            }
+        } else {
+            order_txt_complete_hint.setText("");
+            mLayoutOrdertOperator.setVisibility(View.VISIBLE);
+            initOperatorLayout();
+            if (orderItem.getOrderStatus() == OrderStatus.CANCELED || orderItem.isInvalid()) {
+                // 先判断无效状态，可能服务器返回的订单已经过期，但是状态是待支付
+                showInvalid(orderItem);
+            } else if (orderItem.getOrderStatus() == OrderStatus.WAIT_PAY) {
+                showWaitPay(orderItem, adapter, position);
+            } else if (orderItem.getOrderStatus() == OrderStatus.WAIT_DELIVER) {
+                showWaitDeliver(orderItem, adapter, position);
+            } else if (orderItem.getOrderStatus() == OrderStatus.DELIVERED) {
+                showDelivered(orderItem, adapter, position);
+            }
+        }
+        ll_root.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Log.i("tag", "-----------------");
+                Context context = getContext();
+                boolean invalid = false;
+                if (orderItem.getOrderStatus() == OrderStatus.CANCELED || orderItem.isInvalid()) {
+                    invalid = true;
+                }
+                if (context instanceof SaleOrderListActivity) {
+                    OrderDetailsActivity.start(
+                            getContext(), orderItem.getOrderNum(), orderItem.getCreatorId(), invalid);
+                } else {
+                    OrderDetailsActivity.start(
+                            getContext(), orderItem.getOrderNum(), -1, invalid);
+                }
+
+            }
+        });
+
+        //
+        showPintuanGoods(orderItem);
+    }
+
+    public OrderVH setItemOperationListener(OrderListAdapter.ItemOperationListener itemOperationListener) {
+        mItemOperationListener = itemOperationListener;
+        return this;
+    }
+
+    /**
+     * 显示单个商品的样式
+     */
+    private void showSinglePro(OrderCommodity commodity) {
+        // 隐藏多个的控件状态
+        mMultiProLayout.setVisibility(View.INVISIBLE);
+        // 显示单个的控件状态
+        mSingleProLayout.setVisibility(View.VISIBLE);
+
+        ImageLoaderUtil.displayImage(mProPicImg, commodity.getCommodityPicturePath());
+        mBrandTxt.setText(commodity.getCommodityBrand());
+        mNameTxt.setText(commodity.getCommodityName());
+        mSkuTxt.setText(commodity.getCommoditySpec());
+        mCommodityCode.setText("货号:" + commodity.getCommodityCode());
+    }
+
+    /**
+     * 显示多个商品的样式
+     */
+    private void showMultiPro(List<OrderCommodity> commodityList) {
+        // 隐藏单个的控件状态
+        mSingleProLayout.setVisibility(View.INVISIBLE);
+        // 显示多个的控件状态
+        mMultiProLayout.setVisibility(View.VISIBLE);
+
+        int listSize = CollectionUtil.getSize(commodityList);
+        for (int i = 0, c = mPro1PicImgs.length; i < c; i++) {
+            ImageView img = mPro1PicImgs[i];
+            if (listSize < i + 1) {
+                // 数据没达到数量，隐藏固定的控件位
+                img.setVisibility(View.INVISIBLE);
+                continue;
+            }
+            img.setVisibility(View.VISIBLE);
+            ImageLoaderUtil.displayImage(img, commodityList.get(i).getCommodityPicturePath());
+        }
+    }
+
+    /**
+     * 待支付状态的显示
+     */
+    private void showWaitPay(final OrderItem orderItem, final OrderListAdapter adapter, final int position) {
+        mLayoutWaitPay.setVisibility(View.VISIBLE);
+
+        TimeCountDownController countDownController =
+                createCountdownController(
+                        orderItem.getInvalidTime(),
+                        mCountDownTxt,
+                        new TimeCountDownController.CountDownListener() {
+                            @Override
+                            public void onFinish() {
+                                adapter.removeCountdownController(position);
+                                showViewContent(orderItem);
+                            }
+                        });
+        countDownController.start();
+        adapter.addCountdownController(position, countDownController);
+
+        mPayTxt.setOnClickListener(
+                new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        if (mItemOperationListener != null) {
+                            mItemOperationListener.onItemCLickPay(orderItem);
+                        }
+                    }
+                });
+        mCancelTxt.setOnClickListener(
+                new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        if (mItemOperationListener != null) {
+                            mItemOperationListener.onItemClickCancel(orderItem);
+                        }
+                    }
+                });
+    }
+
+    private void showWaitDeliver(final OrderItem orderItem, final OrderListAdapter adapter, final int position) {
+        mLayoutWaitDeliver.setVisibility(View.VISIBLE);
+        mRemindDeleverTv.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (mItemOperationListener != null) {
+                    mItemOperationListener.onItemClickRemindDeliver(orderItem);
+                }
+            }
+        });
+    }
+
+    private void showDelivered(final OrderItem orderItem, final OrderListAdapter adapter, final int position) {
+        getmLayoutDelivered.setVisibility(View.VISIBLE);
+        mDetailTv.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (mItemOperationListener != null) {
+                    mItemOperationListener.onItemClickLogisticsDetail(orderItem);
+                }
+            }
+        });
+        mDeliveredConfirmTv.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (mItemOperationListener != null) {
+                    mItemOperationListener.onItemClickConfirmDelivered(orderItem);
+                }
+            }
+        });
+        mOuttradenoTxt.setText(
+                String.format(
+                        getContext().getString(R.string.order_outtradeno_format_code),
+                        orderItem.getOuttradeno()));
+    }
+
+    private TimeCountDownController createCountdownController(
+            Date date, TextView textView, TimeCountDownController.CountDownListener listener) {
+        return new TimeCountDownController(date, textView, null, listener);
+    }
+
+
+    /**
+     * 已经失效的显示
+     */
+    private void showInvalid(final OrderItem orderItem) {
+        //显示失效的操作
+ /*       mLayoutWaitPayCancel.setVisibility(View.VISIBLE);
+        mDeleteTxt.setOnClickListener(
+                new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        if (mItemOperationListener != null) {
+                            mItemOperationListener.onItemClickDelete(orderItem);
+                        }
+                    }
+                });*/
+        //显示订单失效
+        bg_order_past0.setVisibility(View.VISIBLE);
+        bg_order_past1.setVisibility(View.VISIBLE);
+        mLayoutOrdertOperator.setVisibility(View.GONE);
+        mLayoutWaitPayCancel.setVisibility(View.GONE);
+        mDeleteTv.setVisibility(View.VISIBLE);
+        mDeleteTv.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (mItemOperationListener != null) {
+                    mItemOperationListener.onItemClickDelete(orderItem);
+                }
+            }
+        });
+    }
+
+
+    private void initOperatorLayout() {
+        mLayoutWaitPayCancel.setVisibility(View.INVISIBLE);
+        mLayoutWaitPay.setVisibility(View.INVISIBLE);
+        mLayoutWaitDeliver.setVisibility(View.INVISIBLE);
+        getmLayoutDelivered.setVisibility(View.INVISIBLE);
+    }
+
+
+    /**
+     * 重置view，防止复用
+     */
+    private void resetItemView() {
+        order_top_info_normal.setVisibility(View.VISIBLE);
+        order_top_info_pingtuan.setVisibility(View.GONE);
+        order_top_info_pingtuan_downTime.stopTickWork();
+        //
+        mLayoutWaitPay.setVisibility(View.VISIBLE);//待付款
+        mLayoutWaitPayCancel.setVisibility(View.GONE);//订单失效
+        mLayoutWaitDeliver.setVisibility(View.GONE);//待发货
+        getmLayoutDelivered.setVisibility(View.GONE);//已发货
+        //
+        oder_layout_pingtuan_fail.setVisibility(View.GONE);
+        oder_layout_pingtuan_invite_friend.setVisibility(View.GONE);
+    }
+
+    /**
+     * 显示拼团商品
+     */
+    private void showPintuanGoods(final OrderItem orderItem) {
+        if (orderItem.getActivityType() != null && !orderItem.getActivityType().equals("2")) {
+            return;
+        }
+        order_top_info_normal.setVisibility(View.GONE);
+        order_top_info_pingtuan.setVisibility(View.VISIBLE);
+//        mLayoutWaitPay.setVisibility(View.GONE);//待付款
+//        mLayoutWaitPayCancel.setVisibility(View.GONE);//订单失效
+//        mLayoutWaitDeliver.setVisibility(View.GONE);//待发货
+//        getmLayoutDelivered.setVisibility(View.GONE);//已发货
+        oder_layout_pingtuan_fail.setVisibility(View.GONE);//拼团失败
+        oder_layout_pingtuan_invite_friend.setVisibility(View.GONE);//邀请朋友拼团
+        order_top_info_pingtuan_downTime.stopTickWork();
+        //
+        order_top_info_pingtuan_createTime.setText(TimeUtils.timeToStrThread(orderItem.getCreateTime()));
+        order_top_info_pingtuan_count.setText(String.valueOf("数量:" + orderItem.getCount()));
+        //"实付款:" +
+        order_top_info_pingtuan_price.setText(String.valueOf(StringFormatUtil.getPrice(getContext(), orderItem.getTotalPrice())));
+        if (orderItem.getCollageStatus() == null) {
+            order_top_info_pingtuan_status.setText("拼团商品");
+            order_top_info_pingtuan_downTime.setText("");
+            return;
+        }
+        switch (orderItem.getCollageStatus()) {
+            case "0"://拼团失败
+                mLayoutWaitPay.setVisibility(View.GONE);//待付款
+                mLayoutWaitPayCancel.setVisibility(View.GONE);//订单失效
+                mLayoutWaitDeliver.setVisibility(View.GONE);//待发货
+                getmLayoutDelivered.setVisibility(View.GONE);//已发货
+                order_top_info_pingtuan_status.setText("拼团商品：失败");
+                order_top_info_pingtuan_downTime.setText("");
+                oder_layout_pingtuan_fail.setVisibility(View.VISIBLE);
+                if (orderItem.getOrderStatus() == OrderStatus.PAY_BACK_SUCCEED){
+                    pingtuan_fail_cause.setText("退款状态:退款成功");
+                }else {
+                    pingtuan_fail_cause.setText("退款状态:正在退款");
+                }
+                break;
+            case "1"://拼团中
+                if (orderItem.getOrderStatus() == OrderStatus.WAIT_DELIVER) {
+                    mLayoutWaitPay.setVisibility(View.GONE);//待付款
+                    mLayoutWaitPayCancel.setVisibility(View.GONE);//订单失效
+                    mLayoutWaitDeliver.setVisibility(View.GONE);//待发货
+                    getmLayoutDelivered.setVisibility(View.GONE);//已发货
+                    oder_layout_pingtuan_invite_friend.setVisibility(View.VISIBLE);
+                }
+                StringBuilder builder = new StringBuilder();
+                builder.append("拼团商品：")
+                        .append("待拼成 ")
+                        .append("差")
+                        .append(orderItem.getRemainNum())
+                        .append("人");
+                order_top_info_pingtuan_status.setText(String.valueOf(builder));
+                Date date = new Date();
+                if (Long.valueOf(orderItem.getEndTime()) > date.getTime()) {
+                    order_top_info_pingtuan_downTime.startTickWork(Long.valueOf(orderItem.getEndTime()) - date.getTime(),
+                            PingtuanCountDownTextView.PING_TUAN_ORDER_LIST);
+                } else {
+                    order_top_info_pingtuan_downTime.setText(String.valueOf("剩余时间: 已结束"));
+                }
+                order_tv_pingtuan_invite_friend.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        if (mItemOperationListener != null) {
+                            mItemOperationListener.onItemClickInviteFriendPintuan(orderItem);
+                        }
+                    }
+                });
+                break;
+            case "2"://拼团成功
+                order_top_info_pingtuan_status.setText("拼团商品：已拼成");
+                order_top_info_pingtuan_downTime.setText("");
+//                getmLayoutDelivered.setVisibility(View.VISIBLE);
+                break;
+        }
+    }
+}

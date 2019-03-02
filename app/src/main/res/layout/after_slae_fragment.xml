@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="@color/white"
+    android:layout_marginTop="8dp">
+
+    <com.a1magway.bgg.refactor.AppRefreshLayout
+        android:id="@+id/order_list_layout_refresh"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        >
+
+        <com.a1magway.bgg.widget.LoadMoreRecyclerView
+            android:id="@+id/order_list_recycler"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"/>
+    </com.a1magway.bgg.refactor.AppRefreshLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/liner_no_data"
+        android:orientation="vertical"
+        android:visibility="gone"
+        android:layout_gravity="center"
+        android:gravity="center">
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/icon_no_data_refundlist"
+            android:layout_gravity="center"
+            />
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="15dp"
+            android:text="暂时没有售后订单记录哦"
+            android:textColor="@color/member_card_item_bg_three"
+            android:gravity="center"
+            android:layout_gravity="center"
+            />
+    </LinearLayout>
+    <include layout="@layout/include_full_loading"/>
+</FrameLayout>

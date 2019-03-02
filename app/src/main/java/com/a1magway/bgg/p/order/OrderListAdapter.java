@@ -1,0 +1,80 @@
+package com.a1magway.bgg.p.order;
+
+import android.util.SparseArray;
+import android.view.ViewGroup;
+import com.a1magway.bgg.common.adapter.BaseRecyclerAdapter;
+import com.a1magway.bgg.data.entity.OrderItem;
+import com.a1magway.bgg.tool.TimeCountDownController;
+import java.util.List;
+
+/** 订单列表适配器 Created by jph on 2017/8/17. */
+public class OrderListAdapter extends BaseRecyclerAdapter<OrderVH, OrderItem> {
+
+    private ItemOperationListener mItemOperationListener;
+
+    private SparseArray<TimeCountDownController> controllerMap = new SparseArray<>();
+
+    private boolean mSaleOrderList = false;
+
+    public OrderListAdapter(List<OrderItem> list,boolean isSaleOrderList) {
+        super(list);
+        this.mSaleOrderList = isSaleOrderList;
+    }
+
+    public void setItemOperationListener(ItemOperationListener itemOperationListener) {
+        mItemOperationListener = itemOperationListener;
+    }
+
+    @Override
+    public OrderVH onRealCreateViewHolder(ViewGroup parent, int viewType) {
+        return new OrderVH(parent, mSaleOrderList).setItemOperationListener(mItemOperationListener);
+    }
+
+    @Override
+    public void onRealBindViewHolder(OrderVH holder, int position) {
+        super.onRealBindViewHolder(holder, position);
+        removeCountdownController(position);
+        holder.showViewContent(getItem(position), this, position);
+    }
+
+    public void addCountdownController(int key, TimeCountDownController countDownController) {
+        controllerMap.put(key, countDownController);
+    }
+
+    public void removeCountdownController(int key) {
+        TimeCountDownController controller = controllerMap.get(key);
+        if (controller != null) {
+            controller.cancel();
+        }
+        controllerMap.remove(key);
+    }
+
+    public void clearControllerMap() {
+        int size = controllerMap.size();
+        for (int i = 0; i < size; i++) {
+            int key = controllerMap.keyAt(i);
+            removeCountdownController(key);
+        }
+        controllerMap.clear();
+    }
+
+    /** Item操作事件 */
+    public interface ItemOperationListener {
+        void onItemClickCancel(OrderItem orderItem);
+
+        void onItemClickDelete(OrderItem orderItem);
+
+        void onItemCLickPay(OrderItem orderItem);
+
+        void onItemClickLogisticsDetail(OrderItem orderItem);
+
+        void onItemClickRemindDeliver(OrderItem orderItem);
+
+        void onItemClickConfirmDelivered(OrderItem orderItem);
+
+        void onItemClickInviteFriendPintuan(OrderItem orderItem);
+
+        void onItemClickApplyAfterSale(OrderItem orderItem);
+
+    }
+}

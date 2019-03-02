@@ -1,0 +1,130 @@
+package com.a1magway.bgg.p.productReturn;
+
+import android.support.annotation.NonNull;
+import android.support.v7.widget.RecyclerView;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.ImageView;
+import android.widget.TextView;
+
+import com.a1magway.bgg.R;
+import com.a1magway.bgg.common.adapter.BaseRecyclerAdapter;
+import com.a1magway.bgg.common.adapter.BaseRecyclerVH;
+import com.a1magway.bgg.data.entity.AfterSaleBean;
+import com.a1magway.bgg.data.entity.Commodity;
+import com.a1magway.bgg.data.entity.OrderCommodity;
+import com.a1magway.bgg.data.entity.OrderItem;
+import com.a1magway.bgg.util.ImageLoaderUtil;
+import com.almagway.common.AppConfig;
+
+import java.util.List;
+
+import butterknife.BindView;
+
+/**
+ * Created by enid on 2018/9/8.
+ * 售后列表适配器
+ */
+
+public class AfterSaleAdapter extends BaseRecyclerAdapter<AfterSaleAdapter.ViewHold,AfterSaleBean>{
+
+
+    public AfterSaleAdapter(List<AfterSaleBean> list) {
+        super(list);
+    }
+
+    private OnClickItemListener onClickItemListener;
+
+    public void setOnClickItemListener(OnClickItemListener onClickItemListener) {
+        this.onClickItemListener = onClickItemListener;
+    }
+
+    @Override
+    public ViewHold onRealCreateViewHolder(ViewGroup parent, int viewType) {
+        return new ViewHold(parent,R.layout.item_after_sale_list);
+    }
+
+    @Override
+    public void onRealBindViewHolder(ViewHold holder, int position) {
+        super.onRealBindViewHolder(holder, position);
+        final AfterSaleBean afterSaleBean=getList().get(position);
+        OrderCommodity item=afterSaleBean.getSkuList().get(0);
+        ImageLoaderUtil.displayImage(holder.returnProductGoodsImg, item.getCommodityPicturePath());
+//        String conetn[]=item.getCommoditySpec().split(" ");
+        holder.returnProductName.setText(item.getCommodityBrand());
+        holder.returnProductDec.setText(item.getCommodityName());
+//        holder.returnProductColor.setText(conetn[0]);
+//        if (conetn[1]==null){
+//            holder.returnProductSize.setVisibility(View.GONE);
+//        }else {
+//            holder.returnProductSize.setText(conetn[1]);
+//        }
+        holder.returnProductMoney.setText("成交价： ¥"+item.getCommoditySellPrice());
+        holder.returnProductIsSelect.setVisibility(View.INVISIBLE);
+//        if (returnProductListdapter.isHideSelct()){
+//            holder.returnProductIsSelect.setVisibility(View.GONE);
+//        }
+
+        //1.申请中 2.审核成功 3.审核失败 4.已撤销 5.处理中 6.已退款
+        switch (afterSaleBean.getStatus()){
+            case 1:
+                holder.showStatusText.setText("申请中");
+                break;
+            case 2:
+                holder.showStatusText.setText("审核成功");
+                break;
+            case 3:
+                holder.showStatusText.setText("审核失败");
+                break;
+            case 4:
+                holder.showStatusText.setText("已撤销");
+                break;
+            case 5:
+                holder.showStatusText.setText("处理中");
+                break;
+            case 6:
+                holder.showStatusText.setText("已退款");
+                break;
+        }
+        holder.itemView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (onClickItemListener!=null){
+                    onClickItemListener.onClickItem(afterSaleBean);
+                }
+            }
+        });
+
+    }
+
+    public static class ViewHold extends BaseRecyclerVH<AfterSaleBean.SkuListBean> {
+        @BindView(R.id.return_product_is_select)
+        ImageView returnProductIsSelect;
+        @BindView(R.id.return_product_goods_img)
+        ImageView returnProductGoodsImg;
+        @BindView(R.id.return_product_name)
+        TextView returnProductName;
+        @BindView(R.id.return_product_dec)
+        TextView returnProductDec;
+        @BindView(R.id.return_product_color)
+        TextView returnProductColor;
+        @BindView(R.id.return_product_size)
+        TextView returnProductSize;
+        @BindView(R.id.return_product_money)
+        TextView returnProductMoney;
+
+        @BindView(R.id.image_show_status)
+        ImageView showStatusImage;
+        @BindView(R.id.text_show_status)
+        TextView showStatusText;
+
+        public ViewHold(@NonNull ViewGroup parent, int layoutResId) {
+            super(parent, layoutResId);
+        }
+
+    }
+
+    public interface OnClickItemListener{
+        void onClickItem(AfterSaleBean afterSaleBean);
+    }
+}

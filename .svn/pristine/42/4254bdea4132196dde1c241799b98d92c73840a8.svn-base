@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="primaryColor">#FAFAFA</color>
+    <color name="primaryLightColor">#FFFFFF</color>
+    <color name="primaryDarkColor">#C7C7C7</color>
+    <color name="secondaryColor">#f3c98c</color>
+    <color name="secondaryLightColor">#fffcbd</color>
+    <color name="secondaryDarkColor">#bf985e</color>
+    <color name="primaryTextColor">#000000</color>
+    <color name="secondaryTextColor">#313131</color>
+    <color name="primaryGreyTextColor">#A0A0A0</color>
+    <color name="secondGreyTextColor">#B5B5B5</color>
+    <color name="pressSecondaryDarkColor">#8D6600</color>
+
+    <color name="yellow">#FFF034</color>
+    <color name="white">#FFFFFF</color>
+    <color name="black">#000000</color>
+    <color name="transparent">#00000000</color>
+    <color name="white_88">#E0ffffff</color>
+    <color name="white_77">#C5ffffff</color>
+    <color name="white_50">#80ffffff</color>
+    <color name="black_30">#4C000000</color>
+    <color name="black_36">#5C000000</color>
+    <color name="black_66">#A9000000</color>
+    <color name="black_72">#B8000000</color>
+    <color name="black_88">#E1000000</color>
+
+    <color name="bg_page">#EBEBEB</color>
+    <color name="divider">#EBEBEB</color>
+    <color name="red">#FF4081</color>
+
+    <color name="text_black">#313131</color>
+    <color name="text_grey">#B5B5B5</color>
+    <color name="text_grey_72">#B8B5B5B5</color>
+    <color name="text_red">#B0271F</color>
+
+    <color name="home_edt_bg">#80FAFAFA</color>
+
+    <color name="brand_bg_item_index">#F7F7F7</color>
+    <color name="search_filter_cate2_bg">#EEEEEE</color>
+
+    <color name="product_details_divider">#EEEEEE</color>
+    <color name="product_details_txt_price_grey">#535353</color>
+
+    <color name="cart_count_border">#000000</color>
+
+    <!-- common -->
+    <color name="common_textColor_disable">#b5b5b5</color>
+    <color name="common_divider_color">#f5f5f5</color>
+
+    <color name="member_upgrade_info_bg">#FDF9FA</color>
+    <color name="member_upgrade_price_color">#7A5327</color>
+    <color name="member_upgrade_info_gift_bg">#FDF8F6</color>
+    <color name="member_card_time">#EDD9B9</color>
+    <color name="member_card_item_bg_one">#ABBDCA</color>
+    <color name="member_card_item_bg_two">#F3DBB5</color>
+    <color name="member_card_item_bg_three">#D1D6D7</color>
+    <color name="member_card_item_bg_four">#DEBAB7</color>
+    <color name="gray_e5">#E5E5E5</color>
+    <color name="gray_ee">#EEEEEE</color>
+    <color name="gray_c9">#C9C9C9</color>
+    <color name="gray_c10">#F2F2F2</color>
+
+    <!--进度条相关的颜色-->
+    <color name="mn_colorDialogProgressBarBgColor">#b4b4b4</color>
+    <color name="mn_colorDialogProgressBarProgressColor">#FFFFFF</color>
+    <color name="mn_colorDialogProgressBarSecondProgressColor">#ff9c9c</color>
+    <color name="mn_colorDialogWindowBg">#00000000</color>
+    <color name="mn_colorDialogTrans">#00000000</color>
+    <color name="mn_colorDialogViewBg">#b2000000</color>
+    <color name="mn_colorDialogTextColor">#ffffff</color>
+    <color name="mn_colorDialogProgressBarColor">#ffffff</color>
+    <color name="mn_colorDialogImageTintColor">#ffffff</color>
+    <color name="color_ff000000">#ff000000</color>
+    <color name="color_ff999999">#ff999999</color>
+    <color name="color_ff333333">#ff333333</color>
+    <color name="color_ffeeeeee">#ffeeeeee</color>
+    <color name="golden">#EDC56D</color>
+    <color name="color_fff2f2f2">#fff2f2f2</color>
+    <color name="color_trans">#80000000</color>
+
+
+    <!--count down text-->
+    <dimen name="count_down_tv_width">150dp</dimen>
+    <dimen name="count_down_tv_padding">4dp</dimen>
+
+
+
+
+
+</resources>

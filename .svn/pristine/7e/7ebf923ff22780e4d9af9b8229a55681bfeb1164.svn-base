@@ -1,0 +1,300 @@
+package com.a1magway.bgg.v.productReturn;
+
+import android.graphics.Bitmap;
+import android.graphics.drawable.BitmapDrawable;
+import android.os.Bundle;
+import android.os.Handler;
+import android.support.annotation.Nullable;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
+import android.view.Gravity;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.WindowManager;
+import android.widget.LinearLayout;
+import android.widget.PopupWindow;
+import android.widget.TextView;
+
+import com.a1magway.bgg.R;
+import com.a1magway.bgg.common.PFragment;
+import com.a1magway.bgg.common.SimpleObserver;
+import com.a1magway.bgg.data.entity.APIResponse;
+import com.a1magway.bgg.data.entity.OrderItem;
+import com.a1magway.bgg.data.entity.ReturnGoodsReasonBean;
+import com.a1magway.bgg.data.entity.SalesReturn;
+import com.a1magway.bgg.data.net.APIManager;
+import com.a1magway.bgg.data.net.CommonParamInterceptor;
+import com.a1magway.bgg.p.productReturn.ReturnContentP;
+import com.a1magway.bgg.util.GlobalData;
+import com.a1magway.bgg.v.order.OrderListActivity;
+import com.a1magway.bgg.v.productReturn.adapter.ApplyReturnReasonAdapter;
+import com.almagway.common.utils.StringUtil;
+import com.almagway.common.utils.ToastUtil;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import butterknife.BindView;
+import butterknife.OnClick;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.schedulers.Schedulers;
+
+/**
+ * Created by enid on 2018/9/6.
+ * 退款退货审核通过，需要选择快递寄回
+ */
+
+public class RefoundApprovedFragment extends PFragment {
+    private static final String EXTRA_OUTTRADENO = "EXTRA_OUTTRADENO";
+    private static final String SALES_RETURN = "SALES_RETURN";
+    @BindView(R.id.text_jihui)
+    TextView text_jihui;
+    //收货方
+    @BindView(R.id.text_receiving_party)
+    TextView text_receiving_party;
+    //收货地址
+    @BindView(R.id.text_receiving_adress)
+    TextView text_receiving_adress;
+    //收货方电话
+    @BindView(R.id.text_receiving_party_number)
+    TextView text_receiving_party_number;
+    /**
+     * 物流选择
+     */
+    @BindView(R.id.liner_wuliu)
+    LinearLayout liner_wuliu;
+    //物流公司
+    @BindView(R.id.text_choose_wuliu)
+    TextView text_choose_wuliu;
+
+    //物流编号
+    @BindView(R.id.edit_wuliu_number)
+    TextView edit_wuliu_number;
+
+    //确认
+    @BindView(R.id.text_queren)
+    TextView text_queren;
+
+    private PopupWindow mPopupWindow;
+    //装有退款理由的list
+    private List<ReturnGoodsReasonBean> list=new ArrayList<>();
+
+    //选择退货理由的适配器
+    private ApplyReturnReasonAdapter applyReturnReasonAdapter;
+
+    private APIManager apiManager;
+
+    private OrderItem orderItem;
+    private SalesReturn salesReturn;
+    @Override
+    public int getContentViewLayoutId() {
+        return R.layout.fragment_refound_approved;
+    }
+
+    public static RefoundApprovedFragment newIntance(OrderItem item, SalesReturn salesReturn) {
+        // Required empty public constructor
+        Bundle bundle = new Bundle();
+        bundle.putSerializable(EXTRA_OUTTRADENO,item);
+        bundle.putSerializable(SALES_RETURN,salesReturn);
+        RefoundApprovedFragment fragment = new RefoundApprovedFragment();
+        fragment.setArguments(bundle);
+        return fragment;
+    }
+    @Override
+    public void initView(@Nullable Bundle savedInstanceState, @Nullable View contentView) {
+        super.initView(savedInstanceState, contentView);
+        orderItem= (OrderItem) getArguments().getSerializable(EXTRA_OUTTRADENO);
+        salesReturn= (SalesReturn) getArguments().getSerializable(SALES_RETURN);
+        initPopUpWindow();
+        apiManager=new APIManager(new CommonParamInterceptor());
+    }
+
+    /**
+     * 设置退货地址
+     */
+    public void setReturnAdress(String jihuiAdress,String reciverName,String number){
+        //寄回地址
+        if (!StringUtil.isEmpty(jihuiAdress)){
+            text_receiving_adress.setText("收货地址: "+jihuiAdress);
+        }
+        if (!StringUtil.isEmpty(reciverName)){
+            text_receiving_party.setText("收货方: "+reciverName);
+        }
+        if (!StringUtil.isEmpty(number)){
+            text_receiving_party_number.setText("收货人电话: "+number);
+        }
+    }
+
+    public void initPopUpWindow(){
+        //popupWindow 的基础配置
+        View popupView = getLayoutInflater().inflate(R.layout.pop_up_window_list_layout, null);
+        mPopupWindow = new PopupWindow(popupView, LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT, true);
+        RecyclerView mRecyclerView=popupView.findViewById(R.id.pop_window_rv);
+        TextView textView=popupView.findViewById(R.id.pop_title);
+        textView.setText("物流公司");
+        applyReturnReasonAdapter=new ApplyReturnReasonAdapter(getActivity());
+        applyReturnReasonAdapter.setOnClickImageChange(new ApplyReturnReasonAdapter.OnClickImageChange() {
+            @Override
+            public void onClickImage(String reason) {
+                mPopupWindow.dismiss();
+                text_choose_wuliu.setText(reason);
+                for (int i = 0; i <list.size() ; i++) {
+                    if (list.get(i).getName().equals(reason)){
+                        continue;
+                    }
+                    list.get(i).setClick(false);
+                }
+            }
+        });
+        mRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+        mRecyclerView.setAdapter(applyReturnReasonAdapter);
+        mPopupWindow.setTouchable(true);
+        mPopupWindow.setOutsideTouchable(true);
+        mPopupWindow.setBackgroundDrawable(new BitmapDrawable(getResources(), (Bitmap) null));
+        mPopupWindow.getContentView().setFocusableInTouchMode(true);
+        mPopupWindow.getContentView().setFocusable(true);
+        mPopupWindow.setAnimationStyle(R.style.anim_menu_bottombar);// 动画
+        mPopupWindow.setOnDismissListener(new PopupWindow.OnDismissListener() {
+            @Override
+            public void onDismiss() {
+                // popupWindow隐藏时恢复屏幕正常透明度
+                setBackgroundAlpha(1.0f);
+            }
+        });
+    }
+
+    public void setBackgroundAlpha(float bgAlpha) {
+        WindowManager.LayoutParams lp = getActivity().getWindow()
+                .getAttributes();
+        lp.alpha = bgAlpha;
+        getActivity().getWindow().setAttributes(lp);
+    }
+
+    public void  showPopWindow(){
+        View rootview = LayoutInflater.from(getActivity()).inflate(R.layout.activity_apply_return, null);
+        mPopupWindow.showAtLocation(rootview, Gravity.BOTTOM, 0, 0);//popuwindow在底部
+        setBackgroundAlpha(0.5f);
+        if (list.size()<=0){
+            setReason();
+        }else{
+            applyReturnReasonAdapter.setList(list);
+        }
+    }
+    @OnClick(R.id.liner_wuliu)
+    public void onClick(){
+        showPopWindow();
+    }
+    @OnClick(R.id.text_queren)
+    public void queRen(){
+        List<ReturnGoodsReasonBean> listReturn=applyReturnReasonAdapter.getList();
+        String name="";
+        if (listReturn.size()>0){
+
+            for (ReturnGoodsReasonBean re:listReturn
+                 ) {
+                if (re.isClick()){
+                    name=re.getName();
+                }
+            }
+        }
+        if (StringUtil.isEmpty(name)){
+            ToastUtil.showShort("请选择物流公司！");
+            return;
+        }
+        String wuliuNumber=edit_wuliu_number.getText().toString();
+        if (StringUtil.isEmpty(wuliuNumber)){
+            ToastUtil.showShort("请填写运费单号！");
+            return;
+        }
+        addRefundLogisticsNum(name,wuliuNumber);
+    }
+
+    //加载快递公司
+    private void setReason() {
+        showLoadingDialog();
+        apiManager.getWuLiuCompanyList()
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new SimpleObserver<APIResponse<ReturnGoodsReasonBean>>(getActivity()) {
+                    @Override
+                    public void onError(Throwable e) {
+                        super.onError(e);
+                        hideLoadingDialog();
+                        ToastUtil.showShort(e.getMessage());
+                    }
+
+                    @Override
+                    public void onNext(APIResponse<ReturnGoodsReasonBean> returnGoodsReasonBeanAPIResponse) {
+                        super.onNext(returnGoodsReasonBeanAPIResponse);
+                        ReturnGoodsReasonBean returnGoodsReasonBeanAPIResponse1=
+                                returnGoodsReasonBeanAPIResponse.getData();
+                        hideLoadingDialog();
+                        if (returnGoodsReasonBeanAPIResponse1!=null){
+                            String s=returnGoodsReasonBeanAPIResponse1.getCompany();
+                            if (list.size()>0){
+                                list.clear();
+                            }
+                            String [] strings=s.split(",");
+                            if (strings!=null&&strings.length>0){
+                                for (String str:strings
+                                     ) {
+                                    if (!StringUtil.isEmpty(str)){
+                                        list.add(new ReturnGoodsReasonBean(str));
+                                    }
+                                }
+                            }
+                            applyReturnReasonAdapter.setList(list);
+                        }
+                    }
+                });
+    }
+
+    /**
+     * 添加物流单号
+     */
+    public void addRefundLogisticsNum(String type ,String number){
+        showLoadingDialog();
+        apiManager.addRefundLogisticsNum(GlobalData.getInstance().getUserId(),orderItem.getRefundId()+"",type,number)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new SimpleObserver<APIResponse>(getActivity()) {
+                    @Override
+                    public void onError(Throwable e) {
+                        super.onError(e);
+                        hideLoadingDialog();
+                        ToastUtil.showShort(e.getMessage());
+                    }
+
+                    @Override
+                    public void onNext(APIResponse apiResponse) {
+                        super.onNext(apiResponse);
+                        hideLoadingDialog();
+                        ToastUtil.showShort(apiResponse.getMsg());
+//                        new Handler().postDelayed(new Runnable() {
+//                            @Override
+//                            public void run() {
+//                                getActivity().finish();
+//                            }
+//                        },1000);
+//                        if (getActivity() instanceof ReturnContentActivity){
+////                            ReturnContentActivity returnContentActivity= (ReturnContentActivity) getActivity();
+////                            ReturnContentP returnP = returnContentActivity.getReturnP();
+////                            if (returnP!=null){
+////                                returnP.getRefund(GlobalData.getInstance().getUserId(),orderItem.getRefundId()+"");
+////                            }
+////
+////                        }else{
+////                          new Handler().postDelayed(new Runnable() {
+////                            @Override
+////                            public void run() {
+////                                getActivity().finish();
+////                            }
+////                        },1000);
+////                        }
+                        OrderListActivity.start(getActivity());
+                        getActivity().finish();
+
+                    }
+                });
+    }
+}

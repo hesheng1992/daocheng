@@ -1,0 +1,294 @@
+package com.a1magway.bgg.v.productReturn;
+
+
+
+import android.os.Handler;
+import  android.support.v4.app.FragmentManager;
+import android.content.Context;
+import android.content.Intent;
+import android.os.Bundle;
+import android.support.annotation.Nullable;
+import android.support.v4.app.FragmentTransaction;
+import android.support.v4.app.ListFragment;
+import android.view.View;
+import android.widget.FrameLayout;
+import android.widget.LinearLayout;
+import android.widget.TextView;
+import android.widget.Toast;
+
+import com.a1magway.bgg.R;
+import com.a1magway.bgg.common.PActivity;
+import com.a1magway.bgg.data.entity.APIResponse;
+import com.a1magway.bgg.data.entity.OrderCommodity;
+import com.a1magway.bgg.data.entity.OrderItem;
+
+import com.a1magway.bgg.data.entity.ReturnGoodsDetailBean;
+import com.a1magway.bgg.data.entity.SalesReturn;
+import com.a1magway.bgg.p.productReturn.ReturnContentP;
+import com.a1magway.bgg.util.GlobalData;
+import com.a1magway.bgg.util.JumpUtil;
+import com.a1magway.bgg.v.order.OrderListActivity;
+import com.a1magway.bgg.widget.TitleBar;
+import com.a1magway.bgg.widget.dialog.DialogOnclickBtnlistener;
+import com.a1magway.bgg.widget.dialog.DialogUtil;
+import com.almagway.common.utils.StringUtil;
+import com.almagway.common.utils.ToastUtil;
+
+
+import java.util.ArrayList;
+import java.util.List;
+
+import butterknife.BindView;
+import butterknife.OnClick;
+
+/**
+ * Created by lm on 2018/8/30.
+ * 退款申请提交之后的详情页面
+ */
+public class ReturnContentActivity extends PActivity<ReturnContentP> implements IReturnContentV {
+
+    private static final String EXTRA_OUTTRADENO = "EXTRA_OUTTRADENO";
+    private static final String SALES_RETURN = "SALES_RETURN";
+    @BindView(R.id.return_content_title_bar)
+    TitleBar returnContentTitleBar;
+    @BindView(R.id.return_product_tip)
+    TextView returnProductTip;
+    @BindView(R.id.content_view)
+    FrameLayout contentView;
+    @BindView(R.id.contact_kf_lay)
+    LinearLayout contactKfLay;
+    @BindView(R.id.update_apply_lay)
+    LinearLayout updateApplyLay;
+    @BindView(R.id.cancel_apply)
+    LinearLayout cancelApply;
+
+    private OrderItem orderItem;
+    private SalesReturn salesReturn;
+
+    private DialogUtil dialogUtil;
+    //点击的是撤销退货还是修改申请 1 撤销退货 2 修改申请
+    private int clickCancleReturnOrUndo=0;
+
+    private ReturnProductInfoFragment returnProductInfoFragment;
+    private RefoundApprovedFragment refoundApprovedFragment;
+
+    public static final void start(Context context, OrderItem orderItem, SalesReturn salesReturn) {
+        Intent intent = new Intent(context, ReturnContentActivity.class);
+        intent.putExtra(EXTRA_OUTTRADENO, orderItem);
+        intent.putExtra(SALES_RETURN,salesReturn);
+        JumpUtil.startActivityForResult(context, intent,20);
+    }
+
+
+
+
+    @Override
+    public void initData(@Nullable Bundle savedInstanceState) {
+        super.initData(savedInstanceState);
+        mPresenter=new ReturnContentP(this);
+        orderItem = (OrderItem) getIntent().getSerializableExtra(EXTRA_OUTTRADENO);
+        salesReturn = (SalesReturn) getIntent().getSerializableExtra(SALES_RETURN);
+        initFragment();
+        dialogUtil=new DialogUtil(this, new DialogOnclickBtnlistener() {
+            @Override
+            public void onClickOk() {
+//                Toast.makeText(getContext(),"你点击了确定",Toast.LENGTH_SHORT).show();
+                //撤销退款申请
+//                if (clickCancleReturnOrUndo==1){
+//
+//                    //修改退货申请
+//                }else if (clickCancleReturnOrUndo==2){
+//
+//                }
+                showLoadingDialog();
+                mPresenter.cheXiaoReturnApply(GlobalData.getInstance().getUserId(),orderItem.getRefundId());
+            }
+
+            @Override
+            public void onClickCancle() {
+
+            }
+        });
+        showLoadingDialog();
+        mPresenter.getRefund(GlobalData.getInstance().getUserId(),String.valueOf(orderItem.getRefundId()));
+    }
+
+    private void initFragment() {
+        if (salesReturn==null){
+            salesReturn=new SalesReturn();
+        }
+        returnProductInfoFragment=ReturnProductInfoFragment.newIntance(orderItem,salesReturn);
+        refoundApprovedFragment=RefoundApprovedFragment.newIntance(orderItem,salesReturn);
+        FragmentManager fragmentManager = getSupportFragmentManager();
+        FragmentTransaction transaction = fragmentManager.beginTransaction();
+        transaction.add(R.id.content_view, returnProductInfoFragment);
+        transaction.add(R.id.content_view, refoundApprovedFragment);
+        transaction.show(returnProductInfoFragment);
+        transaction.hide(refoundApprovedFragment);
+        transaction.commit();
+    }
+
+    @Override
+    public int getContentViewLayoutId() {
+        return R.layout.activity_return_content;
+    }
+
+
+    @OnClick(R.id.return_content_title_bar)
+    public void onClickBack(View v) {
+        onBackButtonClick();
+    }
+
+    @OnClick({R.id.cancel_apply,R.id.update_apply_lay,R.id.contact_kf_lay})
+    public void onClick(View view){
+        switch (view.getId()){
+            case R.id.cancel_apply:
+                dialogUtil.showDialog("确定撤销退款申请？");
+                clickCancleReturnOrUndo=1;
+                break;
+            case R.id.update_apply_lay:
+                dialogUtil.showDialog("确定放弃该操作\n重新发起申请？");
+                clickCancleReturnOrUndo=2;
+                break;
+            case R.id.contact_kf_lay:
+                //联系客服
+                mPresenter.hxLoginInfoGet();
+                break;
+        }
+    }
+    //撤销申请成功
+    @Override
+    public void undoReturnGoodsTrue(APIResponse apiResponse) {
+//        ToastUtil.showShort(apiResponse.getData().toString());
+        hideLoadingDialog();
+        //撤销申请
+        if (clickCancleReturnOrUndo==1){
+            ToastUtil.showShort("撤销申请成功!");
+            new Handler().postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    OrderListActivity.start(ReturnContentActivity.this);
+                    finish();
+                }
+            },2000);
+            //修改
+        }else{
+            ToastUtil.showShort("发起修改申请成功!");
+            new Handler().postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    Intent intent=new Intent();
+                    intent.putExtra("refoundID",orderItem.getRefundId());
+                    setResult(20,intent);
+                    finish();
+                }
+            },2000);
+        }
+    }
+    //撤销申请失败
+    @Override
+    public void undoReturnGoodsFalse(Throwable e) {
+        hideLoadingDialog();
+        ToastUtil.showShort(e.getMessage());
+    }
+
+    /**
+     * 获取退货详情成功
+     * @param bean
+     */
+    @Override
+    public void getRefundDetailTrue(ReturnGoodsDetailBean bean) {
+        hideLoadingDialog();
+        if (bean!=null){
+            getStatus(bean);
+
+        }
+    }
+
+    /**
+     * 判断状态
+     */
+    public void getStatus(ReturnGoodsDetailBean bean){
+        FragmentTransaction transaction=getSupportFragmentManager().beginTransaction();
+        switch (bean.getStatus()){
+            //申请中
+            case 1:
+                returnProductTip.setText("您已成功发起退货申请，请等待系统审核。");
+                transaction.hide(refoundApprovedFragment);
+                transaction.show(returnProductInfoFragment);
+                break;
+                //审核成功
+            case 2:
+                returnProductTip.setText("系统已确认您的退货申请，请将商品寄回以下地址。");
+                transaction.hide(returnProductInfoFragment);
+                transaction.show(refoundApprovedFragment);
+                break;
+                //审核失败
+            case 3:
+                returnProductTip.setText("您发起的退货申请，未审核通过\n原因：未描述具体原因");
+                transaction.hide(refoundApprovedFragment);
+                transaction.show(returnProductInfoFragment);
+                break;
+                //已撤销
+            case 4:
+                returnProductTip.setText("您已撤销申请，如果仍然没有解决问题，在保障期内," +
+                        "您仍可以发起售后申请。");
+                transaction.hide(refoundApprovedFragment);
+                transaction.show(returnProductInfoFragment);
+                cancelApply.setVisibility(View.INVISIBLE);
+                break;
+                //已处理
+            case 5:
+
+                break;
+                //已退款
+            case 6:
+                returnProductTip.setText("已经退款了。");
+                cancelApply.setVisibility(View.INVISIBLE);
+                updateApplyLay.setVisibility(View.INVISIBLE);
+                break;
+        }
+        transaction.commit();
+        initFragmentData(bean);
+    }
+
+    //获取退货详情失败
+    @Override
+    public void getRefundDetailFaile(Throwable e) {
+        hideLoadingDialog();
+    }
+
+    /**
+     * 装载数据
+     */
+    public void initFragmentData(ReturnGoodsDetailBean bean){
+        List<OrderCommodity> listSku=bean.getSkuList();
+        if (listSku!=null){
+            orderItem.setSkuList(listSku);
+        }
+        //设置金额
+        salesReturn.setMoney(bean.getTotalPrice());
+        //设置退货编号
+        salesReturn.setCode(bean.getRefundNumber());
+        //说明
+        salesReturn.setDescribe(bean.getExplain());
+        //设置电话号码
+        salesReturn.setPhone(bean.getPhone());
+        //设置原因
+        salesReturn.setReason(bean.getReason());
+        String pic=bean.getPictures();
+        if (!StringUtil.isEmpty(pic)){
+            List<String> listPic=new ArrayList<>();
+            String []picArry=pic.split(";");
+            if (picArry!=null&&picArry.length>0){
+                for (int i = 0; i <picArry.length ; i++) {
+                    listPic.add(picArry[i]);
+                }
+            }
+            salesReturn.setImgs(listPic);
+        }
+        returnProductInfoFragment.setSalesReturn(salesReturn);
+        refoundApprovedFragment.setReturnAdress(bean.getAddress(),
+                bean.getConsignee(),bean.getConsigneePhone());
+    }
+}

@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context="com.a1magway.bgg.v.personal.PersonalSettingActivity">
+
+    <com.a1magway.bgg.widget.TitleBar
+        android:id="@+id/personal_setting_titleBar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:titleText="@string/personal_setting_title" />
+
+    <LinearLayout
+        style="@style/Personal_Setting_Item"
+        android:layout_marginTop="8dp">
+
+        <TextView
+            style="@style/Personal_Setting_Item_Left"
+            android:text="@string/personal_setting_phone" />
+
+        <TextView
+            android:id="@+id/personal_setting_phone_tv"
+            style="@style/Personal_Item"
+            android:drawableRight="@null"
+            android:enabled="false"
+            android:text="@string/app_name" />
+    </LinearLayout>
+
+    <View style="@style/FullLine_View" />
+
+    <LinearLayout style="@style/Personal_Setting_Item">
+
+        <TextView
+            style="@style/Personal_Setting_Item_Left"
+            android:text="@string/personal_setting_nickname" />
+
+        <EditText
+            android:id="@+id/personal_setting_nickname_edt"
+            style="@style/Personal_Item"
+            android:drawableRight="@null"
+            android:enabled="true"
+            android:maxLength="@integer/personal_setting_name_lenght"
+            android:singleLine="true"
+            android:imeActionLabel="确认"
+            android:imeOptions="actionDone"
+            android:lines="1" />
+    </LinearLayout>
+
+    <View style="@style/FullLine_View" />
+
+    <LinearLayout style="@style/Personal_Setting_Item">
+
+        <TextView
+            style="@style/Personal_Setting_Item_Left"
+            android:text="@string/personal_setting_sex" />
+
+        <TextView
+            android:id="@+id/personal_setting_gender_tv"
+            style="@style/Personal_Item" />
+    </LinearLayout>
+
+    <View style="@style/FullLine_View" />
+
+    <LinearLayout
+        android:visibility="gone"
+        android:id="@+id/lly_change_pwd_parent"
+        style="@style/Personal_Setting_Item">
+
+        <TextView
+            style="@style/Personal_Setting_Item_Left"
+            android:text="@string/personal_setting_pwd" />
+
+        <TextView
+            android:id="@+id/personal_setting_pwd_tv"
+            style="@style/Personal_Item" />
+    </LinearLayout>
+
+    <View style="@style/FullLine_View" />
+
+    <LinearLayout
+        android:visibility="gone"
+        style="@style/Personal_Setting_Item">
+
+        <TextView
+            style="@style/Personal_Setting_Item_Left"
+            android:text="@string/personal_setting_birthday" />
+
+        <TextView
+            android:id="@+id/personal_setting_birthday_tv"
+            style="@style/Personal_Item" />
+    </LinearLayout>
+</LinearLayout>

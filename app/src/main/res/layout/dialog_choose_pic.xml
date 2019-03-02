@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:background="@color/transparent">
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:text="拍照"
+        android:layout_gravity="center"
+        android:gravity="center"
+        android:textSize="16sp"
+        android:textColor="@color/color_ff000000"
+        android:background="@color/white"
+        android:id="@+id/pai"/>
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="0.2dp"
+        android:background="@color/color_ff999999">
+    </View>
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:text="图库"
+        android:gravity="center"
+        android:layout_gravity="center"
+        android:textSize="16sp"
+        android:textColor="@color/color_ff000000"
+        android:background="@color/white"
+        android:id="@+id/gally"/>
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:text="取消"
+        android:gravity="center"
+        android:layout_gravity="center"
+        android:textSize="16sp"
+        android:layout_marginTop="12dp"
+        android:textColor="@color/color_ff000000"
+        android:background="@color/white"
+        android:id="@+id/cancle"
+        />
+</LinearLayout>

@@ -1,0 +1,137 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:layout_marginTop="8dp">
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="120dp"
+        android:gravity="center_vertical"
+        android:id="@+id/one_liner">
+        <ImageView
+            android:id="@+id/return_product_is_select"
+            android:src="@mipmap/is_select_normal"
+            android:layout_marginLeft="15dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+
+        <ImageView
+            android:id="@+id/return_product_goods_img"
+            android:layout_marginLeft="15dp"
+            android:layout_marginRight="15dp"
+            android:src="@mipmap/ic_launcher"
+            android:layout_width="100dp"
+            android:layout_height="100dp" />
+
+        <LinearLayout
+            android:padding="15dp"
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <TextView
+                android:id="@+id/return_product_name"
+                android:textSize="14sp"
+                android:text="ASHLEY GRAHAM X MARCCCCCCC"
+                android:singleLine="true"
+                android:textColor="@color/black"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+
+            <TextView
+                android:id="@+id/return_product_dec"
+                android:textSize="14sp"
+                android:text="中文中文中文"
+                android:singleLine="true"
+                android:textColor="@color/gray_normal"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="6dp"
+                />
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="6dp">
+
+                <TextView
+                    android:id="@+id/return_product_color"
+                    android:paddingLeft="7dp"
+                    android:paddingRight="7dp"
+                    android:background="@color/black"
+                    android:textSize="13sp"
+                    android:text="黑色"
+                    android:singleLine="true"
+                    android:textColor="@color/white"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" />
+
+                <TextView
+                    android:id="@+id/return_product_size"
+                    android:paddingLeft="7dp"
+                    android:paddingRight="7dp"
+                    android:layout_marginLeft="10dp"
+                    android:background="@color/black"
+                    android:textSize="13sp"
+                    android:text="xmll"
+                    android:singleLine="true"
+                    android:textColor="@color/white"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" />
+            </LinearLayout>
+            <TextView
+                android:id="@+id/return_product_money"
+                android:textSize="13sp"
+                android:text="成交价：$ 1555.00"
+                android:singleLine="true"
+                android:textColor="@color/gray_normal"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="6dp"/>
+        </LinearLayout>
+
+    </LinearLayout>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="170dp"
+        android:id="@+id/image_more_relative">
+        <android.support.v7.widget.RecyclerView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/recycler_image">
+
+        </android.support.v7.widget.RecyclerView>
+    </RelativeLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_gravity="center"
+        android:layout_marginLeft="15dp"
+        android:layout_marginBottom="10dp"
+        android:layout_marginTop="15dp">
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/icon_return_image"
+            android:id="@+id/image_show_status"
+            android:layout_gravity="center"/>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/color_ff000000"
+            android:textSize="16sp"
+            android:id="@+id/text_show_status"
+            android:text="申请退货退款"
+            android:layout_gravity="center"
+            android:layout_marginLeft="8dp"/>
+    </LinearLayout>
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="0.2dp"
+        android:background="@color/gray_c9">
+    </View>
+</LinearLayout>

@@ -1,0 +1,187 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/layout_root"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/white"
+    android:orientation="vertical"
+    android:clipToPadding="false"
+    android:paddingBottom="40dp"
+    android:paddingTop="@dimen/comm_activity_top_padding"
+    tools:context="com.a1magway.bgg.v.login.UserVerificationActivity">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/edt_margin_left_right"
+            android:text="* 姓名" />
+
+        <com.a1magway.bgg.widget.ClearEditTextNew
+            android:id="@+id/add_account_name_edt"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/login_edt_margin_bottom"
+            android:layout_marginLeft="@dimen/edt_margin_left_right"
+            android:layout_marginRight="@dimen/edt_margin_left_right"
+            app:hint="由此输入"
+            app:maxLength="7"
+            app:inputType="text" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/edt_margin_left_right"
+            android:text="* 身份证号" />
+
+        <com.a1magway.bgg.widget.ClearEditTextNew
+            android:id="@+id/add_account_idNum_edt"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/login_edt_margin_bottom"
+            android:layout_marginLeft="@dimen/edt_margin_left_right"
+            android:layout_marginRight="@dimen/edt_margin_left_right"
+            app:maxLength="18"
+            app:hint="由此输入"
+            app:inputType="text"
+            />
+
+        <LinearLayout
+            android:gravity="center_vertical"
+            android:layout_marginLeft="@dimen/edt_margin_left_right"
+            android:layout_marginRight="@dimen/edt_margin_left_right"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+            <TextView
+                android:layout_weight="1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="* 账号" />
+            <ImageView
+                android:id="@+id/add_account_bank_logo"
+                tools:background="@color/black"
+                android:layout_width="26dp"
+                android:layout_height="26dp" />
+        </LinearLayout>
+
+        <com.a1magway.bgg.widget.ClearEditTextNew
+            android:id="@+id/add_account_account_edt"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/login_edt_margin_bottom"
+            android:layout_marginLeft="@dimen/edt_margin_left_right"
+            android:layout_marginRight="@dimen/edt_margin_left_right"
+            app:hint="由此输入"
+            app:maxLength="25"
+            app:inputType="number" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/edt_margin_left_right"
+            android:text="* 手机号" />
+
+        <com.a1magway.bgg.widget.ClearEditTextNew
+            android:id="@+id/add_account_phone_edt"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/login_edt_margin_bottom"
+            android:layout_marginLeft="@dimen/edt_margin_left_right"
+            android:layout_marginRight="@dimen/edt_margin_left_right"
+            app:hint="+86"
+            app:inputType="number"
+            app:maxLength="@integer/phoneLength" />
+
+
+        <LinearLayout
+            android:id="@+id/send_code_code_layout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/edt_margin_left_right"
+            android:layout_marginRight="@dimen/edt_margin_left_right"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="* 验证码" />
+
+            <TextView
+                android:padding="2dp"
+                android:id="@+id/add_account_verif_code_send_tv"
+                android:layout_width="70dp"
+                android:layout_height="22dp"
+                android:layout_marginLeft="@dimen/login_edt_padding_left"
+                android:paddingLeft="6dp"
+                android:paddingRight="6dp"
+                android:layout_marginRight="@dimen/login_edt_padding_left"
+                android:enabled="false"
+                android:background="@drawable/enable_dark_corners_five"
+                android:gravity="center"
+                android:text="@string/send_verification_send"
+                android:textColor="@color/white"
+                android:textSize="@dimen/text_size_s" />
+
+        </LinearLayout>
+        <com.a1magway.bgg.widget.ClearEditTextNew
+            android:id="@+id/add_account_verif_code_edt"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/edt_margin_left_right"
+            android:layout_marginRight="@dimen/edt_margin_left_right"
+            android:layout_weight="1"
+            app:hint="由此输入"
+            app:inputType="number"
+            app:maxLength="@integer/verification_code_length" />
+
+
+        <LinearLayout
+            android:visibility="gone"
+            android:id="@+id/add_account_agreement_layout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="25dp"
+            android:layout_marginLeft="@dimen/edt_margin_left_right"
+            android:orientation="horizontal">
+
+            <CheckBox
+                android:id="@+id/add_account_checkBox"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:button="@drawable/radio_button_selector"
+                android:checked="true"
+                android:gravity="center"
+                android:padding="@dimen/login_edt_padding_left" />
+
+            <TextView
+                android:id="@+id/add_account_agreement_tv"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:layout_marginLeft="@dimen/login_edt_padding_left" />
+        </LinearLayout>
+
+        <Button
+            android:layout_marginTop="25dp"
+            android:id="@+id/add_account_commit_btn"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:layout_marginLeft="@dimen/common_btn_margin"
+            android:layout_marginRight="@dimen/common_btn_margin"
+            android:background="@drawable/enable_dark_corners_fourteen"
+            android:enabled="false"
+            android:text="立即绑定"
+            android:textColor="@color/white"
+            android:textSize="16sp" />
+    </LinearLayout>
+</ScrollView>

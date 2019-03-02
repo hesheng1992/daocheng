@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                xmlns:app="http://schemas.android.com/apk/res-auto"
+                xmlns:tools="http://schemas.android.com/tools"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+    <com.a1magway.bgg.widget.TabBar
+        android:id="@+id/main_tab_bar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"/>
+    <View
+        android:visibility="gone"
+        android:id="@+id/main_tab_bar_divide"
+        android:layout_above="@+id/main_tab_bar"
+        android:layout_width="match_parent"
+        android:background="@color/bg_page"
+        android:layout_height="0.5dp"/>
+
+    <FrameLayout
+        android:id="@+id/main_layout_frags"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_above="@+id/main_tab_bar_divide"/>
+
+    <ImageView
+        android:id="@+id/tab_found_img"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_centerHorizontal="true"
+        android:layout_alignParentBottom="true"
+        android:layout_marginBottom="17.6dp"
+        android:src="@mipmap/tab_found_normal" />
+</RelativeLayout>

@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/white"
+    android:orientation="vertical"
+    tools:context="com.a1magway.bgg.v.personal.EditAddressActivity">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_vertical"
+        android:paddingTop="10dp"
+        android:orientation="horizontal">
+        <TextView
+            android:layout_marginLeft="18dp"
+            android:text="*账户提现"
+            android:layout_weight="1"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content" />
+
+        <ImageView
+
+            android:id="@+id/withdraw_bank_img"
+            android:layout_width="30dp"
+            android:layout_height="26dp"
+            android:layout_marginRight="18dp" />
+    </LinearLayout>
+
+    <LinearLayout
+        style="@style/Personal_Setting_Item"
+        android:layout_marginLeft="@dimen/edt_margin_left_right"
+        android:layout_marginRight="@dimen/edt_margin_left_right"
+        android:layout_marginTop="10dp"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/withdraw_bank_tv"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/base_press_white_bg"
+            android:drawableRight="@drawable/arrow_status_black_right"
+            android:gravity="center_vertical"
+            android:hint="请选择"
+            android:textColor="@drawable/text_color_selector" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="#D2D2D2" />
+
+    </LinearLayout>
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/edt_margin_left_right"
+        android:layout_marginRight="@dimen/edt_margin_left_right"
+        android:layout_marginTop="10dp"
+        android:text="* 提现金额"
+        android:textColor="@color/black"
+        android:textSize="14sp" />
+
+
+    <com.a1magway.bgg.widget.ClearEditTextNew
+        android:maxLength="10"
+        android:id="@+id/withdraw_money_edt"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/edt_margin_left_right"
+        android:layout_marginRight="@dimen/edt_margin_left_right"
+        android:background="@null"
+        android:drawablePadding="8dp"
+        android:gravity="center_vertical"
+        android:textSize="14sp"
+        app:inputType="text" />
+
+    <LinearLayout
+        android:visibility="gone"
+        android:id="@+id/withdraw_agreement_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="25dp"
+        android:layout_marginLeft="20dp"
+        android:layout_marginTop="20dp"
+        android:orientation="horizontal">
+
+        <CheckBox
+            android:id="@+id/withdraw_checkBox"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:button="@drawable/radio_button_selector"
+            android:checked="true"
+            android:gravity="center"
+            android:padding="@dimen/login_edt_padding_left" />
+
+        <TextView
+            android:id="@+id/withdraw_agreement_tv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:layout_marginLeft="@dimen/login_edt_padding_left" />
+    </LinearLayout>
+
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <Button
+            android:id="@+id/withdraw_commit_btn"
+            style="@style/Common_Btn_Style"
+            android:layout_alignParentBottom="true"
+            android:layout_marginBottom="@dimen/common_btn_margin"
+            android:layout_marginLeft="@dimen/common_btn_margin"
+            android:layout_marginRight="@dimen/common_btn_margin"
+            android:text="发起提现" />
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_alignEnd="@+id/withdraw_commit_btn"
+            android:layout_alignParentBottom="true"
+            android:layout_marginBottom="126dp"
+            android:layout_weight="1"
+            android:gravity="center_vertical"
+            android:text="提现账户"
+            android:textColor="@color/black"
+            android:textSize="14sp" />
+    </RelativeLayout>
+</LinearLayout>

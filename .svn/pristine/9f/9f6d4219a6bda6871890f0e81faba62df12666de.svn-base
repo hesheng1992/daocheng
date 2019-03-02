@@ -1,0 +1,177 @@
+package com.a1magway.bgg.v.productReturn;
+
+import android.app.Activity;
+import android.content.Context;
+import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.drawable.BitmapDrawable;
+import android.os.Bundle;
+import android.support.annotation.Nullable;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
+import android.view.Gravity;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.WindowManager;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.LinearLayout;
+import android.widget.PopupWindow;
+import android.widget.TextView;
+
+import com.a1magway.bgg.R;
+import com.a1magway.bgg.common.PActivity;
+import com.a1magway.bgg.common.adapter.BaseRecyclerAdapter;
+import com.a1magway.bgg.data.entity.OrderItem;
+import com.a1magway.bgg.data.entity.SalesReturn;
+import com.a1magway.bgg.p.productReturn.ApplyReturnP;
+import com.a1magway.bgg.p.productReturn.ProductReturnWriteP;
+import com.a1magway.bgg.util.JumpUtil;
+import com.a1magway.bgg.widget.TitleBar;
+import com.a1magway.bgg.widget.divider.LinearItemDecoration;
+
+import butterknife.BindView;
+import butterknife.ButterKnife;
+import butterknife.OnClick;
+
+/**
+ * Created by lm on 2018/8/30.
+ */
+public class ApplyReturnActivity extends PActivity<ApplyReturnP> implements IApplyReturnV {
+
+
+    private static final String EXTRA_OUTTRADENO = "EXTRA_OUTTRADENO";
+
+    @BindView(R.id.apply_title_bar)
+    TitleBar applyTitleBar;
+    @BindView(R.id.apply_goods_rv)
+    RecyclerView applyGoodsRv;
+    @BindView(R.id.apply_money_tv)
+    TextView applyMoneyTv;
+    @BindView(R.id.apply_count_tv)
+    TextView applyCountTv;
+    @BindView(R.id.apply_phone_et)
+    EditText applyPhoneEt;
+    @BindView(R.id.apply_reason_tv)
+    TextView applyReasonTv;
+    @BindView(R.id.apply_reason_layout)
+    LinearLayout applyReasonLayout;
+    @BindView(R.id.apply_describe_tv)
+    EditText applyDescribeTv;
+    @BindView(R.id.apply_img_rv)
+    RecyclerView applyImgRv;
+    @BindView(R.id.apply_ok_btn)
+    Button applyOkBtn;
+
+    private OrderItem orderItem;
+
+    private ApplyReturnP applyReturnP;
+    private PopupWindow mPopupWindow;
+
+
+
+
+
+    public static final void start(Context context, OrderItem orderItem) {
+        Intent intent = new Intent(context, ApplyReturnActivity.class);
+        intent.putExtra(EXTRA_OUTTRADENO, orderItem);
+        JumpUtil.startActivity(context, intent);
+    }
+
+
+
+
+    @Override
+    public void initData(@Nullable Bundle savedInstanceState) {
+        super.initData(savedInstanceState);
+        orderItem = (OrderItem) getIntent().getSerializableExtra(EXTRA_OUTTRADENO);
+        applyReturnP = new ApplyReturnP(this,orderItem);
+        applyReturnP.initRV();
+        applyGoodsRv.setLayoutManager(new LinearLayoutManager(getContext()));
+        applyGoodsRv.addItemDecoration(new LinearItemDecoration(getContext(), R.color.gray_c10,
+                R.dimen.product_detail_divider));
+        initPopUpWindow();
+    }
+
+    @Override
+    public int getContentViewLayoutId() {
+        return R.layout.activity_apply_return;
+    }
+
+    @Override
+    public void initAdapter(BaseRecyclerAdapter adapter) {
+        applyGoodsRv.setAdapter(adapter);
+    }
+
+    @Override
+    public void initPhotoAdapter(BaseRecyclerAdapter adapter) {
+        applyImgRv.setAdapter(adapter);
+    }
+
+
+    @OnClick({R.id.apply_ok_btn,R.id.apply_reason_layout})
+    public  void onClick(View view){
+        switch (view.getId()){
+            case R.id.apply_ok_btn:
+                SalesReturn salesReturn=new SalesReturn();
+                salesReturn.setPhone(applyPhoneEt.getText().toString());
+
+                ReturnContentActivity.start(this,orderItem,salesReturn);
+                break;
+            case R.id.apply_reason_layout:
+                showPopWindow();
+                break;
+        }
+    }
+
+
+
+    public void initPopUpWindow(){
+        //popupWindow 的基础配置
+        View popupView = getLayoutInflater().inflate(R.layout.pop_up_window_list_layout, null);
+        mPopupWindow = new PopupWindow(popupView, LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT, true);
+        RecyclerView mRecyclerView=popupView.findViewById(R.id.pop_window_rv);
+
+        mPopupWindow.setTouchable(true);
+        mPopupWindow.setOutsideTouchable(true);
+        mPopupWindow.setBackgroundDrawable(new BitmapDrawable(getResources(), (Bitmap) null));
+        mPopupWindow.getContentView().setFocusableInTouchMode(true);
+        mPopupWindow.getContentView().setFocusable(true);
+        mPopupWindow.setAnimationStyle(R.style.anim_menu_bottombar);// 动画
+        mPopupWindow.setOnDismissListener(new PopupWindow.OnDismissListener() {
+            @Override
+            public void onDismiss() {
+                // popupWindow隐藏时恢复屏幕正常透明度
+                setBackgroundAlpha(1.0f);
+            }
+        });
+    }
+
+    public void  showPopWindow(){
+        View rootview = LayoutInflater.from(this).inflate(R.layout.activity_apply_return, null);
+        mPopupWindow.showAtLocation(rootview, Gravity.BOTTOM, 0, 0);//popuwindow在底部
+        setBackgroundAlpha(0.5f);
+    }
+
+
+
+
+
+
+    public void setBackgroundAlpha(float bgAlpha) {
+        WindowManager.LayoutParams lp = getWindow()
+                .getAttributes();
+        lp.alpha = bgAlpha;
+        getWindow().setAttributes(lp);
+    }
+
+
+    @OnClick(R.id.apply_title_bar)
+    public void onClickBack(View v) {
+        onBackButtonClick();
+    }
+
+
+
+
+}

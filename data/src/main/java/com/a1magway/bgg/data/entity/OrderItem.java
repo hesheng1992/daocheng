@@ -1,0 +1,238 @@
+package com.a1magway.bgg.data.entity;
+
+import java.io.Serializable;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.List;
+
+/**
+ * 订单列表中的订单
+ * Created by jph on 2017/8/16.
+ */
+public class OrderItem implements Serializable {
+
+    private long timestamp;//
+    private int id;//订单id
+    private int count;//
+    private Date createTime;//订单创建时间
+    private String orderNum;//订单编号orderNum
+    private int payTime;//支付时间
+    private String outtradeno;//物流单号
+    @OrderStatus
+    private int orderStatus;//订单状态（1待支付 2已支付 6已发货）
+    private String totalPrice;//总价
+    private String tax;// – 税费
+    private String freight;// – 邮费
+    private String realPayment;// – 实付款
+
+    private String userId;//订单用户id
+    private int creatorId;//创造者id，销售订单详情api传的userid的值换成他
+    private String activityType;//2为拼团商品
+    private String collageStatus;//(拼团商品，0拼团失败，1拼团中，2拼团成功)
+    private String remainNum;//剩余拼团人数
+    private String endTime;//拼团商品结束时间
+    private String collageOrderId;
+    private int type;//退款退货类型 1.选择退款 2.换货 3.未收到货退款
+    private int refundId;//退货id
+
+
+    public int getRefundId() {
+        return refundId;
+    }
+
+    public void setRefundId(int refundId) {
+        this.refundId = refundId;
+    }
+
+    public int getType() {
+        return type;
+    }
+
+    public void setType(int type) {
+        this.type = type;
+    }
+
+    public String getCollageOrderId() {
+        return collageOrderId;
+    }
+
+    public void setCollageOrderId(String collageOrderId) {
+        this.collageOrderId = collageOrderId;
+    }
+
+    public String getActivityType() {
+        return activityType;
+    }
+
+    public void setActivityType(String activityType) {
+        this.activityType = activityType;
+    }
+
+    public String getCollageStatus() {
+        return collageStatus;
+    }
+
+    public void setCollageStatus(String collageStatus) {
+        this.collageStatus = collageStatus;
+    }
+
+    public String getRemainNum() {
+        return remainNum;
+    }
+
+    public void setRemainNum(String remainNum) {
+        this.remainNum = remainNum;
+    }
+
+    public String getEndTime() {
+        return endTime;
+    }
+
+    public void setEndTime(String endTime) {
+        this.endTime = endTime;
+    }
+
+    public int getCreatorId() {
+        return creatorId;
+    }
+
+    public void setCreatorId(int creatorId) {
+        this.creatorId = creatorId;
+    }
+
+    public String getUserId() {
+        return userId;
+    }
+
+    public void setUserId(String userId) {
+        this.userId = userId;
+    }
+
+    private List<OrderCommodity> skuList;//
+
+    public long getTimestamp() {
+        return timestamp;
+    }
+
+    public void setTimestamp(long timestamp) {
+        this.timestamp = timestamp;
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public int getCount() {
+        return count;
+    }
+
+    public void setCount(int count) {
+        this.count = count;
+    }
+
+    public Date getCreateTime() {
+        return createTime;
+    }
+
+    public void setCreateTime(Date createTime) {
+        this.createTime = createTime;
+    }
+
+    public String getOrderNum() {
+        return orderNum;
+    }
+
+    public void setOrderNum(String orderNum) {
+        this.orderNum = orderNum;
+    }
+
+    public int getPayTime() {
+        return payTime;
+    }
+
+    public void setPayTime(int payTime) {
+        this.payTime = payTime;
+    }
+
+    @OrderStatus
+    public int getOrderStatus() {
+        return orderStatus;
+    }
+
+    public void setOrderStatus(@OrderStatus int orderStatus) {
+        this.orderStatus = orderStatus;
+    }
+
+    public String getTotalPrice() {
+        return totalPrice;
+    }
+
+    public void setTotalPrice(String totalPrice) {
+        this.totalPrice = totalPrice;
+    }
+
+    public List<OrderCommodity> getSkuList() {
+        return skuList;
+    }
+
+    public void setSkuList(List<OrderCommodity> skuList) {
+        this.skuList = skuList;
+    }
+
+    public String getOuttradeno() {
+        return outtradeno;
+    }
+
+    public void setOuttradeno(String outtradeno) {
+        this.outtradeno = outtradeno;
+    }
+
+    public String getTax() {
+        return tax;
+    }
+
+    public void setTax(String tax) {
+        this.tax = tax;
+    }
+
+    public String getFreight() {
+        return freight;
+    }
+
+    public void setFreight(String freight) {
+        this.freight = freight;
+    }
+
+    public String getRealPayment() {
+        return realPayment;
+    }
+
+    public void setRealPayment(String realPayment) {
+        this.realPayment = realPayment;
+    }
+
+    /**
+     * 是否无效，超过了支付时间
+     *
+     * @return
+     */
+    public boolean isInvalid() {
+        return getInvalidTime().getTime() < System.currentTimeMillis() && orderStatus == OrderStatus.WAIT_PAY;
+    }
+
+    /**
+     * 得到失效时间
+     *
+     * @return
+     */
+    public Date getInvalidTime() {
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTimeInMillis(getCreateTime().getTime() + getPayTime() * 60 * 1000);
+        return calendar.getTime();
+    }
+
+}

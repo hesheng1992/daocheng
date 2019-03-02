@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                xmlns:app="http://schemas.android.com/apk/res-auto"
+                xmlns:tools="http://schemas.android.com/tools"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:paddingBottom="20dp"
+        android:paddingLeft="14dp"
+        android:paddingTop="20dp"
+        android:text="@string/search_records"
+        android:textColor="@color/text_black"
+        android:textSize="13sp"/>
+
+    <TextView
+        android:id="@+id/records_txt_clear"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:drawableLeft="@drawable/ic_clear_records"
+        android:drawablePadding="5dp"
+        android:paddingBottom="20dp"
+        android:paddingRight="14dp"
+        android:paddingTop="20dp"
+        android:text="@string/search_clear"
+        android:textColor="@color/text_black"
+        android:textSize="13sp"/>
+
+    <com.dl7.tag.TagLayout
+        android:id="@+id/records_layout_tag"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/records_txt_clear"
+        android:layout_marginLeft="7dp"
+        android:layout_marginRight="7dp"
+        app:tag_horizontal_padding="7dp"
+        app:tag_layout_bg_color="@color/transparent"
+        app:tag_layout_border_color="@color/transparent"
+        app:tag_layout_border_width="0dp"
+        app:tag_layout_horizontal_interval="9dp"
+        app:tag_vertical_padding="5dp"
+        app:tag_view_bg_color="@color/text_black"
+        app:tag_view_border_color="@color/transparent"
+        app:tag_view_border_radius="1.5dp"
+        app:tag_view_border_width="0dp"
+        app:tag_view_text_color="@color/white"
+        app:tag_view_text_size="12">
+
+
+    </com.dl7.tag.TagLayout>
+</RelativeLayout>

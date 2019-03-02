@@ -1,0 +1,521 @@
+package com.a1magway.bgg.p.product;
+
+import android.support.annotation.NonNull;
+import android.text.TextUtils;
+
+import com.a1magway.bgg.MyAppGlideModule;
+import com.a1magway.bgg.R;
+import com.a1magway.bgg.common.BaseObserver;
+import com.a1magway.bgg.common.SimpleObserver;
+import com.a1magway.bgg.data.entity.APIResponse;
+import com.a1magway.bgg.data.entity.Commodity;
+import com.a1magway.bgg.data.entity.MorePingtuanData;
+import com.a1magway.bgg.data.entity.Product;
+import com.a1magway.bgg.data.net.APIException;
+import com.a1magway.bgg.data.net.APIManager;
+import com.a1magway.bgg.data.repository.IProductInfoData;
+import com.a1magway.bgg.di.scope.PerFragment;
+import com.a1magway.bgg.eventbus.event.LoginSuccessEvent;
+import com.a1magway.bgg.eventbus.event.PingtuanBuyEvent;
+import com.a1magway.bgg.okhttp.LogUtil;
+import com.a1magway.bgg.p.BasePresenter;
+import com.a1magway.bgg.util.DownloadShardImageUtils;
+import com.a1magway.bgg.util.GlobalData;
+import com.a1magway.bgg.util.JumpUtil;
+import com.a1magway.bgg.util.StringFormatUtil;
+import com.a1magway.bgg.util.dialog.CrowdorderingListDialog;
+import com.a1magway.bgg.v.product.IProDetailsInfoV;
+import com.a1magway.bgg.v.product.ProductDetailsActivity;
+import com.a1magway.bgg.v.web.WebActivity;
+import com.almagway.common.log.MLog;
+import com.almagway.common.utils.CollectionUtil;
+import com.almagway.common.utils.ToastUtil;
+
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
+
+import dagger.Lazy;
+import io.reactivex.Observable;
+import io.reactivex.ObservableSource;
+import io.reactivex.Observer;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.disposables.Disposable;
+import io.reactivex.functions.Consumer;
+import io.reactivex.functions.Function;
+import io.reactivex.functions.Predicate;
+import io.reactivex.observers.SafeObserver;
+import io.reactivex.schedulers.Schedulers;
+
+import java.io.Serializable;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import javax.inject.Inject;
+
+/**
+ * Created by jph on 2017/8/8.
+ */
+@PerFragment
+public class ProDetailsInfoP extends BasePresenter<IProDetailsInfoV> {
+
+    private static final String TAG = ProDetailsInfoP.class.getSimpleName();
+
+    private boolean isCollected = false;
+
+    @Inject
+    Lazy<Product> mProductLazy;
+    private Commodity mSelectedCommodity; // 选择的规格组合
+    private Commodity mSelectedCommodityDialog;//dialog选择的属性
+    private Product mProduct;
+    @Inject
+    APIManager apiManager;
+
+    @Inject
+    public ProDetailsInfoP(@NonNull IProDetailsInfoV view) {
+        super(view);
+    }
+
+    @Inject
+    IProductInfoData mProductInfoData;
+
+    private int buyStatus = 0;
+
+    @Override
+    public void onCreate() {
+        super.onCreate();
+        mProduct = mProductLazy.get();
+        mView.showStoreInfoTxt(
+                mProduct.isOverSea()
+                        ? getContext().getString(R.string.product_detail_foreign_store)
+                        : getContext().getString(R.string.product_detail_inland_store));
+
+        if (CollectionUtil.isEmpty(mProduct.getSkuList())) {
+            return;
+        }
+        mView.showSkuContent(getAllSkuMapObservable(mProduct));
+
+        Commodity commodity = mProduct.getSkuList().get(0);
+//        mView.setSelectedSku(mProduct.getSkuList().get(0).getSpecsMap());
+        mView.showProductInfo(mProduct.getBriefin());
+//        showCommodity(commodity);
+        mView.showCoverBanner(commodity.getSkuCover());
+        isCollected();
+        //
+        EventBus.getDefault().register(this);
+
+        //是拼团商品
+        if (mProduct.getIsCollage() == 1) {
+            mView.setPingtuanDownTime(mProduct.getCollageEndTime());
+            if (mProduct.getCouponsNum() > 0) {
+                mView.showPingtuanCurrentCount(mProduct.getCouponsNum());
+            }
+            requestPingtuanListData();
+        }
+    }
+
+    //是否是拼团商品，true是，false不是
+    public boolean isCollege() {
+        return mProduct.getIsCollage() == 1;
+    }
+
+    /**
+     * 选择了完整的规格组合
+     */
+    public void selectedCompleteSku(final Map<String, String> selectedMap) {
+        // 遍历服务器返回的所有规格组合的货品
+        Observable.fromIterable(mProductLazy.get().getSkuList())
+                .doOnNext(
+                        new Consumer<Commodity>() {
+                            @Override
+                            public void accept(
+                                    @io.reactivex.annotations.NonNull Commodity commodity)
+                                    throws Exception {
+                                if (commodity.getSpecsMap().equals(selectedMap)) {
+                                    // 匹配到对应的货品
+                                    showCommodity(commodity);
+                                }
+                            }
+                        })
+                .subscribe(new Observer<Commodity>() {
+                    @Override
+                    public void onSubscribe(Disposable d) {
+
+                    }
+
+                    @Override
+                    public void onNext(Commodity commodity) {
+
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+
+                    }
+
+                    @Override
+                    public void onComplete() {
+
+                    }
+                });
+    }
+
+    /**
+     * 当选择了款式和样式之后，回调回来选择了完整的规格组合
+     */
+    public void selectedCompleteSkuDilog(final Map<String, String> selectedMap) {
+        // 遍历服务器返回的所有规格组合的货品
+        Observable.fromIterable(mProductLazy.get().getSkuList())
+                .doOnNext(
+                        new Consumer<Commodity>() {
+                            @Override
+                            public void accept(
+                                    @io.reactivex.annotations.NonNull Commodity commodity)
+                                    throws Exception {
+                                if (commodity.getSpecsMap().equals(selectedMap)) {
+                                    // 匹配到对应的货品
+                                    showCommodityDialog(commodity);
+                                    mView.showCommDialogCallBackData(commodity);
+                                }
+                            }
+                        })
+                .subscribe(new Observer<Commodity>() {
+                    @Override
+                    public void onSubscribe(Disposable d) {
+
+                    }
+
+                    @Override
+                    public void onNext(Commodity commodity) {
+
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+
+                    }
+
+                    @Override
+                    public void onComplete() {
+
+                    }
+                });
+    }
+
+    public void clickStoreInfo() {
+        // 显示仓库信息弹窗
+        mView.showStoreInfoDialog(mProductLazy.get().getOverSeaInfo());
+    }
+
+    public void clickSizeIntro() {
+        // 跳转html
+        WebActivity.start(getContext(), mProductLazy.get().getSizePath());
+    }
+
+    /**
+     * 显示选中的规格商品信息
+     *
+     * @param commodity
+     */
+    private void showCommodity(Commodity commodity) {
+        MLog.i(TAG, "显示货品信息:" + commodity);
+
+        mSelectedCommodity = commodity;
+        mView.showCoverBanner(commodity.getSkuCover());
+        if (commodity.getTotalStock()==0){
+            mView.showStockTxt("售罄");
+        }else{
+            mView.showStockTxt(
+                    String.format(
+                            getContext().getString(R.string.product_detail_format_stock),
+                            commodity.getTotalStock()));
+        }
+
+        showPrice(commodity);
+    }
+
+    private void showCommodityDialog(Commodity commodity) {
+        MLog.i(TAG, "显示货品信息:" + commodity);
+
+        mSelectedCommodityDialog = commodity;
+//        mView.showCoverBanner(commodity.getSkuCover());
+//        mView.showStockTxt(
+//                String.format(
+//                        getContext().getString(R.string.product_detail_format_stock),
+//                        commodity.getTotalStock()));
+//        showPrice(commodity);
+    }
+
+
+    private void showPrice(Commodity commodity) {
+        int productType = commodity.getProductType();
+        // 1为秒杀商品，2为会员商品，0为普通商品
+        if (productType == 1) {
+            mView.showOriginPriceTxt(
+                    StringFormatUtil.getPrice(getContext(), commodity.getListPrice()));
+            mView.showDiscountTxtVisible(commodity.isDiscount());
+            String commodityMemberPrice = commodity.getMemberPrice();
+            if (TextUtils.isEmpty(commodityMemberPrice)
+                    || Double.valueOf(commodityMemberPrice) <= 0) {
+                mView.showPriceTxt(
+                        StringFormatUtil.getPrice(getContext(), commodity.getSellPrice()), false);
+                String memberPrice =
+                        StringFormatUtil.getPrice(getContext(), commodity.getSellPrice());
+                mView.showDiscountInfoTxt(memberPrice);
+            } else {
+                mView.showPriceTxt(
+                        StringFormatUtil.getPrice(getContext(), commodity.getSellPrice()), true);
+                String memberPrice =
+                        getContext().getResources().getString(R.string.member_seckill_price)
+                                + StringFormatUtil.getPrice(
+                                getContext(), commodity.getMemberPrice());
+                mView.showDiscountInfoTxt(memberPrice);
+            }
+        } else if (productType == 2) {
+            mView.showOriginPriceTxt(
+                    StringFormatUtil.getPrice(getContext(), commodity.getListPrice()));
+            mView.showPriceTxt(
+                    StringFormatUtil.getPrice(getContext(), commodity.getSellPrice()), false);
+            mView.showDiscountTxtVisible(commodity.isDiscount());
+            String memberPrice =
+                    StringFormatUtil.getPrice(getContext(), commodity.getMemberPrice());
+            mView.showDiscountInfoTxt(memberPrice);
+        } else {
+            mView.showOriginPriceTxt(
+                    StringFormatUtil.getPrice(getContext(), commodity.getListPrice()));
+            mView.showPriceTxt(
+                    StringFormatUtil.getPrice(getContext(), commodity.getSellPrice()), true);
+            mView.showDiscountTxtVisible(commodity.isDiscount());
+            String memberPrice =
+                    getContext().getResources().getString(R.string.member_price)
+                            + StringFormatUtil.getPrice(getContext(), commodity.getMemberPrice());
+            mView.showDiscountInfoTxt(memberPrice);
+        }
+    }
+
+    public Serializable getSelectedCommodity() {
+        if (!mView.isSelectedWholeSku()) {
+            // 未选择完整的规格组合返回null
+            return null;
+        }
+        return mSelectedCommodity;
+    }
+
+    public Serializable getSelectedCommodityDialog() {
+        if (!mView.isSelectedWholeSkuDialog()) {
+            // 未选择完整的规格组合返回null
+            return null;
+        }
+        return mSelectedCommodityDialog;
+    }
+
+    //重置选择框上次选中的属性指
+    public void setmSelectedCommodityDialog() {
+        this.mSelectedCommodityDialog = null;
+    }
+
+    public void setmSelectedCommodityDialogInside(Commodity mSelectedCommodity){
+        this.mSelectedCommodityDialog=mSelectedCommodity;
+    }
+
+    /**
+     * 得到所有货品的规格map发射器，一个map对应一个规格组合
+     *
+     * @param product
+     * @return
+     */
+    private Observable<Map<String, String>> getAllSkuMapObservable(Product product) {
+
+        return Observable.just(product)
+                .filter(
+                        new Predicate<Product>() {
+                            @Override
+                            public boolean test(@io.reactivex.annotations.NonNull Product product)
+                                    throws Exception {
+                                return product.getSkuList() != null;
+                            }
+                        })
+                .flatMap(
+                        new Function<Product, ObservableSource<Commodity>>() {
+                            @Override
+                            public ObservableSource<Commodity> apply(
+                                    @io.reactivex.annotations.NonNull Product product)
+                                    throws Exception {
+                                return Observable.fromIterable(product.getSkuList());
+                            }
+                        })
+                .map(
+                        new Function<Commodity, Map<String, String>>() {
+                            @Override
+                            public Map<String, String> apply(
+                                    @io.reactivex.annotations.NonNull Commodity commodity)
+                                    throws Exception {
+                                return commodity.getSpecsMap();
+                            }
+                        });
+    }
+
+    /**
+     * 点击收藏
+     *
+     * @param
+     */
+    public void clickCollect() {
+        //判断是否登录 ，显示不能正确判断
+        if (JumpUtil.processCheckLogin(getContext())) {
+            return;
+        }
+        if (mProduct == null) {
+            return;
+        }
+        if (isCollected) {
+            cancelCollection();
+        } else {
+            addCollection();
+        }
+    }
+
+
+    public void addCollection() {
+        int userId = GlobalData.getInstance().getLoginData().getId();
+        mProductInfoData.addCollection(mProduct.getId(), userId)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new BaseObserver<String>(getContext()) {
+                    @Override
+                    public void onNext(String response) {
+                        isCollected = true;
+                        mView.showIsCollected(true);
+                        mProduct.setFavoriteId(response);
+                        ToastUtil.showShort("收藏成功");
+                    }
+
+                    @Override
+                    public void onComplete() {
+
+                    }
+                });
+    }
+
+    public void cancelCollection() {
+        mProductInfoData.cancelCollection(String.valueOf(mProduct.getFavoriteId()))
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new BaseObserver<APIResponse>(getContext()) {
+                    @Override
+                    public void onNext(APIResponse response) {
+                        if (response.isSuccess()) {
+                            isCollected = false;
+                            mView.showIsCollected(false);
+                            ToastUtil.showShort("取消收藏成功");
+                        }
+                    }
+
+                    @Override
+                    public void onComplete() {
+
+                    }
+                });
+    }
+
+    public void isCollected() {
+        if (mProduct == null || GlobalData.getInstance().getLoginData() == null) {
+            return;
+        }
+        mView.showIsCollected(isCollected = !TextUtils.isEmpty(mProduct.getFavoriteId()));
+    }
+
+
+    //用户登录成功事件
+    @Subscribe(threadMode = ThreadMode.BACKGROUND)
+    public void onMessageEvent(LoginSuccessEvent event) {
+        //用户登录后刷新商品详情页面的收藏状态
+        apiManager.getProductDetails(mProduct.getId())
+                .compose(this.<Product>bindToLifecycle())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Consumer<Product>() {
+                    @Override
+                    public void accept(Product product) throws Exception {
+                        mProduct = product;
+                        isCollected();
+
+                    }
+                }, new Consumer<Throwable>() {
+                    @Override
+                    public void accept(Throwable throwable) throws Exception {
+
+                    }
+                });
+        //登录成功，刷新拼团状态
+        if (pingtuanAdapter != null) {
+            pingtuanAdapter.notifyDataSetChanged();
+        }
+    }
+
+    @Override
+    public void onDestroy() {
+        EventBus.getDefault().unregister(this);
+        DownloadShardImageUtils.deleteCacheFile();
+        if (pingtuanAdapter != null) {
+            pingtuanAdapter.destroyCountDownView();
+        }
+        super.onDestroy();
+    }
+
+    /**
+     * 得到拼团列表数据
+     */
+    private PingtuanAdapter pingtuanAdapter;
+    private List<MorePingtuanData.CollageOrderBean> morePingtuanDialogData;//更多拼团再dialog中显示
+
+    private void requestPingtuanListData() {
+        apiManager.getMorePingtuanData(mProduct.getId(), 0, 50)
+                .subscribe(new SimpleObserver<MorePingtuanData>(getContext()) {
+                    @Override
+                    public void onError(Throwable e) {
+                        super.onError(e);
+                    }
+
+                    @Override
+                    public void onNext(MorePingtuanData morePingtuanData) {
+                        super.onNext(morePingtuanData);
+                        int size = morePingtuanData.getCollageOrder().size();
+                        List<MorePingtuanData.CollageOrderBean> morePingtuanDetailData;
+                        if (size > 3) {
+                            morePingtuanDetailData = morePingtuanData.getCollageOrder().subList(0, 3);
+                            morePingtuanDialogData = morePingtuanData.getCollageOrder();
+                        } else {
+                            morePingtuanDetailData = morePingtuanData.getCollageOrder();
+                            morePingtuanDialogData = null;
+                        }
+                        pingtuanAdapter = new PingtuanAdapter(getContext(), morePingtuanDetailData);
+                        mView.showPingtuanMoreView(morePingtuanData.getCount());
+                        mView.setPingtuanRecyclerView(pingtuanAdapter);
+                        pingtuanAdapter.addPingtuanBuyListener(new PingtuanAdapter.PingtuanBuyClickListener() {
+                            @Override
+                            public void goPingtuan(MorePingtuanData.CollageOrderBean collageOrderBean) {
+                                EventBus.getDefault().post(new PingtuanBuyEvent(collageOrderBean.getId()));
+                            }
+                        });
+                    }
+
+                    @Override
+                    public void onFinish() {
+                        super.onFinish();
+                        if (pingtuanAdapter == null || pingtuanAdapter.getItemCount() == 0) {
+                            mView.noPeoplePingtuan();
+                        }
+                    }
+                });
+    }
+
+    /**
+     * 拼团更多的dialog显示
+     */
+    public void showMorePingtuanDialog() {
+        CrowdorderingListDialog.show(mView.getActivity(), morePingtuanDialogData);
+    }
+
+
+}

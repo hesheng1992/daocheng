@@ -1,0 +1,357 @@
+package com.a1magway.bgg.p.order;
+
+import android.content.DialogInterface;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
+import android.support.v7.app.AlertDialog;
+
+import com.a1magway.bgg.common.BaseObserver;
+import com.a1magway.bgg.common.shre.ShareData;
+import com.a1magway.bgg.common.shre.ShareType;
+import com.a1magway.bgg.data.entity.APIResponse;
+import com.a1magway.bgg.data.entity.LoginData;
+import com.a1magway.bgg.data.entity.OrderCommodity;
+import com.a1magway.bgg.data.entity.OrderItem;
+import com.a1magway.bgg.data.entity.OrderStatus;
+import com.a1magway.bgg.data.entity.OrderType;
+import com.a1magway.bgg.data.repository.IOrderListData;
+import com.a1magway.bgg.eventbus.event.PingtuanPaySuccess;
+import com.a1magway.bgg.okhttp.LogUtil;
+import com.a1magway.bgg.p.BaseLoadP;
+import com.a1magway.bgg.util.GlobalData;
+import com.a1magway.bgg.util.Toaster;
+import com.a1magway.bgg.util.dialog.InviteFriendBuyDialog;
+import com.a1magway.bgg.v.order.IOrderListV;
+import com.a1magway.bgg.v.order.LogisticsActivity;
+import com.a1magway.bgg.v.order.OrderPayActivity;
+import com.a1magway.bgg.v.productReturn.ProductReturnSelectActivity;
+import com.a1magway.bgg.widget.dialog.ShareDialogFragment;
+import com.a1magway.bgg.widget.swipe.Type;
+import com.almagway.common.utils.CollectionUtil;
+import com.almagway.common.utils.ToastUtil;
+
+import org.greenrobot.eventbus.EventBus;
+
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+import java.util.concurrent.TimeUnit;
+
+import javax.inject.Inject;
+import javax.inject.Named;
+
+import io.reactivex.Observable;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.functions.Consumer;
+import io.reactivex.schedulers.Schedulers;
+
+/**
+ * Created by jph on 2017/8/17.
+ */
+public class OrderListP extends BaseLoadP<List<OrderItem>, IOrderListV> {
+
+    private int mLastItemId = -1;
+
+    @Inject
+    IOrderListData mOrderListData;
+    @Inject
+    OrderListAdapter mAdapter;
+
+    @Named(value = "OrderType")
+    @Inject
+    int mOrderType;
+
+    @Inject
+    public OrderListP(@NonNull IOrderListV view) {
+        super(view);
+    }
+
+    @Override
+    public void onCreate() {
+        super.onCreate();
+        mView.setRecyclerViewAdapter(mAdapter);
+        loadData();
+
+
+//        mAdapter.setOnItemClickListener(
+//                new BaseRecyclerAdapter.OnItemClickListener() {
+//                    @Override
+//                    public void onItemClick(View v, int position) {
+//                        OrderDetailsActivity.start(
+//                                getContext(), mAdapter.getItem(position).getOrderNum());
+//                    }
+//
+//                    @Override
+//                    public void onItemLongClick(View v, int position) {
+//                    }
+//                });
+        mAdapter.setItemOperationListener(
+                new OrderListAdapter.ItemOperationListener() {
+                    @Override
+                    public void onItemClickCancel(OrderItem orderItem) {
+                        cancelOrder(orderItem);
+                    }
+
+                    @Override
+                    public void onItemClickDelete(final OrderItem orderItem) {
+                        new AlertDialog.Builder(getContext())
+                                .setTitle("确认删除订单？")
+                                .setPositiveButton("删除", new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialogInterface, int i) {
+                                        deleteOrder(orderItem);
+                                    }
+                                })
+                                .setNegativeButton("取消", null).show();
+
+                    }
+
+                    @Override
+                    public void onItemCLickPay(OrderItem orderItem) {
+                        OrderPayActivity.start(getContext(), orderItem.getOrderNum(), orderItem.getId());
+                    }
+
+                    @Override
+                    public void onItemClickLogisticsDetail(OrderItem orderItem) {
+                        LogisticsActivity.start(getContext(), orderItem);
+                    }
+
+                    @Override
+                    public void onItemClickRemindDeliver(OrderItem orderItem) {
+                        ToastUtil.showShort("已经提醒商家发货");
+                    }
+
+                    @Override
+                    public void onItemClickConfirmDelivered(OrderItem orderItem) {
+                        confirmFinish(orderItem);
+                    }
+
+                    @Override
+                    public void onItemClickInviteFriendPintuan(OrderItem orderItem) {
+                        //邀请朋友拼团
+                        shardMini(orderItem);
+                    }
+
+                    @Override
+                    public void onItemClickApplyAfterSale(OrderItem orderItem) {
+                        ProductReturnSelectActivity.start(getContext(), orderItem);
+                    }
+                });
+    }
+
+    //分享小程序页面邀请朋友拼团
+    private void shardMini(OrderItem orderItem) {
+        ShareData data = new ShareData.Builder()
+                .setType(ShareType.UM_SHARE)
+                .setTitle("title")
+                .setDescription("description")
+                .setType(ShareType.UM_SHARE)
+                .setUrl("")
+                .build();
+        OrderCommodity commodity = orderItem.getSkuList().get(0);
+        LoginData loginData = GlobalData.getInstance().getLoginData();
+        StringBuilder miniTitle = new StringBuilder();
+        miniTitle.append("包格格|")
+                .append(loginData.getNickName())
+                .append("|邀你参与拼团|")
+                .append(commodity.getCommodityName());
+        String imgUrl = commodity.getCommodityPicturePath();
+        StringBuilder path = new StringBuilder();
+        path.append("/pages/goodsDetail/goodsDetail?goodsId=")
+                .append(commodity.getProductId())
+                .append("&collageOrderId=")
+                .append(orderItem.getCollageOrderId())
+                .append("&collageName=")
+                .append(loginData.getNickName())
+                .append("&inviteCode=")
+                .append(loginData.getInviteCode());
+        ShareDialogFragment shareDialogFragment = ShareDialogFragment.newInstance(data, "", ShareDialogFragment.ORDER_LIST_SHARD);
+        shareDialogFragment.setMiniInfo(String.valueOf(miniTitle), imgUrl, String.valueOf(path));
+        shareDialogFragment.show(mView.getFragmentMg(), "share invitation code");
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+
+        mAdapter.clearControllerMap();
+        mView.setRecyclerViewAdapter(null);
+    }
+
+    public void reload() {
+        mLastItemId = -1;
+        loadData(false);
+    }
+
+    public void loadMore() {
+        if (mAdapter.getRealItemCount() == 0) {
+            mLastItemId = -1;
+        } else {
+            mLastItemId = mAdapter.getItem(mAdapter.getRealItemCount() - 1).getId();
+        }
+        loadData(false);
+    }
+
+    @Nullable
+    @Override
+    public Observable<List<OrderItem>> getDataObservable() {
+        return mOrderListData
+                .getOrderList(GlobalData.getInstance().getUserId(), mOrderType, mLastItemId)
+                .defaultIfEmpty(new ArrayList<OrderItem>());
+    }
+
+    @Override
+    protected void onLoadSuccess(List<OrderItem> orderItems) {
+        super.onLoadSuccess(orderItems);
+
+        if (mLastItemId == -1) {
+            mAdapter.setList(orderItems);
+
+            checkShowNoneData(orderItems);
+        } else {
+            mAdapter.addList(orderItems);
+        }
+
+        mView.setLoadable(CollectionUtil.isNotEmpty(orderItems) && orderItems.size() >= 15);
+
+        //拼团支付成功提示
+        if (OrderType.ALL == mOrderType) {
+            showPingtuanPaySuccessDialog(orderItems);
+        }
+    }
+
+    @Override
+    protected void onLoadFinish() {
+        super.onLoadFinish();
+        mView.stopRefresh();
+        mView.stopLoadMore();
+    }
+
+    private void cancelOrder(final OrderItem orderItem) {
+        mView.showLoadingDialog();
+        mOrderListData
+                .cancelOrder(GlobalData.getInstance().getUserId(), orderItem.getId())
+                .compose(this.<String>bindToDestroyEvent())
+                .subscribe(
+                        new BaseObserver<String>(getContext()) {
+                            @Override
+                            public void onError(@io.reactivex.annotations.NonNull Throwable e) {
+                                super.onError(e);
+                                mView.hideLoadingDialog();
+                            }
+
+                            @Override
+                            public void onNext(@io.reactivex.annotations.NonNull String s) {
+                                Toaster.showShort(getContext(), s);
+                            }
+
+                            @Override
+                            public void onComplete() {
+                               /* mView.hideLoadingDialog();
+                                mAdapter.removeItem(orderItem);
+                                mAdapter.notifyDataSetChanged();
+                                checkShowNoneData(mAdapter.getList());*/
+                                mView.hideLoadingDialog();
+                                orderItem.setOrderStatus(OrderStatus.CANCELED);
+                                mAdapter.notifyDataSetChanged();
+                                checkShowNoneData(mAdapter.getList());
+                            }
+                        });
+    }
+
+    private void deleteOrder(final OrderItem orderItem) {
+        mView.showLoadingDialog();
+        mOrderListData
+                .deleteOrder(GlobalData.getInstance().getUserId(), orderItem.getId())
+                .compose(this.<String>bindToDestroyEvent())
+                .subscribe(
+                        new BaseObserver<String>(getContext()) {
+                            @Override
+                            public void onError(@io.reactivex.annotations.NonNull Throwable e) {
+                                super.onError(e);
+                                mView.hideLoadingDialog();
+                            }
+
+                            @Override
+                            public void onNext(@io.reactivex.annotations.NonNull String s) {
+                                Toaster.showShort(getContext(), s);
+                            }
+
+                            @Override
+                            public void onComplete() {
+                                mView.hideLoadingDialog();
+
+                                mAdapter.removeItem(orderItem);
+
+                                checkShowNoneData(mAdapter.getList());
+                            }
+                        });
+    }
+
+    public void confirmFinish(final OrderItem orderItem) {
+        mView.showLoadingDialog();
+        mOrderListData.confirmFinish(orderItem.getId())
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new BaseObserver<APIResponse>(getContext()) {
+
+                    @Override
+                    public void onError(Throwable e) {
+                        super.onError(e);
+                        mView.hideLoadingDialog();
+                    }
+
+                    @Override
+                    public void onNext(APIResponse response) {
+                        if (response.isSuccess()) {
+                            ToastUtil.showShort("确定收货成功");
+//                            mAdapter.removeItem(orderItem);
+                            orderItem.setOrderStatus(OrderStatus.COMPLETED);
+                            mAdapter.notifyDataSetChanged();
+                        } else {
+                            Toaster.showShort(getContext(), response.getMsg());
+                        }
+                    }
+
+                    @Override
+                    public void onComplete() {
+                        mView.hideLoadingDialog();
+                    }
+                });
+    }
+
+
+    //重新请求数据并刷新
+    public void clickCurrentTabRefreshData() {
+        Observable.timer(1, TimeUnit.MILLISECONDS)
+                .subscribe(new Consumer<Long>() {
+                    @Override
+                    public void accept(Long aLong) throws Exception {
+                        loadData(false);
+                    }
+                });
+    }
+
+    //显示拼团成功的对话框
+    private void showPingtuanPaySuccessDialog(List<OrderItem> orderItems) {
+        PingtuanPaySuccess pingtuanPaySuccess = EventBus.getDefault().getStickyEvent(PingtuanPaySuccess.class);
+        if (pingtuanPaySuccess != null) {
+            EventBus.getDefault().removeStickyEvent(pingtuanPaySuccess);
+            for (final OrderItem orderItem : orderItems) {
+                if (orderItem.getOrderNum().equals(pingtuanPaySuccess.getmOrderNum())) {
+                    Date date = new Date();
+                    long downTime = Long.valueOf(orderItem.getEndTime()) - date.getTime();//倒计时时间
+                    String remainNum = orderItem.getRemainNum();//还差多少人拼团成功
+                    InviteFriendBuyDialog.show(mView.getActivity(), downTime, remainNum, new InviteFriendBuyDialog.BtnClickListener() {
+                        @Override
+                        public void btnClick() {
+                            shardMini(orderItem);
+                        }
+                    });
+                }
+                break;
+            }
+
+        }
+    }
+}

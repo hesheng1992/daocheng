@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:animateLayoutChanges="true">
+
+    <android.support.v4.view.ViewPager
+        android:id="@+id/guide_pager"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+
+    <TextView
+        android:id="@+id/guide_txt_go"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|center_horizontal"
+        android:layout_marginBottom="30dp"
+        android:background="@drawable/guide_text_bg"
+        android:gravity="center"
+        android:paddingBottom="6dp"
+        android:paddingLeft="42dp"
+        android:paddingRight="42dp"
+        android:paddingTop="6dp"
+        android:text="@string/guide_txt_go"
+        android:textColor="@color/white"
+        android:textSize="17sp"
+        android:visibility="gone"
+        tools:visibility="visible" />
+
+    <LinearLayout
+        android:visibility="gone"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|center_horizontal"
+        android:layout_marginBottom="10dp"
+        android:orientation="horizontal">
+
+        <android.support.design.widget.CheckableImageButton
+            android:id="@+id/guide_point1"
+            android:layout_width="10dp"
+            android:layout_height="10dp"
+            android:background="@null"
+            android:src="@drawable/guide_point" />
+
+        <android.support.design.widget.CheckableImageButton
+            android:id="@+id/guide_point2"
+            android:layout_width="10dp"
+            android:layout_height="10dp"
+            android:layout_marginLeft="10dp"
+            android:background="@null"
+            android:src="@drawable/guide_point" />
+
+        <android.support.design.widget.CheckableImageButton
+            android:id="@+id/guide_point3"
+            android:layout_width="10dp"
+            android:layout_height="10dp"
+            android:layout_marginLeft="10dp"
+            android:background="@null"
+            android:src="@drawable/guide_point" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/guild_lly_jump"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="end"
+        android:layout_marginEnd="10dp"
+        android:layout_marginTop="10dp"
+        android:gravity="center_vertical"
+        android:orientation="horizontal">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="跳过"
+            android:textSize="16sp" />
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="10dp"
+            android:src="@drawable/ic_arrow_enable" />
+    </LinearLayout>
+</FrameLayout>
+
+

@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:paddingBottom="10dp"
+    android:paddingLeft="18dp"
+    android:paddingRight="18dp"
+    android:paddingTop="10dp">
+
+    <TextView
+        android:id="@+id/item_account_detail_name_tv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="@color/primaryGreyTextColor"
+        android:textSize="12sp"
+        tools:text="商品销售" />
+
+    <TextView
+        android:id="@+id/item_account_detail_time_tv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/item_account_detail_name_tv"
+        android:layout_marginTop="6dp"
+        android:textColor="@color/primaryGreyTextColor"
+        android:textSize="12sp"
+        tools:text="2018-08-09" />
+
+    <TextView
+        android:id="@+id/item_account_detail_status"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:textColor="@color/primaryGreyTextColor"
+        android:textSize="12sp"
+        tools:text="未收货" />
+
+    <TextView
+        android:id="@+id/item_account_detail_order_number"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/item_account_detail_name_tv"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="6dp"
+        android:textColor="@color/primaryGreyTextColor"
+        android:textSize="12sp"
+        tools:text="订单号:11" />
+
+    <TextView
+        android:id="@+id/item_account_detail_money_tv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
+        android:layout_marginEnd="2dp"
+        android:layout_toStartOf="@+id/item_account_arrow_enable"
+        android:gravity="center"
+        android:textColor="@color/primaryGreyTextColor"
+        android:textSize="14sp"
+        tools:text="2018-08-09" />
+
+    <ImageView
+        android:id="@+id/item_account_arrow_enable"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_centerVertical="true"
+        android:src="@drawable/ic_arrow_enable" />
+</RelativeLayout>

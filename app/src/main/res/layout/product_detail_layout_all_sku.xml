@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                xmlns:app="http://schemas.android.com/apk/res-auto"
+                xmlns:tools="http://schemas.android.com/tools"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingBottom="@dimen/product_detail_sku_divider_v">
+
+    <View
+        android:id="@+id/all_sku_divider"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/product_detail_divider"
+        android:background="@color/product_details_divider"/>
+
+    <com.a1magway.bgg.widget.sku.SkuLayout
+        android:id="@+id/all_sku_layout_sku"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/product_detail_sku_height"
+        android:layout_below="@+id/all_sku_divider"
+        android:layout_marginLeft="15dp"
+        android:layout_marginRight="7.5dp"
+        android:layout_marginTop="@dimen/product_detail_sku_divider_v"
+        android:layout_toLeftOf="@+id/all_sku_img_expand"
+        app:dividerDrawableHorizontal="@drawable/product_detail_divider_sku_v"
+        app:dividerDrawableVertical="@drawable/product_detail_divider_sku_h"
+        app:flexDirection="row"
+        app:flexWrap="wrap"
+        app:showDividerHorizontal="middle"
+        app:showDividerVertical="middle">
+
+    </com.a1magway.bgg.widget.sku.SkuLayout>
+
+    <ImageView
+        android:id="@+id/all_sku_img_expand"
+        android:layout_width="wrap_content"
+        android:layout_height="@dimen/product_detail_sku_height"
+        android:layout_alignParentRight="true"
+        android:layout_alignTop="@+id/all_sku_layout_sku"
+        android:layout_marginRight="7.5dp"
+        android:paddingLeft="7.5dp"
+        android:paddingRight="7.5dp"
+        android:scaleType="center"
+        android:src="@drawable/ic_product_detail_expand"
+        android:visibility="gone"
+        tools:visibility="visible"/>
+</RelativeLayout>

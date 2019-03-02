@@ -1,0 +1,1 @@
+include ':app', ':data', ':common', ':umeng', ':library_ZxingDemo', ':kefu-easeui'

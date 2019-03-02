@@ -1,0 +1,157 @@
+package com.a1magway.bgg.util;
+
+import android.graphics.Bitmap;
+import android.os.Environment;
+
+import com.a1magway.bgg.eventbus.event.ShardImageDownloadCallBack;
+import com.a1magway.bgg.okhttp.LogUtil;
+import com.zxy.tiny.Tiny;
+import com.zxy.tiny.callback.BitmapCallback;
+
+import org.greenrobot.eventbus.EventBus;
+
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.util.List;
+
+import io.reactivex.Observable;
+import io.reactivex.functions.Consumer;
+import io.reactivex.schedulers.Schedulers;
+
+
+/**
+ * Created by enid on 2018/7/13.
+ */
+
+public class DownloadShardImageUtils {
+    private static String DCIM = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DCIM).toString();
+    private static String DIRECTORY = DCIM + "/tiny";
+
+    public static void saveMultipleImagesToSd(final List<String> imagesList) {
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                final File file = new File(DIRECTORY);
+                //如果缓存图片数量大于100张,删除保存的图片
+                File[] mFiles = file.listFiles();
+                if (mFiles != null && mFiles.length > 100) {
+                    for (File childFile : mFiles) {
+                        childFile.delete();
+                    }
+                }
+                if (!file.exists()) {
+                    file.mkdirs();
+                }
+
+                //遍历集合
+                Observable.fromIterable(imagesList)
+                        .subscribeOn(Schedulers.io())
+                        .subscribe(new Consumer<String>() {
+                            @Override
+                            public void accept(String s) throws Exception {
+                                File file0 = new File(getFileName(s));
+                                if (!file0.exists()) {
+                                    saveSingleImageToSdCard(s);
+                                }
+                            }
+                        });
+            }
+        }).start();
+    }
+
+    //删除缓存图片
+    public static void deleteCacheFile() {
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                File file = new File(DIRECTORY);
+                //如果缓存图片数量大于100张,删除保存的图片
+                File[] mFiles = file.listFiles();
+                if (mFiles != null && mFiles.length > 100) {
+                    for (File childFile : mFiles) {
+                        childFile.delete();
+                    }
+                }
+            }
+        }).start();
+    }
+
+
+    //通过url生成唯一的文件路径
+    public static String getFileName(String imageUrl) {
+        return DIRECTORY + File.separator + imageUrl.substring(6, imageUrl.length()).replaceAll("/", "_");
+    }
+
+    private static void saveImage(Bitmap bitmap, String filePath,String imageUrl) {
+        try {
+            File file=new File(DIRECTORY);
+            if (!file.exists()){
+                file.mkdirs();
+            }
+            FileOutputStream outputStream = new FileOutputStream(filePath);
+            bitmap.compress(Bitmap.CompressFormat.JPEG, 100, outputStream);
+            outputStream.flush();
+            //释放资源
+            outputStream.close();
+            bitmap.recycle();
+
+            EventBus.getDefault().post(new ShardImageDownloadCallBack(true,imageUrl));
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private static void saveImage(Bitmap bitmap, File filePath,String imageUrl) {
+        try {
+            FileOutputStream outputStream = new FileOutputStream(filePath);
+            bitmap.compress(Bitmap.CompressFormat.JPEG, 100, outputStream);
+            outputStream.flush();
+            //释放资源
+            outputStream.close();
+            bitmap.recycle();
+
+            EventBus.getDefault().post(new ShardImageDownloadCallBack(true,imageUrl));
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+
+    //根据网络图片url路径保存到本地
+    public static void saveSingleImageToSdCard(final String imageUrl) {
+        try {
+            URL url = new URL(imageUrl);
+            HttpURLConnection conn;
+            conn = (HttpURLConnection) url.openConnection();
+            InputStream is;
+            is = conn.getInputStream();
+            final String stableImageFilePath = getFileName(imageUrl);
+            Tiny.FileCompressOptions options = new Tiny.BatchFileCompressOptions();
+            Tiny.getInstance().source(is).asBitmap().withOptions(options).compress(new BitmapCallback() {
+                @Override
+                public void callback(boolean isSuccess, Bitmap bitmap, Throwable t) {
+                    if (isSuccess) {
+                        saveImage(bitmap, stableImageFilePath,imageUrl);
+                    } else {
+                        LogUtil.e("DownloadShardImageUtils", "下载分享图片失败" + " " + imageUrl);
+                        EventBus.getDefault().post(new ShardImageDownloadCallBack(false,imageUrl));
+                    }
+                }
+            });
+        } catch (Exception e) {
+            e.printStackTrace();
+            EventBus.getDefault().post(new ShardImageDownloadCallBack(false,imageUrl));
+        }
+    }
+
+
+}

@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/white"
+    android:orientation="vertical"
+    tools:context="com.a1magway.bgg.v.order.LogisticsActivity">
+
+    <com.a1magway.bgg.widget.TitleBar
+        android:id="@+id/logistics_title_bar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:titleText="物流详情" />
+
+    <android.support.v4.widget.NestedScrollView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <LinearLayout
+
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+
+            <LinearLayout
+                android:orientation="vertical"
+                android:layout_width="match_parent"
+                android:layout_height="160dp">
+                <TextView
+                    android:id="@+id/logistics_amount_tv"
+                    android:layout_width="wrap_content"
+                    android:layout_gravity="right"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentRight="true"
+                    android:layout_marginRight="16dp"
+                    android:layout_marginTop="10dp"
+                    android:text="总计:0件" />
+
+                <android.support.v7.widget.RecyclerView
+                    android:id="@+id/logistics_order_info_recyclerview"
+                    android:layout_width="match_parent"
+                    android:layout_height="120dp"
+                    android:layout_alignParentBottom="true" />
+
+                <View
+                    android:background="@color/bg_page"
+                    android:layout_width="match_parent"
+                    android:layout_height="10dp" />
+
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_marginLeft="16dp"
+                android:layout_marginRight="16dp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:id="@+id/logistics_deliver_company_tv"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="快递公司：中通"
+                    android:textSize="14sp" />
+
+                <TextView
+                    android:id="@+id/logistics_deliver_num_tv"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginRight="16dp"
+                    android:text="快递单号:12345678"
+                    android:textSize="14sp" />
+            </LinearLayout>
+
+            <com.a1magway.bgg.widget.LoadMoreRecyclerView
+                android:id="@+id/logistics_deliver_recyclerview"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginLeft="16dp"
+                android:layout_marginRight="16dp"
+                android:layout_marginTop="20dp" />
+        </LinearLayout>
+    </android.support.v4.widget.NestedScrollView>
+
+</LinearLayout>

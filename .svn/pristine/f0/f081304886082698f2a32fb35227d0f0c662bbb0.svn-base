@@ -1,0 +1,96 @@
+package com.a1magway.bgg.p.productReturn;
+
+import android.support.annotation.NonNull;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.ImageView;
+import android.widget.TextView;
+
+import com.a1magway.bgg.R;
+import com.a1magway.bgg.common.adapter.BaseRecyclerVH;
+import com.a1magway.bgg.data.entity.OrderCommodity;
+import com.a1magway.bgg.p.order.OrderListAdapter;
+import com.a1magway.bgg.p.order.OrderVH;
+import com.a1magway.bgg.util.ImageLoaderUtil;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import butterknife.BindView;
+
+/**
+ * Created by lm on 2018/8/30.
+ */
+public class ReturnProductVH extends BaseRecyclerVH<OrderCommodity> {
+
+
+    @BindView(R.id.return_product_is_select)
+    ImageView returnProductIsSelect;
+    @BindView(R.id.return_product_goods_img)
+    ImageView returnProductGoodsImg;
+    @BindView(R.id.return_product_name)
+    TextView returnProductName;
+    @BindView(R.id.return_product_dec)
+    TextView returnProductDec;
+    @BindView(R.id.return_product_color)
+    TextView returnProductColor;
+    @BindView(R.id.return_product_size)
+    TextView returnProductSize;
+    @BindView(R.id.return_product_money)
+    TextView returnProductMoney;
+
+
+    private ReturnProductListdapter.ItemOperationListener mItemOperationListener;
+
+
+
+    public ReturnProductVH(@NonNull ViewGroup parent, int layoutResId) {
+        super(parent, R.layout.item_return_product_layout);
+    }
+
+    public ReturnProductVH setItemOperationListener(ReturnProductListdapter.ItemOperationListener itemOperationListener) {
+        mItemOperationListener = itemOperationListener;
+        return this;
+    }
+
+    public void showViewContent(OrderCommodity item, final ReturnProductListdapter returnProductListdapter, final int position) {
+
+
+        ImageLoaderUtil.displayImage(returnProductGoodsImg, item.getCommodityPicturePath());
+        String conetn[]=item.getCommoditySpec().split(" ");
+        returnProductName.setText(item.getCommodityBrand());
+        returnProductDec.setText(item.getCommodityName());
+        returnProductColor.setText(conetn[0]);
+        if (conetn[1]==null){
+            returnProductSize.setVisibility(View.GONE);
+        }else {
+            returnProductSize.setText(conetn[1]);
+        }
+        returnProductMoney.setText("成交价： ¥"+item.getCommoditySellPrice());
+
+        if (returnProductListdapter.isHideSelct()){
+            returnProductIsSelect.setVisibility(View.GONE);
+        }
+
+        if (returnProductListdapter.getPositions().contains(position)){
+            returnProductIsSelect.setImageResource(R.mipmap.is_select);
+        }else {
+            returnProductIsSelect.setImageResource(R.mipmap.is_select_normal);
+        }
+
+        returnProductIsSelect.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (returnProductListdapter.getPositions().contains(position)){
+                    returnProductListdapter.getPositions().remove(position);
+                    returnProductIsSelect.setImageResource(R.mipmap.is_select_normal);
+                }else {
+                    returnProductListdapter.getPositions().add(position);
+                    returnProductIsSelect.setImageResource(R.mipmap.is_select);
+                }
+                mItemOperationListener.onItemClickSelectChange(returnProductListdapter.getPositions().size());
+            }
+        });
+
+    }
+}

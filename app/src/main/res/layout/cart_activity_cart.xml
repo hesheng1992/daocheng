@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              xmlns:app="http://schemas.android.com/apk/res-auto"
+              xmlns:tools="http://schemas.android.com/tools"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              android:orientation="vertical">
+
+    <com.a1magway.bgg.widget.TitleBar
+        android:id="@+id/cart_title_bar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:titleText="@string/cart_title"/>
+
+    <FrameLayout
+        android:id="@+id/cart_layout_frag"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+    </FrameLayout>
+
+</LinearLayout>

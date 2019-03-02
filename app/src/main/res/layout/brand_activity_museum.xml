@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <me.yokeyword.indexablerv.IndexableLayout
+        android:id="@+id/museum_layout_index"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:indexBar_selectedTextColor="@color/text_red"
+        app:indexBar_textColor="@color/black"
+        app:indexBar_textSize="@dimen/text_size_s"
+        app:indexBar_textSpace="4dp"/>
+
+</RelativeLayout>

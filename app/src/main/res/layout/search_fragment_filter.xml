@@ -1,0 +1,186 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+            xmlns:app="http://schemas.android.com/apk/res-auto"
+            xmlns:tools="http://schemas.android.com/tools"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@color/white"
+            android:scrollbars="none">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_horizontal"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/filter_txt_cate1_tag"
+            style="@style/Search_Filter_Cate1"
+            android:layout_marginTop="@dimen/search_filter_cate_title_margin_top"
+            android:text="@string/search_filter_title_cate"/>
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/filter_recycler_cate1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+
+        <LinearLayout
+            android:id="@+id/filter_layout_selected_cate"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="@dimen/search_filter_cate_title_margin_top"
+            android:gravity="center"
+            android:orientation="horizontal"
+            android:visibility="gone">
+
+            <TextView
+                android:id="@+id/filter_txt_selected_cate_tag"
+                style="@style/Search_Filter_Cate1"
+                android:text="@string/search_filter_title_cate"/>
+
+            <View
+                android:layout_width="1dp"
+                android:layout_height="15dp"
+                android:layout_marginLeft="@dimen/search_filter_selected_cate_divider"
+                android:layout_marginRight="@dimen/search_filter_selected_cate_divider"
+                android:background="@color/black"/>
+
+            <TextView
+                android:id="@+id/filter_txt_selected_cate1"
+                style="@style/Search_Filter_Cate1"
+                tools:text="1级分类"/>
+
+            <View
+                android:layout_width="1dp"
+                android:layout_height="15dp"
+                android:layout_marginLeft="@dimen/search_filter_selected_cate_divider"
+                android:layout_marginRight="@dimen/search_filter_selected_cate_divider"
+                android:background="@color/black"/>
+
+            <TextView
+                android:id="@+id/filter_txt_selected_gender"
+                style="@style/Search_Filter_Cate1"
+                tools:text="性别"/>
+
+            <View
+                android:layout_width="1dp"
+                android:layout_height="15dp"
+                android:layout_marginLeft="@dimen/search_filter_selected_cate_divider"
+                android:layout_marginRight="@dimen/search_filter_selected_cate_divider"
+                android:background="@color/black"/>
+
+            <TextView
+                android:id="@+id/filter_txt_selected_cate2"
+                style="@style/Search_Filter_Cate1"
+                tools:text="2级分类"/>
+        </LinearLayout>
+
+        <TextView
+            style="@style/Search_Filter_Cate1"
+            android:layout_marginBottom="@dimen/search_filter_item_title_margin_top"
+            android:layout_marginTop="@dimen/search_filter_item_title_margin_top"
+            android:text="@string/search_filter_title_price"/>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="58dp"
+            android:background="@color/search_filter_cate2_bg"
+            android:gravity="center"
+            android:orientation="horizontal">
+
+            <EditText
+                android:id="@+id/filter_edt_min_price"
+                style="@style/TextView.SingleLine"
+                android:layout_width="106dp"
+                android:layout_height="32dp"
+                android:background="@color/white"
+                android:gravity="center"
+                android:hint="@string/search_filter_min_price"
+                android:maxLength="@integer/search_price_length"
+                android:inputType="number"
+                android:paddingLeft="6dp"
+                android:paddingRight="6dp"
+                android:textColorHint="@color/text_grey"
+                android:textSize="@dimen/text_size_s"/>
+
+            <View
+                android:layout_width="32dp"
+                android:layout_height="3dp"
+                android:layout_marginLeft="30dp"
+                android:layout_marginRight="30dp"
+                android:background="@color/black"/>
+
+            <EditText
+                android:id="@+id/filter_edt_max_price"
+                style="@style/TextView.SingleLine"
+                android:layout_width="106dp"
+                android:layout_height="32dp"
+                android:background="@color/white"
+                android:gravity="center"
+                android:maxLength="@integer/search_price_length"
+                android:hint="@string/search_filter_max_price"
+                android:inputType="number"
+                android:paddingLeft="6dp"
+                android:paddingRight="6dp"
+                android:textColorHint="@color/text_grey"
+                android:textSize="@dimen/text_size_s"/>
+        </LinearLayout>
+
+        <TextView
+            style="@style/Search_Filter_Cate1"
+            android:layout_marginBottom="@dimen/search_filter_item_title_margin_top"
+            android:layout_marginTop="@dimen/search_filter_item_title_margin_top"
+            android:text="@string/search_filter_title_brand"/>
+
+
+        <TextView
+            android:id="@+id/filter_txt_selected_brand"
+            android:layout_width="match_parent"
+            android:layout_height="58dp"
+            android:background="@color/search_filter_cate2_bg"
+            android:drawableRight="@drawable/ic_arrow_right"
+            android:gravity="left|center_vertical"
+            android:paddingLeft="30dp"
+            android:paddingRight="30dp"
+            android:text="@string/search_filter_pick_brand"/>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center_vertical|right"
+            android:orientation="horizontal"
+            android:paddingBottom="22dp"
+            android:paddingRight="30dp"
+            android:paddingTop="22dp">
+
+            <TextView
+                android:id="@+id/filter_txt_reset"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginRight="32dp"
+                android:background="@drawable/search_filter_btn_bg"
+                android:paddingBottom="6dp"
+                android:paddingLeft="10dp"
+                android:paddingRight="10dp"
+                android:paddingTop="6dp"
+                android:text="@string/reset"
+                android:textColor="@color/white"
+                android:textSize="@dimen/text_size_m"/>
+
+            <TextView
+                android:id="@+id/filter_txt_confirm"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/search_filter_btn_bg"
+                android:paddingBottom="6dp"
+                android:paddingLeft="10dp"
+                android:paddingRight="10dp"
+                android:paddingTop="6dp"
+                android:text="@string/search_filter_confirm"
+                android:textColor="@color/white"
+                android:textSize="@dimen/text_size_m"/>
+        </LinearLayout>
+    </LinearLayout>
+
+</ScrollView>

@@ -1,0 +1,175 @@
+package com.a1magway.bgg.data.entity;
+
+import com.almagway.common.utils.CollectionUtil;
+import com.google.gson.annotations.SerializedName;
+
+import java.io.Serializable;
+import java.util.List;
+
+/**
+ * Created by jph on 2017/8/18.
+ */
+public class OrderDetailsCommodity implements Serializable {
+    private static final long serialVersionUID = 4289280996139117017L;
+
+    private int productId;
+    private String productName;
+    private String brand;
+    private String listPrice;
+    private String sellPrice;
+    private String specs;
+    private int count;
+    private String productCode;
+    private List<String> skuCover;
+    private String memberPrice;
+    private int productType;
+
+    private boolean valid;//商品是否有效
+    @SerializedName(value = "valiInfo")
+    private String validInfo;//无效时的提示信息
+
+    /////////////本地使用
+    private int skuId;
+    private int cartId;//购物车到下单界面时需要
+
+    private String subject_id;
+
+    public String getSubject_id() {
+        return subject_id;
+    }
+
+    public void setSubject_id(String subject_id) {
+        this.subject_id = subject_id;
+    }
+
+    public int getProductId() {
+        return productId;
+    }
+
+    public void setProductId(int productId) {
+        this.productId = productId;
+    }
+
+    public String getProductName() {
+        return productName;
+    }
+
+    public void setProductName(String productName) {
+        this.productName = productName;
+    }
+
+    public String getBrand() {
+        return brand;
+    }
+
+    public void setBrand(String brand) {
+        this.brand = brand;
+    }
+
+    public String getListPrice() {
+        return listPrice;
+    }
+
+    public void setListPrice(String listPrice) {
+        this.listPrice = listPrice;
+    }
+
+    public String getSellPrice() {
+        return sellPrice;
+    }
+
+    public void setSellPrice(String sellPrice) {
+        this.sellPrice = sellPrice;
+    }
+
+    public String getSpecs() {
+        return specs;
+    }
+
+    public void setSpecs(String specs) {
+        this.specs = specs;
+    }
+
+    public int getCount() {
+        return count;
+    }
+
+    public void setCount(int count) {
+        this.count = count;
+    }
+
+    public String getProductCode() {
+        return productCode;
+    }
+
+    public void setProductCode(String productCode) {
+        this.productCode = productCode;
+    }
+
+    public List<String> getSkuCover() {
+        return skuCover;
+    }
+
+    public void setSkuCover(List<String> skuCover) {
+        this.skuCover = skuCover;
+    }
+
+    public boolean isValid() {
+        return valid;
+    }
+
+    public void setValid(boolean valid) {
+        this.valid = valid;
+    }
+
+    public String getValidInfo() {
+        return validInfo;
+    }
+
+    public void setValidInfo(String validInfo) {
+        this.validInfo = validInfo;
+    }
+
+    public int getSkuId() {
+        return skuId;
+    }
+
+    public void setSkuId(int skuId) {
+        this.skuId = skuId;
+    }
+
+    public int getCartId() {
+        return cartId;
+    }
+
+    public void setCartId(int cartId) {
+        this.cartId = cartId;
+    }
+
+    public String getMemberPrice() {
+        return memberPrice;
+    }
+
+    public void setMemberPrice(String memberPrice) {
+        this.memberPrice = memberPrice;
+    }
+
+
+    public int getProductType() {
+        return productType;
+    }
+
+
+    public void setProductType(int productType) {
+        this.productType = productType;
+    }
+
+
+    public String getCoverUrl() {
+        if (CollectionUtil.isEmpty(skuCover)) {
+            return null;
+        }
+
+        return skuCover.get(0);
+    }
+}

@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/white"
+    android:orientation="vertical"
+    tools:context="com.a1magway.bgg.v.personal.AddressManagerActivity">
+
+    <com.a1magway.bgg.widget.TitleBar
+        android:id="@+id/collection_title_bar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:titleText="@string/my_collection_title">
+
+    </com.a1magway.bgg.widget.TitleBar>
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:orientation="vertical">
+
+        <com.a1magway.bgg.refactor.AppRefreshLayout
+            android:id="@+id/collection_layout_refresh"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <com.a1magway.bgg.widget.LoadMoreRecyclerView
+                android:id="@+id/collection_recycler"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" />
+        </com.a1magway.bgg.refactor.AppRefreshLayout>
+
+        <include layout="@layout/include_full_loading" />
+        <LinearLayout
+            android:layout_gravity="bottom"
+            android:id="@+id/collection_bottom_layout"
+            android:layout_width="match_parent"
+            android:visibility="invisible"
+            android:layout_height="50dp"
+            android:orientation="horizontal">
+            <TextView
+                android:id="@+id/collection_bottom_cancel_tv"
+                android:layout_gravity="bottom"
+                android:background="@color/black_72"
+                android:text="取消"
+                android:layout_weight="1"
+                android:textSize="14sp"
+                android:textColor="@color/white"
+                android:gravity="center"
+                android:padding="10dp"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" />
+            <View
+                android:layout_width="1dp"
+                android:background="@color/white"
+                android:layout_height="match_parent"/>
+            <TextView
+                android:id="@+id/collection_bottom_delete_tv"
+                android:layout_gravity="bottom"
+                android:layout_weight="1"
+                android:background="@color/black_72"
+                android:textSize="14sp"
+                android:text="删除"
+                android:textColor="@color/white"
+                android:gravity="center"
+                android:padding="10dp"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" />
+        </LinearLayout>
+    </FrameLayout>
+
+</LinearLayout>

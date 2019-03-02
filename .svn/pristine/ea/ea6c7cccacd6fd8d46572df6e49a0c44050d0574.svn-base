@@ -1,0 +1,98 @@
+package com.a1magway.bgg.v.productReturn;
+
+import android.content.Context;
+import android.content.Intent;
+import android.os.Bundle;
+import android.support.annotation.Nullable;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.LinearLayout;
+import android.widget.TextView;
+
+import com.a1magway.bgg.R;
+import com.a1magway.bgg.common.PActivity;
+import com.a1magway.bgg.common.adapter.BaseRecyclerAdapter;
+import com.a1magway.bgg.data.entity.OrderItem;
+import com.a1magway.bgg.p.productReturn.ApplyReturnP;
+import com.a1magway.bgg.p.productReturn.ProductReturnWriteP;
+import com.a1magway.bgg.util.JumpUtil;
+import com.a1magway.bgg.widget.TitleBar;
+import com.a1magway.bgg.widget.divider.LinearItemDecoration;
+
+import butterknife.BindView;
+import butterknife.ButterKnife;
+
+/**
+ * Created by lm on 2018/8/30.
+ */
+public class ApplyReturnActivity extends PActivity<ApplyReturnP> implements IApplyReturnV {
+
+
+    private static final String EXTRA_OUTTRADENO = "EXTRA_OUTTRADENO";
+
+    @BindView(R.id.apply_title_bar)
+    TitleBar applyTitleBar;
+    @BindView(R.id.apply_goods_rv)
+    RecyclerView applyGoodsRv;
+    @BindView(R.id.apply_money_tv)
+    TextView applyMoneyTv;
+    @BindView(R.id.apply_count_tv)
+    TextView applyCountTv;
+    @BindView(R.id.apply_phone_et)
+    EditText applyPhoneEt;
+    @BindView(R.id.apply_reason_tv)
+    TextView applyReasonTv;
+    @BindView(R.id.apply_reason_layout)
+    LinearLayout applyReasonLayout;
+    @BindView(R.id.apply_describe_tv)
+    EditText applyDescribeTv;
+    @BindView(R.id.apply_img_rv)
+    RecyclerView applyImgRv;
+    @BindView(R.id.apply_ok_btn)
+    Button applyOkBtn;
+
+    private OrderItem orderItem;
+
+    private ApplyReturnP applyReturnP;
+
+
+
+
+
+    public static final void start(Context context, OrderItem orderItem) {
+        Intent intent = new Intent(context, ApplyReturnActivity.class);
+        intent.putExtra(EXTRA_OUTTRADENO, orderItem);
+        JumpUtil.startActivity(context, intent);
+    }
+
+
+
+
+    @Override
+    public void initData(@Nullable Bundle savedInstanceState) {
+        super.initData(savedInstanceState);
+        orderItem = (OrderItem) getIntent().getSerializableExtra(EXTRA_OUTTRADENO);
+        applyReturnP = new ApplyReturnP(this,orderItem);
+        applyReturnP.initRV();
+        applyGoodsRv.setLayoutManager(new LinearLayoutManager(getContext()));
+        applyGoodsRv.addItemDecoration(new LinearItemDecoration(getContext(), R.color.gray_c10,
+                R.dimen.product_detail_divider));
+    }
+
+    @Override
+    public int getContentViewLayoutId() {
+        return R.layout.activity_apply_return;
+    }
+
+    @Override
+    public void initAdapter(BaseRecyclerAdapter adapter) {
+        applyGoodsRv.setAdapter(adapter);
+    }
+
+    @Override
+    public void initPhotoAdapter(BaseRecyclerAdapter adapter) {
+        applyImgRv.setAdapter(adapter);
+    }
+}

@@ -1,0 +1,1192 @@
+package com.a1magway.bgg.data.net;
+
+
+import android.support.annotation.Nullable;
+import android.util.Log;
+
+import com.a1magway.bgg.data.entity.APIResponse;
+import com.a1magway.bgg.data.entity.AccountBankCardData;
+import com.a1magway.bgg.data.entity.AccountUserData;
+import com.a1magway.bgg.data.entity.AccountWalletData;
+import com.a1magway.bgg.data.entity.ActivityData;
+import com.a1magway.bgg.data.entity.AddressData;
+import com.a1magway.bgg.data.entity.AddressDData;
+import com.a1magway.bgg.data.entity.AddressSelectedDataBean;
+import com.a1magway.bgg.data.entity.AfterSaleBean;
+import com.a1magway.bgg.data.entity.AppNavigationData;
+import com.a1magway.bgg.data.entity.BankCardData;
+import com.a1magway.bgg.data.entity.BindPhoneVerificationCodeData;
+import com.a1magway.bgg.data.entity.BrandMuseumMap;
+import com.a1magway.bgg.data.entity.CartNum;
+import com.a1magway.bgg.data.entity.CartProduct;
+import com.a1magway.bgg.data.entity.CateItem;
+import com.a1magway.bgg.data.entity.CheckOrderProResult;
+import com.a1magway.bgg.data.entity.CollectionData;
+import com.a1magway.bgg.data.entity.FilterCate1;
+import com.a1magway.bgg.data.entity.FoundTitleData;
+import com.a1magway.bgg.data.entity.GoodsRecommendData;
+import com.a1magway.bgg.data.entity.HomeSubjectBean;
+import com.a1magway.bgg.data.entity.HuanXinLoginInfo;
+import com.a1magway.bgg.data.entity.InvitationCodeData;
+import com.a1magway.bgg.data.entity.InvitationData;
+import com.a1magway.bgg.data.entity.InviteFriendData;
+import com.a1magway.bgg.data.entity.IsCollectionData;
+import com.a1magway.bgg.data.entity.KVMap;
+import com.a1magway.bgg.data.entity.LoginData;
+import com.a1magway.bgg.data.entity.LogisticsInfoData;
+import com.a1magway.bgg.data.entity.MemberRegisterGift;
+import com.a1magway.bgg.data.entity.MemberRegisterValue;
+import com.a1magway.bgg.data.entity.MemberUpgradeInfo;
+import com.a1magway.bgg.data.entity.MorePingtuanData;
+import com.a1magway.bgg.data.entity.MyCreateArticle;
+import com.a1magway.bgg.data.entity.OrderAliPay;
+import com.a1magway.bgg.data.entity.OrderCommitResult;
+import com.a1magway.bgg.data.entity.OrderCommodity;
+import com.a1magway.bgg.data.entity.OrderDetails;
+import com.a1magway.bgg.data.entity.OrderDetailsCommodity;
+import com.a1magway.bgg.data.entity.OrderItem;
+import com.a1magway.bgg.data.entity.PingtuanBannerData;
+import com.a1magway.bgg.data.entity.PintuanGoodsBeanData;
+import com.a1magway.bgg.data.entity.Product;
+import com.a1magway.bgg.data.entity.ProductBean;
+import com.a1magway.bgg.data.entity.ProductFilterRule;
+import com.a1magway.bgg.data.entity.ProductItem;
+import com.a1magway.bgg.data.entity.ReturnGoodsDetailBean;
+import com.a1magway.bgg.data.entity.ReturnGoodsReasonBean;
+import com.a1magway.bgg.data.entity.ReturnLogInfoBean;
+import com.a1magway.bgg.data.entity.SecKillTypes;
+import com.a1magway.bgg.data.entity.ShardXcxQRCode;
+import com.a1magway.bgg.data.entity.UpgradePayData;
+import com.a1magway.bgg.data.entity.UploadPicBean;
+import com.a1magway.bgg.data.entity.WXPayData;
+import com.a1magway.bgg.data.entity.WXPayInfo;
+import com.almagway.common.AppConfig;
+import com.almagway.common.utils.StringUtil;
+import com.google.gson.Gson;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import javax.inject.Inject;
+import javax.inject.Singleton;
+
+import io.reactivex.Observable;
+import io.reactivex.annotations.NonNull;
+import io.reactivex.functions.Function;
+import okhttp3.MultipartBody;
+import retrofit2.http.Field;
+import retrofit2.http.FormUrlEncoded;
+import retrofit2.http.POST;
+
+
+/**
+ * 管理接口请求的类
+ * Created by jph on 2016/11/18.
+ */
+@SuppressWarnings("ALL")
+@Singleton
+public class APIManager extends RetrofitWrapper {
+
+    @Inject
+    public APIManager(CommonParamInterceptor commonParamInterceptor) {
+        super(commonParamInterceptor);
+    }
+
+    public Observable<Object> test() {
+        return getAPIService().test().compose(this.getTransformer());
+    }
+
+    /**
+     * 请求分类数据
+     *
+     * @return
+     */
+    public Observable<List<CateItem>> getCates() {
+        return getAPIService().getCates(1)
+                .compose(this.<List<CateItem>>getTransformer());
+    }
+
+    /**
+     * 请求首页上方banner数据
+     *
+     * @return
+     */
+    public Observable<List<ActivityData>> getHomeBanners() {
+        return getAPIService().getActivities(0).compose(this.<List<ActivityData>>getTransformer());
+    }
+
+    /**
+     * 请求首页下方feed流数据
+     *
+     * @return
+     */
+    public Observable<List<ActivityData>> getHomeFeeds() {
+        return getAPIService().getActivities(1).compose(this.<List<ActivityData>>getTransformer());
+    }
+
+    public Observable<List<ProductItem>> getHomeSecKills() {
+        return getSecKills(-1, 6, SecKillTypes.ALL);
+    }
+
+    /**
+     * 请求秒杀商品列表
+     *
+     * @param lastIdOfProduct 上一页数据最后一条数据id
+     * @param pageSize
+     * @param secKillType     对应{@link com.a1magway.bgg.data.entity.SecKillTypes}
+     * @return
+     */
+    public Observable<List<ProductItem>> getSecKills(int lastIdOfProduct, int pageSize, int secKillType) {
+        Map<String, Object> paramsMap = new HashMap<>();
+        paramsMap.put("keyword", "秒杀");
+        paramsMap.put("lastIdOfProduct", lastIdOfProduct);
+        paramsMap.put("buyOrder", "asc");
+        paramsMap.put("brandId", -1);
+        paramsMap.put("categoryId", -1);
+        paramsMap.put("secKillType", secKillType);
+        paramsMap.put("pageSize", pageSize);
+        return getAPIService().getSecKills(paramsMap).compose(this.<List<ProductItem>>getTransformer());
+    }
+
+    /**
+     * 请求秒杀商品列表
+     *
+     * @param lastIdOfProduct 上一页数据最后一条数据id
+     * @param pageSize        每页显示商品数 默认16
+     */
+    public Observable<List<ProductItem>> getMemberGoods(int lastIdOfProduct, int pageSize) {
+        Map<String, Object> paramsMap = new HashMap<>();
+        paramsMap.put("lastIdOfProduct", lastIdOfProduct);
+        paramsMap.put("pageSize", pageSize);
+        return getAPIService().getMemberGoods(paramsMap).compose(this.<List<ProductItem>>getTransformer());
+    }
+
+    /**
+     * 请求品牌馆数据接口
+     *
+     * @return
+     */
+    public Observable<BrandMuseumMap> getBrandMuseum() {
+        return getAPIService().getBrandMuseum().compose(this.<BrandMuseumMap>getTransformer());
+    }
+
+    /**
+     * 用户登录
+     *
+     * @param phone 用户手机号
+     * @param pwd   用户密码
+     * @return
+     */
+    public Observable<LoginData> login(String phone, String pwd) {
+        return getAPIService().login(phone, pwd).compose(this.<LoginData>getTransformer());
+    }
+
+    /**
+     * 第三方注册
+     *
+     * @param cover
+     * @param nick_name
+     * @param open_id
+     * @param platform_type
+     * @param sex
+     * @return
+     */
+    public Observable<LoginData> thirdpartiesRegister(String cover, String nick_name, String open_id, String platform_type, String sex) {
+        return getAPIService().thirdpartiesRegister(cover, nick_name, open_id, platform_type, sex)
+                .compose(this.<LoginData>getTransformer());
+    }
+
+    /**
+     * 第三方登录
+     *
+     * @param open_id
+     * @return
+     */
+    public Observable<LoginData> thirdpartiesLogin(String open_id) {
+        return getAPIService().thirdpartiesLoginLogin(open_id).compose(this.<LoginData>getTransformer());
+    }
+
+    /**
+     * 绑定邀请码
+     *
+     * @param uid
+     * @param invitationCode
+     * @return
+     */
+    public Observable<InvitationData> setInvitationCode(String uid, String invitationCode) {
+        return getAPIService().setInvitationCode(uid, invitationCode)
+                .compose(this.<InvitationData>getTransformer());
+    }
+
+    public Observable<String> sendVerificationCode(String phone, int type) {
+        return getAPIService().sendVerificationCode(phone, type).compose(getMessageTransformer());
+    }
+
+    /**
+     * 验证验证码
+     *
+     * @param phone
+     * @param code
+     * @return
+     */
+    public Observable<APIResponse> checkVerificationCode(String phone, String code) {
+        return noDataObservable(getAPIService().checkVerificationCode(phone, code));
+    }
+
+    /**
+     * 设置密码
+     *
+     * @param phone
+     * @param pwd
+     * @param type
+     * @return
+     */
+    public Observable<String> setPassWord(String phone, String pwd, int type) {
+        return getAPIService().setPassWord(phone, pwd, type).compose(getMessageTransformer());
+    }
+
+    /**
+     * 搜索商品
+     *
+     * @param keyword           关键字
+     * @param lastIdOfProduct   分页
+     * @param productFilterRule 筛选规则
+     * @return
+     */
+    public Observable<List<ProductBean>> searchProduct(String keyword, int count,
+                                                       @Nullable ProductFilterRule productFilterRule) {
+        Map<String, Object> paramsMap = new KVMap();
+        paramsMap.put("key_word", keyword);
+//        paramsMap.put("lastIdOfProduct", lastIdOfProduct);
+        paramsMap.put("page_size", AppConfig.PAGE_SIZE_2_ROW);
+        paramsMap.put("count", count);
+
+
+        if (productFilterRule != null) {
+            paramsMap.put("buy_order", productFilterRule.getBuyOrder());
+            paramsMap.put("discount_order", productFilterRule.getDiscountOrder());
+            paramsMap.put("price_order", productFilterRule.getPriceOrder());
+            paramsMap.put("general_order", productFilterRule.getGeneralorder());
+            if (productFilterRule.getBrandId() > 0) {
+                paramsMap.put("brand_id", productFilterRule.getBrandId());
+            }
+            if (productFilterRule.getCategoryId() > 0) {
+                paramsMap.put("category_id", productFilterRule.getCategoryId());
+            }
+
+//            paramsMap.put("categoryFlag", productFilterRule.getCategoryFlag());
+            paramsMap.put("min_price", productFilterRule.getMinPrice());
+            paramsMap.put("max_price", productFilterRule.getMaxPrice());
+            paramsMap.put("filter_sex", productFilterRule.getFilterSex());
+        }
+
+        return getAPIService().searchProduct(paramsMap)
+                .compose(this.<List<ProductBean>>getTransformer());
+    }
+/*    public Observable<List<ProductItem>> searchProductOld(String keyword,int lastIdOfProduct,
+                                                       @Nullable ProductFilterRule productFilterRule) {
+        Map<String, Object> paramsMap = new KVMap();
+        paramsMap.put("keyword", keyword);
+        paramsMap.put("lastIdOfProduct", lastIdOfProduct);
+        paramsMap.put("pageSize", AppConfig.PAGE_SIZE_2_ROW);
+        paramsMap.put("count", 0);//enid:test
+
+        if (productFilterRule != null) {
+            paramsMap.put("buyOrder", productFilterRule.getBuyOrder());
+            paramsMap.put("discountOrder", productFilterRule.getDiscountOrder());
+            paramsMap.put("priceOrder", productFilterRule.getPriceOrder());
+            if (productFilterRule.getBrandId() > 0) {
+                paramsMap.put("brandId", productFilterRule.getBrandId());
+            }
+            if (productFilterRule.getCategoryId() > 0) {
+                paramsMap.put("categoryId", productFilterRule.getCategoryId());
+            }
+
+            paramsMap.put("categoryFlag", productFilterRule.getCategoryFlag());
+            paramsMap.put("minPrice", productFilterRule.getMinPrice());
+            paramsMap.put("maxPrice", productFilterRule.getMaxPrice());
+            paramsMap.put("filterSex", productFilterRule.getFilterSex());
+        }
+
+        return getAPIService().searchProduct(paramsMap)
+                .compose(this.<List<ProductItem>>getTransformer());
+    }*/
+
+    /**
+     * 请求获取过滤分类数据
+     *
+     * @return
+     */
+    public Observable<List<FilterCate1>> getFilterCates() {
+        return getAPIService().getFilterCates().compose(this.<List<FilterCate1>>getTransformer());
+    }
+
+    /**
+     * 更新用户信息
+     *
+     * @param phone  手机号
+     * @param gender 行呗
+     * @param date   生日
+     * @return
+     */
+    public Observable<APIResponse> updateUserInfo(String phone, Integer gender, Long date, String nickname) {
+        Map<String, Object> map = new KVMap();
+        map.put("telephone", phone);
+        map.put("gender", gender);
+        map.put("birthday", date);
+        map.put("nick_name", nickname);
+        return noDataObservable(getAPIService().updateUserInfo(map));
+    }
+
+    public Observable<APIResponse> changePassword(String phone, String oldPwd, String pwd) {
+        return noDataObservable(getAPIService().changePassword(phone, oldPwd, pwd));
+    }
+
+    public Observable<Product> getProductDetails(int productId) {
+        return getAPIService().getProductDetails(productId).compose(this.<Product>getTransformer());
+    }
+
+    public Observable<Product> getProductDetails(int productId, int subject_id) {
+        return getAPIService().getProductDetails(productId, subject_id).compose(this.<Product>getTransformer());
+    }
+
+    public Observable<String> add2Cart(int userId, int productId, int skuId, int count) {
+        return getAPIService().add2Product(userId, productId, skuId, count)
+                .compose(getMessageTransformer());
+    }
+
+    public Observable<List<CartProduct>> getCart(int userId, int lastCartProId) {
+        return getAPIService().getCart(userId, lastCartProId)
+                .compose(this.<List<CartProduct>>getTransformer());
+    }
+
+    public Observable<Void> changeCartProCount(int userId, int type, int shopCartId) {
+        return getAPIService().changeCartProCount(userId, type, shopCartId).compose(this.<Void>getTransformer());
+    }
+
+    public Observable<Void> changeCartProCount(int userId, int type, int shopCartId, int count) {
+        return getAPIService().changeCartProCount(userId, type, shopCartId, count).compose(this.<Void>getTransformer());
+    }
+
+    public Observable<Void> deleteCartPro(int userId, int shopCartId) {
+        return getAPIService().deleteCartPro(userId, shopCartId).compose(this.<Void>getTransformer());
+    }
+
+    public Observable<List<OrderItem>> getOrderList(int userId, int type, int lastOrderId) {
+        return getAPIService().getOrderList(userId, type, lastOrderId)
+                .compose(this.<List<OrderItem>>getTransformer());
+    }
+
+    public Observable<String> cancelOrder(int userId, int orderId) {
+        return getAPIService().cancelOrder(userId, orderId).compose(getMessageTransformer());
+    }
+
+    public Observable<String> deleteOrder(int userId, int orderId) {
+        return getAPIService().deleteOrder(userId, orderId)
+                .compose(getMessageTransformer());
+    }
+
+    public Observable<OrderDetails> getOrderDetails(int userId, String orderNumber) {
+        return getAPIService().getOrderDetails(userId, orderNumber)
+                .compose(this.<OrderDetails>getTransformer());
+    }
+
+
+
+
+    public Observable<OrderDetails> getSaleOrderDetails(int userId, int creator_id, String orderNumber) {
+        return getAPIService().getSaleOrderDetails(userId, creator_id, orderNumber)
+                .compose(this.<OrderDetails>getTransformer());
+    }
+
+    public Observable<OrderAliPay> getPreAliPayData(String orderNum) {
+        return getAPIService().getPreAliPayData(orderNum)
+                .compose(this.<OrderAliPay>getTransformer());
+    }
+
+    public Observable<String> checkAliPayOrderResult(String resultStatus, String result) {
+        return getAPIService().checkAliPayOrderResult(resultStatus, result)
+                .compose(getMessageTransformer());
+    }
+
+    public Observable<String> checkAliPayMemberResult(String resultStatus, String result) {
+        return getAPIService().checkAliPayMemberResult(resultStatus, result)
+                .compose(getMessageTransformer());
+    }
+
+    public Observable<WXPayInfo> getPreWXPayData(String orderNum) {
+        return getAPIService().getPreWXPayData(orderNum)
+                .compose(this.<WXPayData>getTransformer())
+                .map(new Function<WXPayData, WXPayInfo>() {
+                    @Override
+                    public WXPayInfo apply(@NonNull WXPayData wxPayData) throws Exception {
+                        return wxPayData.getObj();
+                    }
+                });
+    }
+
+    public Observable<CheckOrderProResult> checkOrderPro(List<OrderDetailsCommodity> commodityList, String buyStatus) {
+        List<Integer> skuIdList = new ArrayList<>();
+        List<Integer> countList = new ArrayList<>();
+        List<Integer> shopCartIdsList = new ArrayList<>();
+
+        for (OrderDetailsCommodity orderDetailsCommodity :
+                commodityList) {
+            skuIdList.add(orderDetailsCommodity.getSkuId());
+            countList.add(orderDetailsCommodity.getCount());
+            shopCartIdsList.add(orderDetailsCommodity.getCartId());
+        }
+
+        return getAPIService().checkOrderPro(StringUtil.combineList(skuIdList, ","),
+                StringUtil.combineList(countList, ","),
+                StringUtil.combineList(shopCartIdsList, ","),
+                buyStatus
+        )
+                .compose(this.<CheckOrderProResult>getTransformer());
+    }
+
+    class SkuInfo {
+        public SkuInfo(int skuId, int num, int couponsId) {
+            this.skuId = skuId;
+            this.num = num;
+            this.couponsId = couponsId;
+        }
+
+        public int skuId;
+        public int num;
+        public int couponsId;
+    }
+
+    public Observable<OrderCommitResult> commitOrder(boolean isSeckill, int addressId, String remark,
+                                                     List<OrderDetailsCommodity> commodityList,
+                                                     CheckOrderProResult checkOrderProResult) {
+        Map<String, Object> params = new HashMap<>();
+
+        List<Integer> skuIdList = new ArrayList<>();
+        List<Integer> countList = new ArrayList<>();
+        List<Integer> cartIdList = new ArrayList<>();
+        List<SkuInfo> skuInfoList = new ArrayList<>();
+
+        for (OrderDetailsCommodity orderDetailsCommodity :
+                commodityList) {
+            skuIdList.add(orderDetailsCommodity.getSkuId());
+            countList.add(orderDetailsCommodity.getCount());
+            cartIdList.add(orderDetailsCommodity.getCartId());
+            skuInfoList.add(new SkuInfo(orderDetailsCommodity.getSkuId(), orderDetailsCommodity.getCount(), 0));
+        }
+
+        params.put("isSeckill", isSeckill ? 1 : 0);
+        params.put("addressId", addressId);
+        params.put("remark", remark);
+        params.put("shopCartIds", StringUtil.combineList(cartIdList, ","));
+        params.put("skuIds", StringUtil.combineList(skuIdList, ","));
+        params.put("counts", StringUtil.combineList(countList, ","));
+        params.put("totalPrice", checkOrderProResult.getTotalPrice());
+        params.put("tax", checkOrderProResult.getTax());
+        params.put("freight", checkOrderProResult.getFreight());
+        params.put("timestamp", System.currentTimeMillis());
+        String skuInfo = new Gson().toJson(skuInfoList);
+        Log.e("enid", skuInfo);
+        params.put("skuListInfo", skuInfo);
+        //
+        params.put("buyStatus", checkOrderProResult.getBuyStatus());
+        if (checkOrderProResult.getCollageOrderId() != 0) {
+            //参加别人的拼团才传
+            params.put("collageOrderId", checkOrderProResult.getCollageOrderId());
+        }
+
+//        Log.i("tag", "isSeckill = " + (isSeckill ? 1 : 0) + "\n" +
+//                "addressId = " + addressId + "\n" +
+//                "remark = " + remark + "\n" +
+//                "shopCartIds = " + StringUtil.combineList(cartIdList, ",") + "\n" +
+//                "skuIds = " + StringUtil.combineList(skuIdList, ",") + "\n" +
+//                "counts = " + StringUtil.combineList(countList, ",") + "\n" +
+//                "totalPrice = " + checkOrderProResult.getTotalPrice() + "\n" +
+//                "tax = " + checkOrderProResult.getTax() + "\n" +
+//                "freight = " + checkOrderProResult.getFreight() + "\n" +
+//                "timestamp = " + System.currentTimeMillis() + "\n" +
+//                "skuListInfo = " + skuInfo
+//        );
+        return getAPIService().commitOrder(params)
+                .compose(this.<OrderCommitResult>getTransformer());
+    }
+
+    /**
+     * 获取地址数据
+     *
+     * @param userId
+     * @param addressId
+     * @return
+     */
+    public Observable<List<AddressData>> queryAddressList(int userId, int addressId) {
+        return getAPIService().queryAddressList(userId, addressId).compose(this.<List<AddressData>>getTransformer());
+    }
+
+    /**
+     * 获取地址数据
+     *
+     * @param userId
+     * @param addressId
+     * @return
+     */
+    public Observable<APIResponse<AddressDData>> managerAddress(int userId, int addressId, int type) {
+//        return noDataObservable(getAPIService().managerAddress(userId, addressId, type));
+        return getAPIService().managerAddress(userId, addressId, type);
+    }
+
+    /**
+     * 获取地址数据
+     *
+     * @param type 0 添加 1编辑
+     * @return
+     */
+    public Observable<APIResponse> editAddress(Map<String, Object> map, int type) {
+        if (type == 0) {
+            return noDataObservable(getAPIService().addAddress(map));
+        }
+        return noDataObservable(getAPIService().editAddress(map));
+    }
+
+
+    public Observable<CartNum> getCartNum() {
+        return getAPIService().getCartNum()
+                .compose(this.<CartNum>getTransformer());
+    }
+
+    /**
+     * 获取会员升级介绍信息
+     */
+    public Observable<MemberUpgradeInfo> getMemberUpgradeInfo() {
+        Map<String, Object> paramsMap = new HashMap<>();
+        paramsMap.put("roleType", 1);
+        return getAPIService().getMemberUpgradeInfo(paramsMap).compose(this.<MemberUpgradeInfo>getTransformer());
+    }
+
+    /**
+     * 获取会员升级礼品
+     */
+    public Observable<List<MemberRegisterGift>> getMemberRegisterGift() {
+        return getAPIService().getMemberRegisterGift().compose(this.<List<MemberRegisterGift>>getTransformer());
+    }
+
+    /**
+     * 注册会员信息
+     */
+    public Observable<Object> registerMemberInfo(MemberRegisterValue registerValue) {
+        Map<String, Object> map = new HashMap<>();
+        map.put("payType", registerValue.getPayType());
+        map.put("userId", registerValue.getUserId());
+        map.put("userName", registerValue.getUserName());
+        map.put("sex", registerValue.getSex());
+        map.put("giftId", registerValue.getGiftId());
+        map.put("addressId", registerValue.getAddressId());
+        map.put("profession", registerValue.getProfession());
+        map.put("monthlySalary", registerValue.getMonthlySalary());
+        map.put("birthday", registerValue.getBirthday());
+        map.put("roleType", registerValue.getRoleType());
+        return getAPIService().registerMemberInfo(map).compose(this.getTransformer());
+    }
+
+    /**
+     * 获取用户信息
+     */
+    public Observable<LoginData> getUserInfo(String userId) {
+        return getAPIService().getUserInfo(userId).compose(this.<LoginData>getTransformer());
+    }
+
+    /**
+     * 获取秒杀截至时间
+     */
+    public Observable<String> getSeckillCountdown() {
+        return getAPIService().getSeckillCountdown().compose(this.<String>getTransformer());
+    }
+
+    /**
+     * 商品收藏
+     *
+     * @param pId
+     * @param userId
+     * @return
+     */
+    public Observable<String> addCollection(int pId, int userId) {
+        return getAPIService().addAttention(pId, userId)
+                .compose(this.<String>getTransformer());
+    }
+
+    /**
+     * 商品取消收藏
+     *
+     * @param id
+     * @return
+     */
+    public Observable<APIResponse> cancelCollection(String id) {
+        return getAPIService().cancelAttention(id);
+    }
+
+
+    /**
+     * 获取商品收藏列表
+     *
+     * @param userId
+     * @return
+     */
+    public Observable<List<CollectionData>> getCollectionList(int userId) {
+        return getAPIService().getAttentionList(userId)
+                .compose(this.<List<CollectionData>>getTransformer());
+    }
+
+    /**
+     * 商品是否被收藏
+     *
+     * @param pId
+     * @param userId
+     * @return
+     */
+    public Observable<IsCollectionData> isCollection(int pId, int userId) {
+        return getAPIService().isAttention(pId, userId)
+                .compose(this.<IsCollectionData>getTransformer());
+    }
+
+    /**
+     * 获取环信登录信息
+     *
+     * @return
+     */
+    public Observable<HuanXinLoginInfo> hxLoginInfoGet() {
+        return getAPIService().hxLoginInfo()
+                .compose(this.<HuanXinLoginInfo>getTransformer());
+    }
+
+    /**
+     * 释放环信登录信息
+     *
+     * @param id 需要释放的环信用户id
+     * @return
+     */
+    public Observable<APIResponse> hxLoginInfoRelease(int id) {
+        return getAPIService().hxLoginInfoRelease(id);
+    }
+
+    /**
+     * 绑定银行卡之前获取用户数据
+     *
+     * @param userid
+     * @return
+     */
+    public Observable<AccountUserData> userInfo(int userid) {
+        return getAPIService().userInfo(userid)
+                .compose(this.<AccountUserData>getTransformer());
+    }
+
+    /**
+     * 绑定银行卡
+     *
+     * @param userid
+     * @param realname
+     * @param bank_name
+     * @param idNumber
+     * @param accountNumber
+     * @param accountType
+     * @param phoneNumber
+     * @return
+     */
+    public Observable<APIResponse> insertBankCard(int userid,
+                                                  String realname,
+                                                  String bank_name,
+                                                  String idNumber,
+                                                  String accountNumber,
+                                                  String accountType,
+                                                  String abbreviation,
+                                                  String phoneNumber,
+                                                  String verification,
+                                                  String sessionId) {
+        return getAPIService().insertBankCard(userid, realname, bank_name, idNumber,
+                accountNumber, accountType, abbreviation, phoneNumber, verification, sessionId);
+    }
+
+    /**
+     * 用户获取银行卡列表
+     *
+     * @param userid
+     * @return
+     */
+    public Observable<List<AccountBankCardData>> getBankCardList(int userid) {
+        return getAPIService().getBankCardList(userid)
+                .compose(this.<List<AccountBankCardData>>getTransformer());
+    }
+
+    /**
+     * 银行卡解绑
+     *
+     * @param id 需要解绑的信息id
+     * @return
+     */
+
+    public Observable<APIResponse> removeCard(int id) {
+        return getAPIService().removeCard(id);
+    }
+
+    /**
+     * 银行卡前六位查询银行卡归属信息
+     *
+     * @param id 银行卡号前六位
+     * @return
+     */
+    public Observable<BankCardData> queryCardBin(String id) {
+        return getAPIService().queryCardBin(id)
+                .compose(this.<BankCardData>getTransformer());
+    }
+
+    /**
+     * 使用完整银行卡号查询银行卡信息
+     *
+     * @param account_number
+     * @return
+     */
+    public Observable<BankCardData> queryCardBinFull(String account_number) {
+        return getAPIService().queryCardBinFull(account_number)
+                .compose(this.<BankCardData>getTransformer());
+    }
+
+    /**
+     * 绑定银行卡时发送验证码
+     *
+     * @param phone
+     * @return
+     */
+    public Observable<String> sendVerification(String phone) {
+        return getAPIService().sendVerification(phone)
+                .compose(this.<String>getTransformer());
+    }
+
+    /**
+     * 查询用户账户信息
+     *
+     * @param userId
+     * @return
+     */
+    public Observable<AccountWalletData> getUserAccount(int userId, int lastId) {
+        return getAPIService().getUserAccount(userId, lastId)
+                .compose(this.<AccountWalletData>getTransformer());
+    }
+
+    /**
+     * 用户发起提现
+     *
+     * @param userId
+     * @param money
+     * @param remark
+     * @param accountNumber
+     * @param accountType
+     * @return
+     */
+    public Observable<APIResponse> withdrawal(int userId,
+                                              String money,
+                                              String remark,
+                                              String accountNumber,
+                                              String accountType) {
+        return getAPIService().withdrawal(userId, money, remark, accountNumber, accountType);
+
+    }
+
+    /**
+     * 获取APP首页导航栏
+     *
+     * @return
+     */
+    public Observable<List<AppNavigationData>> getAppNavigation() {
+        return getAPIService().getAppNavigation()
+                .compose(this.<List<AppNavigationData>>getTransformer());
+    }
+
+    /**
+     * 获取主题列表
+     *
+     * @param type
+     * @return
+     */
+    public Observable<List<HomeSubjectBean>> getSubjectList(int type) {
+        return getAPIService().getSubjectList(type)
+                .compose(this.<List<HomeSubjectBean>>getTransformer());
+    }
+
+    /**
+     * 获取主题详情
+     *
+     * @param id
+     * @param order_by
+     * @param asc_desc
+     * @return
+     */
+    public Observable<GoodsRecommendData> getSubject(int user_id, int id, int order_by, int asc_desc, int page_id, int page_num) {
+        return getAPIService().getSubject(user_id, id, order_by, asc_desc, page_id, page_num)
+                .compose(this.<GoodsRecommendData>getTransformer());
+    }
+
+    /**
+     * 获取好货推荐列表
+     *
+     * @param user_id
+     * @param order_by
+     * @param asc_desc
+     */
+    public Observable<GoodsRecommendData> getGoodGoodsRecommendsList(int user_id, int type, int order_by, int asc_desc, int current_page, int page_num) {
+        return getAPIService().getGoodGoodsRecommendsList(user_id, type, order_by, asc_desc, current_page, page_num)
+                .compose(this.<GoodsRecommendData>getTransformer());
+    }
+
+
+    /**
+     * 获取我的邀请码
+     *
+     * @param user_id
+     * @return
+     */
+    public Observable<InvitationCodeData> getInviteCode(int user_id) {
+        return getAPIService().getInviteCode(user_id)
+                .compose(this.<InvitationCodeData>getTransformer());
+    }
+
+    /**
+     * 刷新二维码
+     *
+     * @param user_id
+     * @return
+     */
+    public Observable<InvitationCodeData> refreshQrcode(int user_id) {
+        return getAPIService().refreshQrcode(user_id)
+                .compose(this.<InvitationCodeData>getTransformer());
+    }
+
+    /**
+     * 获取销售订单列表
+     *
+     * @param type
+     * @param lastOrderId
+     * @return
+     */
+    public Observable<List<OrderItem>> getSaleOrderList(int type, int lastOrderId) {
+        return getAPIService().getSaleOrderList(type, lastOrderId)
+                .compose(this.<List<OrderItem>>getTransformer());
+    }
+
+    /**
+     * 获取物流信息
+     *
+     * @param outtradeno
+     * @return
+     */
+    public Observable<List<LogisticsInfoData>> getLogistics(String outtradeno) {
+        return getAPIService().getLogistics(outtradeno)
+                .compose(this.<List<LogisticsInfoData>>getTransformer());
+    }
+
+    /**
+     * 确认收货
+     *
+     * @param orderId
+     * @return
+     */
+    public Observable<APIResponse> confirmFinish(int orderId) {
+        return getAPIService().confirmFinish(orderId);
+    }
+
+
+    /**
+     * 得到分享二维码的信息
+     *
+     * @param goodsId
+     * @param inviteCode
+     * @return
+     */
+    public Observable<ShardXcxQRCode> getShardQRCodeImage(int goodsId, String inviteCode) {
+        return getAPIService().getShardQRCodeImage(goodsId, inviteCode);
+    }
+
+    /**
+     * 得到分享添加到第一张的图片
+     *
+     * @return
+     */
+    public Observable<ShardXcxQRCode> getAddHeadShardImage() {
+        return getAPIService().getAddHeadShardImage();
+    }
+
+    /**
+     * 得到城市列表
+     */
+    public Observable<AddressSelectedDataBean> getCityList() {
+        return getAPIService().getCityList();
+    }
+
+    public Observable<List<FoundTitleData>> getFoundList() {
+        return getAPIService().getFoundList().compose(this.<List<FoundTitleData>>getTransformer());
+    }
+
+    /**
+     * 发送验证码（绑定手机前）
+     */
+    public Observable<BindPhoneVerificationCodeData> getBindPhoneVerificationCode(String phone) {
+        return getAPIService().sendBindPhoneVerificationCode(phone);
+    }
+
+
+    /**
+     * 绑定手机号码
+     *
+     * @return
+     */
+    public Observable<APIResponse> bindPhoneNumber(int user_id, String phoneNumber, String verification, String sessionId) {
+        return getAPIService().bindPhoneNumber(user_id, phoneNumber, verification, sessionId);
+    }
+
+
+    /**
+     * 微信购买会员升级服务
+     */
+    public Observable<WXPayInfo> weixinPayUpgrade(String user_id, String type) {
+        return getAPIService().weixinPayUpgrade(user_id, type).compose(this.<WXPayData>getTransformer())
+                .map(new Function<WXPayData, WXPayInfo>() {
+                    @Override
+                    public WXPayInfo apply(WXPayData wXPayData) throws Exception {
+                        return wXPayData.getObj();
+                    }
+                });
+    }
+
+
+    /**
+     * 支付宝购买会员升级服务
+     */
+    public Observable<UpgradePayData> aliPayUpgrade(String user_id, String type) {
+        return getAPIService().aliPayUpgrade(user_id, type);
+    }
+
+    /**
+     * 得到我的下线
+     *
+     * @param user_id
+     */
+    public Observable<List<InviteFriendData>> getMyFriends(String user_id) {
+        return new RetrofitWrapper(null)
+                .getAPIService()
+                .getMyFriends(user_id)
+                .compose(this.<List<InviteFriendData>>getTransformerCanNull());
+    }
+
+    /**
+     * 邀请好友升级
+     */
+    public Observable<String> inviteMyFriendUpgrade(String user_id, String ids) {
+        return new RetrofitWrapper(null)
+                .getAPIService()
+                .inviteMyFriendUpgrade(user_id, ids)
+                .compose(this.<String>getMessageTransformer());
+    }
+
+    /**
+     * 用户实名认证
+     */
+    public Observable<APIResponse<String>> userCertification(String realName, String idCard) {
+        return getAPIService().userCertification(realName, idCard);
+    }
+
+
+    /**
+     * 收货地址增加实名信息
+     */
+    public Observable<APIResponse<String>> adressAutonym(int user_id, String realName, String idCard, String addressId) {
+        return getAPIService().adressAutonym(user_id, realName, idCard, addressId);
+    }
+
+
+    /**
+     * 得到首页拼团轮播图数据
+     */
+    public Observable<PingtuanBannerData> getPingtuanBannerData(int type) {
+        return getAPIService().getPingtuanBannerData(type).compose(this.<PingtuanBannerData>getTransformer());
+    }
+
+    /**
+     * 获取更多拼团商品
+     */
+    public Observable<MorePingtuanData> getMorePingtuanData(int product_id, int current_page, int page_num) {
+        return getAPIService().getMorePingtuanData(product_id, current_page, page_num)
+                .compose(this.<MorePingtuanData>getTransformer());
+    }
+
+
+    /**
+     * 拼团商品专区
+     *
+     * @param user_id
+     * @param current_page
+     * @param page_num
+     * @param order_by
+     * @param asc_desc
+     * @return
+     */
+    public Observable<List<ProductBean>> getMorePintuanHomeData(int user_id, int current_page,
+                                                                int page_num, int order_by, int asc_desc) {
+        return getAPIService().getMorePintuanHomeData(user_id, current_page, page_num, order_by, asc_desc)
+                .compose(this.<List<ProductBean>>getTransformer());
+    }
+
+    /**
+     * 拼团支付后调用
+     *
+     * @param user_id
+     * @param order_num 订单号
+     * @return
+     */
+    public Observable<APIResponse> executeCollageOrder(int user_id, String order_num) {
+        return getAPIService().executeCollageOrder(user_id, order_num);
+    }
+
+
+    /**
+     * 获取的我发表的文章列表
+     */
+    public Observable<List<MyCreateArticle>> getMyArticle(int user_id, int type) {
+        return new RetrofitWrapper(null)
+                .getAPIService()
+                .getMyArticle(user_id, type)
+                .compose(this.<List<MyCreateArticle>>getTransformer());
+    }
+
+
+    /**
+     * 删除我的文章
+     */
+    public Observable<APIResponse> deleteMyArticle(int user_id, int id) {
+        return new RetrofitWrapper(null)
+                .getAPIService()
+                .deleteMyArticle(user_id, id);
+    }
+
+    /**
+     *上传凭证图片
+     */
+    public Observable<APIResponse<UploadPicBean>> uploadReturnPic(MultipartBody.Part multipartBody) {
+        return new RetrofitWrapper(null)
+                .getAPIService()
+                .uploadpic(multipartBody);
+    }
+
+    /**
+     * 撤销退款申请
+     * @param useId
+     * @param id
+     * @return
+     */
+    public Observable<APIResponse> cheXiaoReturnApply(int useId,int id ){
+        return new RetrofitWrapper(null)
+                .getAPIService()
+                .cheXiaoReturnApply(useId,id);
+    }
+
+    /**
+     *  申请退款退货
+     * @param user_id 用户id
+     * @param id 退货id
+     * @param type 1.选择退款 2.换货 3.未收到货退款
+     * @param order_id 订单id
+     * @param sku_id 商品id，
+     * @param num 商品数量id，
+     * @param phone 电话号码
+     * @param reason_id 退货原因id
+     * @param reason 退货原因
+     * @param photos 照片数组
+     * @return
+     */
+    public Observable<APIResponse> applyRefund(int user_id, String id,
+                                               int type,int order_id,String sku_id,
+                                                String num,String phone,int reason_id,
+                                               String reason,String photos){
+        return new RetrofitWrapper(null)
+                .getAPIService()
+                .applyRefund(user_id,id,type,order_id,sku_id,num,phone,reason_id,reason,photos);
+    }
+
+    /**
+     * 获取退货理由
+     * @return
+     */
+    public Observable<APIResponse<List<ReturnGoodsReasonBean>>> getReturnReason(){
+        return new RetrofitWrapper(null)
+                .getAPIService()
+                .getReturnReason();
+    }
+
+    /**
+     * 获取退货详情
+     * @return
+     */
+    public Observable<APIResponse<ReturnGoodsDetailBean>> getRefund(int user_id, String id){
+        return new RetrofitWrapper(null)
+                .getAPIService()
+                .getRefund(user_id,id);
+    }
+
+    /**
+     * 获取快递公司
+     * @return
+     */
+    public Observable<APIResponse<ReturnGoodsReasonBean>> getWuLiuCompanyList(){
+        return new RetrofitWrapper(null)
+                .getAPIService()
+                .getWuLiuCompanyList();
+    }
+
+    /**
+     * 添加物流编号
+     * @param user_id
+     * @param id
+     * @param logistics_type 物流公司
+     * @param logistics_num 物流单号
+     * @return
+     */
+    public Observable<APIResponse> addRefundLogisticsNum(int user_id, String id
+    ,String logistics_type, String logistics_num){
+        return new RetrofitWrapper(null)
+                .getAPIService()
+                .addRefundLogisticsNum(user_id,id,logistics_type,logistics_num);
+    }
+
+    /**
+     * 获取售后列表
+     * @param user_id
+     * @param current_page
+     * @param page_num
+     * @param status
+     * @return
+     */
+    public  Observable<APIResponse<List<AfterSaleBean>>> getRefundList(int user_id,
+                                                                       int current_page,
+                                                                       int page_num,
+                                                                       int status){
+        return new RetrofitWrapper(null)
+                .getAPIService()
+                .getRefundList(user_id,current_page,page_num,status);
+    }
+
+    /**
+     * 获取退货物流信息
+     * @param refundId
+     * @return
+     */
+    public Observable<APIResponse<ReturnLogInfoBean>> getRefundLogsInfo(String refundId){
+        return new RetrofitWrapper(null)
+                .getAPIService()
+                .getRefundLogsInfo(refundId);
+    }
+
+    public Observable<APIResponse<OrderDetails>> getOrderDetails2(int userId, String orderNumber) {
+        return new RetrofitWrapper(null)
+                .getAPIService()
+                .getOrderDetails(userId, orderNumber);
+    }
+
+}

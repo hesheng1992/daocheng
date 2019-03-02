@@ -1,0 +1,23 @@
+package com.a1magway.bgg.eventbus.event;
+
+/**
+ * 拼团购买事件
+ * Created by enid on 2018/8/20.
+ */
+
+public class PingtuanBuyEvent {
+
+    public PingtuanBuyEvent(int collageOrderId) {
+        this.collageOrderId = collageOrderId;
+    }
+
+    private int collageOrderId;
+
+    public int getCollageOrderId() {
+        return collageOrderId;
+    }
+
+    public void setCollageOrderId(int collageOrderId) {
+        this.collageOrderId = collageOrderId;
+    }
+}

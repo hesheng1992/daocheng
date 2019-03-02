@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fitsSystemWindows="true"
+    android:orientation="vertical">
+
+    <com.a1magway.bgg.widget.TitleBar
+        android:id="@+id/commit_title_bar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:titleText="@string/order_commit_title" />
+
+    <com.a1magway.bgg.widget.LoadMoreRecyclerView
+        android:id="@+id/commit_recycler"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_above="@+id/pingtuan_notice"
+        android:layout_below="@+id/commit_title_bar" />
+
+    <RelativeLayout
+        android:id="@+id/pingtuan_notice"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/commit_layout_bottom"
+        android:layout_marginBottom="20dp"
+        android:layout_marginEnd="10dp"
+        android:visibility="gone">
+
+        <TextView
+            android:id="@+id/pingtuan_tv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:layout_centerVertical="true"
+            android:text="拼团须知" />
+
+       <!-- <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_marginEnd="5dp"
+            android:layout_toStartOf="@+id/pingtuan_tv"
+            android:src="@drawable/ic_pingtuan_notice" />-->
+
+        <CheckedTextView
+            android:checked="true"
+            android:id="@+id/agree_pingtuan_rule"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_marginEnd="5dp"
+            android:layout_toStartOf="@+id/pingtuan_tv"
+            android:background="@drawable/check_agree_rule"/>
+
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/commit_layout_bottom"
+        android:layout_width="match_parent"
+        android:layout_height="48dp"
+        android:layout_alignParentBottom="true"
+        android:background="@color/white">
+
+        <TextView
+            android:id="@+id/commit_txt_pay_price"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_toLeftOf="@+id/commit_txt_pay"
+            android:gravity="center"
+            android:textColor="@color/black"
+            android:textSize="14sp"
+            tools:text="实付款：￥100000000" />
+
+        <TextView
+            android:id="@+id/commit_txt_pay"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_alignParentRight="true"
+            android:background="@drawable/base_enable_grey_black"
+            android:gravity="center"
+            android:paddingLeft="45dp"
+            android:paddingRight="45dp"
+            android:text="@string/order_commit_txt_commit"
+            android:textColor="@color/white"
+            android:textSize="16sp" />
+    </RelativeLayout>
+
+    <include
+        layout="@layout/include_full_loading"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@+id/commit_title_bar" />
+</RelativeLayout>

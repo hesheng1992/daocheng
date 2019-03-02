@@ -1,0 +1,18 @@
+package com.a1magway.bgg.v.productReturn;
+
+import android.app.Activity;
+import android.os.Bundle;
+
+import com.a1magway.bgg.R;
+
+/**
+ * Created by lm on 2018/8/30.
+ */
+public class ReturnContentActivity extends Activity {
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_return_content);
+    }
+}

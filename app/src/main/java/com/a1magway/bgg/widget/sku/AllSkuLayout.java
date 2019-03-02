@@ -1,0 +1,359 @@
+package com.a1magway.bgg.widget.sku;
+
+import android.content.Context;
+import android.support.annotation.Nullable;
+import android.util.AttributeSet;
+import android.util.Log;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
+
+import com.a1magway.bgg.R;
+import com.a1magway.bgg.p.product.ProDetailsInfoP;
+import com.a1magway.bgg.okhttp.LogUtil;
+import com.almagway.common.log.MLog;
+
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
+import java.util.Map;
+import java.util.Set;
+
+import butterknife.ButterKnife;
+import io.reactivex.Observable;
+import io.reactivex.ObservableSource;
+import io.reactivex.Observer;
+import io.reactivex.disposables.Disposable;
+import io.reactivex.functions.Action;
+import io.reactivex.functions.Consumer;
+import io.reactivex.functions.Function;
+import io.reactivex.functions.Predicate;
+
+/**
+ * 显示所有类型规格的布局
+ * Created by jph on 2017/8/9.
+ */
+public class AllSkuLayout extends LinearLayout {
+    private static final String TAG = ProDetailsInfoP.class.getSimpleName();
+
+    private Observable<Map<String, String>> mAllSkuMapObservable;//所有货品的规格map发射器，一个map对应一个规格组合
+    private Map<String, Set<String>> mSkuCateMap = new LinkedHashMap<>();//按类别对应的规格集合
+    private Map<String, String> mSelectedSkuMap = new LinkedHashMap<>();
+
+    private SelectedCallback mSelectedCallback;
+
+
+    public AllSkuLayout(Context context) {
+        super(context);
+        init();
+    }
+
+    public AllSkuLayout(Context context, @Nullable AttributeSet attrs) {
+        super(context, attrs);
+        init();
+    }
+
+    public AllSkuLayout(Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
+        super(context, attrs, defStyleAttr);
+        init();
+    }
+
+    private void init() {
+        setOrientation(VERTICAL);
+    }
+
+    /**
+     * 设置显示的数据
+     *
+     * @param allSkuMapObservable
+     */
+    public void setData(final Observable<Map<String, String>> allSkuMapObservable) {
+        mAllSkuMapObservable = allSkuMapObservable;
+
+        allSkuMapObservable
+                .concatMap(new Function<Map<String, String>, ObservableSource<Map.Entry<String, String>>>() {
+                    @Override
+                    public ObservableSource<Map.Entry<String, String>> apply(@io.reactivex.annotations.NonNull Map<String, String> stringStringMap) throws Exception {
+                        return Observable.fromIterable(stringStringMap.entrySet());
+                    }
+                })
+                .doOnNext(new Consumer<Map.Entry<String, String>>() {
+                    @Override
+                    public void accept(@io.reactivex.annotations.NonNull Map.Entry<String, String> stringStringEntry) throws Exception {
+                        String key = stringStringEntry.getKey();
+                        String value = stringStringEntry.getValue();
+                        if (mSkuCateMap.containsKey(key)) {
+                            mSkuCateMap.get(key).add(value);
+                        } else {
+                            Set<String> valueSet = new LinkedHashSet<>();
+                            valueSet.add(value);
+                            mSkuCateMap.put(key, valueSet);
+                        }
+                    }
+                })
+                .doOnComplete(new Action() {
+                    @Override
+                    public void run() throws Exception {
+                        MLog.i(TAG, "All sku map: " + mSkuCateMap.toString());
+                        showData(mSkuCateMap);
+                    }
+                })
+                .subscribe(new Observer<Map.Entry<String, String>>() {
+                    @Override
+                    public void onSubscribe(Disposable d) {
+
+                    }
+
+                    @Override
+                    public void onNext(Map.Entry<String, String> stringStringEntry) {
+
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+
+                    }
+
+                    @Override
+                    public void onComplete() {
+
+                    }
+                });
+    }
+
+    /**
+     * 设置显示的数据
+     *
+     * @param skuCateMap 规格类型：类型对应的规格集
+     */
+    private void showData(Map<String, Set<String>> skuCateMap) {
+        removeAllViews();
+        Set<String> cateSet = skuCateMap.keySet();
+        for (String cate : cateSet) {
+            LogUtil.e("cate0", cate);
+            addView(createItemView(cate, skuCateMap.get(cate)));
+        }
+    }
+
+    /**
+     * 生成每个分类下的view
+     *
+     * @param cate
+     * @param skuSet
+     * @return
+     */
+    private View createItemView(final String cate, Set<String> skuSet) {
+        View itemV = LayoutInflater.from(getContext())
+                .inflate(R.layout.product_detail_layout_all_sku, this, false);
+
+        final SkuLayout skuLayout = ButterKnife.findById(itemV, R.id.all_sku_layout_sku);
+        skuLayout.setData(skuSet, cate);
+        skuLayout.setOnSkuSelectedListener(new SkuLayout.OnSkuSelectedListener() {
+            @Override
+            public void onSkuSelectedChange(String sku, boolean selected) {
+               /* if (selected) {
+                    mSelectedSkuMap.put(cate, sku);//更新当前保存的选中的规格数据
+                } else {
+                    mSelectedSkuMap.remove(cate);//删除之前该分类下的选中规格
+                }
+                setValidData();//选中状态改变，刷新是否有效的显示
+
+                //检查是否选中完整的规格组合
+                checkSelectedComplete();*/
+                if (selected) {
+                    mSelectedSkuMap.put(cate, sku);//更新当前保存的选中的规格数据
+                    if (cate.equals("颜色") && getChildCount() >= 2) {
+                        mSelectedSkuMap.remove("尺寸");
+                        SkuLayout skuLayout0 = getChildAt(1).findViewById(R.id.all_sku_layout_sku);
+                        skuLayout0.setAllNoSelected();
+                    }
+                } else {
+                    if (cate.equals("颜色") && getChildCount() >= 2) {
+                        mSelectedSkuMap.remove("尺寸");
+                        SkuLayout skuLayout0 = getChildAt(1).findViewById(R.id.all_sku_layout_sku);
+                        skuLayout0.setAllNoSelected();
+                    }
+                    mSelectedSkuMap.remove(cate);//删除之前该分类下的选中规格
+                }
+                setValidData();//选中状态改变，刷新是否有效的显示
+
+                //检查是否选中完整的规格组合
+                checkSelectedComplete();
+            }
+        });
+
+
+        final ImageView expandImg = ButterKnife.findById(itemV, R.id.all_sku_img_expand);
+        itemV.post(new Runnable() {
+            @Override
+            public void run() {
+                expandImg.setVisibility(skuLayout.getFlexLines().size() > 1 ? View.VISIBLE : View.GONE);
+            }
+        });
+
+
+        expandImg.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                ViewGroup.LayoutParams lp = skuLayout.getLayoutParams();
+                if (lp.height == ViewGroup.LayoutParams.WRAP_CONTENT) {
+                    lp.height = v.getResources()
+                            .getDimensionPixelOffset(R.dimen.product_detail_sku_height);
+                    expandImg.setImageResource(R.drawable.ic_product_detail_expand);
+                } else {
+                    lp.height = ViewGroup.LayoutParams.WRAP_CONTENT;
+                    expandImg.setImageResource(R.drawable.ic_product_detail_coll);
+                }
+                skuLayout.setLayoutParams(lp);
+            }
+        });
+
+        itemV.setTag(cate);
+        return itemV;
+    }
+
+
+    /**
+     * 刷新所有类型下的规格的有效显示
+     */
+    private void setValidData() {
+        MLog.i(TAG, "setValidData");
+
+        for (int i = 0, c = getChildCount(); i < c; i++) {
+            View itemV = getChildAt(i);
+            SkuLayout skuLayout = ButterKnife.findById(itemV, R.id.all_sku_layout_sku);
+
+            Map<String, String> exceptSelfMap = new HashMap<>(mSelectedSkuMap);
+            exceptSelfMap.remove(itemV.getTag());//判断有效时需要剔除当前类别
+            setItemValidData(itemV.getTag().toString(), exceptSelfMap, skuLayout);
+        }
+    }
+
+    /**
+     * 刷新某个类别的规格的有效显示
+     *
+     * @param itemCate
+     * @param selectedSkuMap
+     * @param skuLayout
+     */
+    private void setItemValidData(final String itemCate, final Map<String, String> selectedSkuMap,
+                                  final SkuLayout skuLayout) {
+        final Set<String> validSkuSet = new LinkedHashSet<>();//判断的分类下所有有效的值
+
+        mAllSkuMapObservable
+                .filter(new Predicate<Map<String, String>>() {
+                    @Override
+                    public boolean test(@io.reactivex.annotations.NonNull Map<String, String> stringStringMap) throws Exception {
+                        return checkMapContain(stringStringMap, selectedSkuMap);
+                    }
+                })
+                .doOnNext(new Consumer<Map<String, String>>() {
+                    @Override
+                    public void accept(@io.reactivex.annotations.NonNull Map<String, String> stringStringMap) throws Exception {
+                        MLog.i("TEST---", stringStringMap.toString());
+                        validSkuSet.add(stringStringMap.get(itemCate));
+                    }
+                })
+                .doOnComplete(new Action() {
+                    @Override
+                    public void run() throws Exception {
+                        skuLayout.setValidData(validSkuSet);
+                    }
+                })
+                .subscribe();
+    }
+
+    /**
+     * 设置选中的规格
+     *
+     * @param selectedSkuMap 选中的规格map，ex:{颜色=[蓝色], 尺寸=[S]}
+     */
+    public void setSelectedSku(Map<String, String> selectedSkuMap) {
+        //避免传进来得对象是直接取得所有规格中的某一个，取消选中的时候会影响基础的数据
+        if (selectedSkuMap != null) {
+            mSelectedSkuMap = new LinkedHashMap(selectedSkuMap);
+        }
+        setValidData();
+
+        for (int i = 0, c = getChildCount(); i < c; i++) {
+            View itemV = getChildAt(i);
+            SkuLayout skuLayout = ButterKnife.findById(itemV, R.id.all_sku_layout_sku);
+
+            skuLayout.setSelectedData(selectedSkuMap.get(itemV.getTag()));
+        }
+
+        checkSelectedComplete();
+    }
+
+    /**
+     * 检查1个Map是否包含另一个Map的所有数据
+     *
+     * @param map1 大的map
+     * @param map2 小的map
+     * @return
+     */
+    private boolean checkMapContain(Map<String, String> map1, Map<String, String> map2) {
+        Iterator<Map.Entry<String, String>> i = map2.entrySet().iterator();
+        while (i.hasNext()) {
+            Map.Entry<String, String> e = i.next();
+            String key = e.getKey();
+            String value = e.getValue();
+            if (value == null) {
+                if (!(map1.get(key) == null && map1.containsKey(key)))
+                    return false;
+            } else {
+                if (!value.equals(map1.get(key)))
+                    return false;
+            }
+        }
+
+        return true;
+    }
+
+
+    /**
+     * 检查是否选中完整的规格组合，在选择改变时判断，若选择完成，则回调
+     */
+    private void checkSelectedComplete() {
+
+        if (!isSelectedComplete()) {
+            return;
+        }
+
+        if (mSelectedCallback != null) {
+            mSelectedCallback.onSelectedComplete(mSelectedSkuMap);
+        }
+    }
+
+    /**
+     * 是否选中完整的规格组合
+     *
+     * @return
+     */
+    public boolean isSelectedComplete() {
+        Set<String> cates = mSkuCateMap.keySet();
+        for (String cate :
+                cates) {
+            if (mSelectedSkuMap.get(cate) == null) {
+                //有分类还没选中规格
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    public void setSelectedCallback(SelectedCallback selectedCallback) {
+        mSelectedCallback = selectedCallback;
+    }
+
+    public interface SelectedCallback {
+        /**
+         * 选择了完整的规格组合
+         */
+        void onSelectedComplete(Map<String, String> selectedMap);
+    }
+}

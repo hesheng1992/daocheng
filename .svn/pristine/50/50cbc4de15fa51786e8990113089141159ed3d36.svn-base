@@ -1,0 +1,31 @@
+<resources>
+
+    <!-- Title bar -->
+    <declare-styleable name="TitleBar">
+        <attr name="titleText" format="string" />
+        <attr name="titleLeftIcon" format="reference" />
+        <attr name="titleMoreShow" format="boolean" />
+        <attr name="titleMoreImage" format="reference" />
+    </declare-styleable>
+
+    <!-- ClearEditText -->
+    <declare-styleable name="ClearEditText">
+        <attr name="inputType" format="integer">
+            <enum name="number" value="2" />
+            <enum name="phone" value="3" />
+            <enum name="password" value="128" />
+            <enum name="text" value="10"/>
+        </attr>
+        <attr name="maxLength" format="integer" />
+        <attr name="digits" format="string" />
+        <attr name="hint" format="string" />
+    </declare-styleable>
+
+    <declare-styleable name="SwipeLayout">
+        <attr name="preview" format="enum">
+            <enum name="noPreview" value="-1"/>
+            <enum name="openLeft" value="0"/>
+            <enum name="openRight" value="1"/>
+        </attr>
+    </declare-styleable>
+</resources>

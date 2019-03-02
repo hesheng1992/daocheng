@@ -1,0 +1,228 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/white_88">
+
+    <View
+        android:id="@+id/commit_v_divider_1"
+        style="@style/ConstrainLayout_Param_Full_Width"
+        android:layout_height="8dp"
+        android:background="@color/bg_page" />
+
+    <TextView
+        android:id="@+id/commit_txt_name"
+        style="@style/TextView.SingleLine"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/order_details_margin_horizontal"
+        android:layout_marginTop="@dimen/order_details_margin_vertical"
+        android:maxWidth="150dp"
+        android:textColor="@color/black"
+        android:textSize="@dimen/text_size_m"
+        android:visibility="gone"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/commit_v_divider_1"
+        tools:text="超载鸡" />
+
+    <TextView
+        android:id="@+id/commit_txt_phone"
+        style="@style/TextView.SingleLine"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/order_details_margin_horizontal"
+        android:textColor="@color/black"
+        android:textSize="@dimen/text_size_m"
+        android:visibility="gone"
+        app:layout_constraintBaseline_toBaselineOf="@+id/commit_txt_name"
+        app:layout_constraintLeft_toRightOf="@+id/commit_txt_name"
+        tools:text="18888888888" />
+
+    <TextView
+        android:id="@+id/commit_txt_select_address"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:paddingBottom="4dp"
+        android:paddingLeft="@dimen/order_details_margin_horizontal"
+        android:paddingRight="@dimen/order_details_margin_horizontal"
+        android:paddingTop="4dp"
+        android:text="收货地址>>"
+        android:textColor="@color/text_black"
+        android:textSize="@dimen/text_size_smallest"
+        android:visibility="gone"
+        app:layout_constraintBaseline_toBaselineOf="@+id/commit_txt_phone"
+        app:layout_constraintRight_toRightOf="parent" />
+
+
+    <TextView
+        android:id="@+id/commit_txt_address"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginRight="35dp"
+        android:layout_marginTop="12dp"
+        android:textColor="@color/black"
+        android:textSize="@dimen/text_size_s"
+        android:visibility="gone"
+        app:layout_constraintLeft_toLeftOf="@+id/commit_txt_name"
+        app:layout_constraintRight_toLeftOf="@+id/commit_txt_postcode"
+        app:layout_constraintTop_toBottomOf="@+id/commit_txt_name"
+        tools:text="四川省成都市锦江区新光华街7号航天科技大厦48楼麦迈国际地" />
+
+    <TextView
+        android:id="@+id/commit_txt_postcode"
+        style="@style/TextView.SingleLine"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginRight="@dimen/order_details_margin_horizontal"
+        android:layout_marginTop="12dp"
+        android:textColor="@color/black"
+        android:textSize="@dimen/text_size_s"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="@+id/commit_txt_address"
+        app:layout_constraintRight_toRightOf="parent"
+        tools:text="638400" />
+
+    <android.support.constraint.ConstraintLayout
+        android:id="@+id/commit_userInfo_cl"
+        style="@style/ConstrainLayout_Param_Full_Width"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="15dp"
+        android:visibility="gone"
+        app:layout_constraintTop_toBottomOf="@+id/commit_txt_address">
+
+        <View
+            android:id="@+id/commit_line1"
+            style="@style/ConstrainLayout_Param_Full_Width"
+            android:layout_height="0.1dp"
+            android:background="@color/bg_page"
+            app:layout_constraintTop_toTopOf="parent" />
+
+
+        <EditText
+            android:id="@+id/real_name"
+            android:layout_width="100dp"
+            android:layout_height="20dp"
+            android:layout_marginTop="15dp"
+            android:background="@color/white"
+            android:hint="请输入真实姓名"
+            android:textSize="12sp"
+            app:layout_constraintStart_toStartOf="@+id/commit_edit_input_identity"
+            app:layout_constraintTop_toBottomOf="@id/commit_line1" />
+
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:paddingStart="15dp"
+            android:text="真实姓名"
+            android:textColor="@color/black"
+            app:layout_constraintBottom_toTopOf="@id/real_name"
+            app:layout_constraintTop_toBottomOf="@id/real_name" />
+
+
+        <TextView
+            android:id="@+id/commit_identity_number"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="5dp"
+            android:gravity="center"
+            android:paddingStart="15dp"
+            android:text="身份证号码"
+            android:textColor="@color/black"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/real_name" />
+
+        <EditText
+            android:id="@+id/commit_edit_input_identity"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="5dp"
+            android:layout_marginStart="10dp"
+            android:background="@color/white"
+            android:hint="请添加收货人的身份号码"
+            android:textSize="12sp"
+            app:layout_constraintBottom_toTopOf="@id/commit_identity_number"
+            app:layout_constraintEnd_toStartOf="@id/haiwai_checkbox"
+            app:layout_constraintStart_toEndOf="@id/commit_identity_number"
+            app:layout_constraintTop_toBottomOf="@id/commit_identity_number" />
+
+
+        <TextView
+            android:id="@+id/foreign_deliver_notice"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="15dp"
+            android:text="@string/foreign_deliver_notice"
+            android:textSize="12sp"
+            app:layout_constraintBottom_toTopOf="@id/commit_identity_number"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/commit_identity_number" />
+
+        <!-- <ImageView
+             android:id="@+id/commit_img"
+             android:layout_width="15dp"
+             android:layout_height="15dp"
+             android:layout_marginEnd="5dp"
+             android:src="@drawable/ic_share_img_select"
+             app:layout_constraintBottom_toTopOf="@id/commit_identity_number"
+             app:layout_constraintEnd_toStartOf="@id/foreign_deliver_notice"
+             app:layout_constraintTop_toBottomOf="@id/commit_identity_number" />-->
+
+        <CheckedTextView
+            android:id="@+id/haiwai_checkbox"
+            android:layout_width="15dp"
+            android:layout_height="15dp"
+            android:layout_marginEnd="5dp"
+            android:background="@drawable/check_agree_rule"
+            android:checked="true"
+            app:layout_constraintBottom_toTopOf="@id/commit_identity_number"
+            app:layout_constraintEnd_toStartOf="@id/foreign_deliver_notice"
+            app:layout_constraintTop_toBottomOf="@id/commit_identity_number" />
+
+
+    </android.support.constraint.ConstraintLayout>
+
+
+    <View
+        android:id="@+id/commit_v_divider_2"
+        style="@style/ConstrainLayout_Param_Full_Width"
+        android:layout_height="8dp"
+        android:layout_marginTop="@dimen/order_details_margin_horizontal"
+        android:background="@color/bg_page"
+        android:visibility="gone"
+        app:layout_constraintTop_toBottomOf="@+id/commit_userInfo_cl" />
+
+    <LinearLayout
+        android:id="@+id/commit_layout_add_address"
+        style="@style/ConstrainLayout_Param_Full_Width"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintTop_toBottomOf="@+id/commit_v_divider_1">
+
+        <TextView
+            android:id="@+id/commit_txt_add_address"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="right"
+            android:drawableLeft="@drawable/ic_order_details_reminder"
+            android:drawablePadding="7dp"
+            android:gravity="center_vertical"
+            android:paddingBottom="10dp"
+            android:paddingRight="@dimen/order_details_margin_horizontal"
+            android:paddingTop="10dp"
+            android:text="请添加收货地址>>"
+            android:textColor="@color/black"
+            android:textSize="@dimen/text_size_smallest" />
+
+        <View
+            android:id="@+id/commit_v_divider_3"
+            android:layout_width="match_parent"
+            android:layout_height="8dp"
+            android:background="@color/bg_page" />
+
+    </LinearLayout>
+
+
+</android.support.constraint.ConstraintLayout>

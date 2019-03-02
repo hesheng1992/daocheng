@@ -1,0 +1,265 @@
+package com.a1magway.bgg.p.personal;
+
+import android.support.annotation.Nullable;
+import android.widget.Toast;
+
+import com.a1magway.bgg.App;
+import com.a1magway.bgg.R;
+import com.a1magway.bgg.common.BaseObserver;
+import com.a1magway.bgg.common.broadcast.LoginReceiver;
+import com.a1magway.bgg.data.entity.APIResponse;
+import com.a1magway.bgg.data.entity.HuanXinLoginInfo;
+import com.a1magway.bgg.data.entity.LoginData;
+import com.a1magway.bgg.data.net.APIManager;
+import com.a1magway.bgg.data.repository.IHuanxinData;
+import com.a1magway.bgg.eventbus.event.ChangeUserSettingEvent;
+import com.a1magway.bgg.huanxin.KefuHelper;
+import com.a1magway.bgg.p.BaseLoadP;
+import com.a1magway.bgg.util.GlobalData;
+import com.a1magway.bgg.util.code.RequestCode;
+import com.a1magway.bgg.v.login.LoginActivity;
+import com.a1magway.bgg.v.personal.IPersonalV;
+import com.a1magway.bgg.v.personal.PersonalNewFragment;
+import com.hyphenate.chat.ChatClient;
+import com.hyphenate.helpdesk.callback.Callback;
+
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.inject.Inject;
+
+import io.reactivex.Observable;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.functions.Consumer;
+import io.reactivex.schedulers.Schedulers;
+
+/**
+ * 个人中心P
+ * Created by lyx on 2017/8/1.
+ */
+public class PersonalP extends BaseLoadP<Object, IPersonalV> {
+    IHuanxinData mIHuanxinData;
+    private static final String FOUND_CANCLE_FC = "found_cancle_fc";
+    @Inject
+    APIManager apiManager;
+
+    @Inject
+    public PersonalP(IPersonalV iPersonalV, IHuanxinData huanxinData) {
+        super(iPersonalV);
+        this.mIHuanxinData = huanxinData;
+    }
+
+    @Nullable
+    @Override
+    public Observable getDataObservable() {
+        return null;
+    }
+
+    public void onBtnClick(PersonalNewFragment personalFragment) {
+        if (GlobalData.getInstance().getLoginData() == null) {
+            LoginActivity.startForResult(personalFragment, RequestCode.REQUEST_CODE_LOGIN);
+        } else {
+//            mView.setButtonText(getContext().getString(R.string.personal_login_or_register));
+            App.getInstance().deleteUMengUserAlias(String.valueOf(GlobalData.getInstance().getUserId()));
+            mView.showNoLoginLayout();
+            mView.setMemberGrade("");
+            mView.setViewEnable(false);
+            mView.setUserName(getContext().getResources().getString(R.string.personal_name_default));
+            GlobalData.getInstance().clearLoginData();
+            LoginReceiver.sendLoginStatusBroadcast(getContext(), LoginReceiver.LOG_OUT);
+            EventBus.getDefault().post(FOUND_CANCLE_FC);//将退出登录事件发送给发现界面
+        }
+    }
+
+    @Override
+    public void onCreate() {
+        super.onCreate();
+        getContext().registerReceiver(mLoginReceiver, mLoginReceiver.getIntentFilter());
+        EventBus.getDefault().register(this);
+        updateUserInfo();
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        getContext().unregisterReceiver(mLoginReceiver);
+        EventBus.getDefault().unregister(this);
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onMessageEvent(ChangeUserSettingEvent event) {
+        LoginData loginData = GlobalData.getInstance().getLoginData();
+        mView.setUserName(loginData.getNickName());
+        mView.setMemberGrade(loginData.getMemberGradeName());
+        mView.hideShowUpgradeText(loginData.getMemberGrade());
+        updateUserInfo();
+    }
+
+
+    /**
+     * 生成功能列表集合
+     *
+     * @param isMember 是否是会员
+     * @param isOpen   是否是可点击状态
+     */
+    public List<PersonalFeature> getFeature(boolean isOpen, boolean isMember) {
+        List<PersonalFeature> featureList = new ArrayList<>();
+        featureList.add(new PersonalFeature(PersonalFeature.CARD_CENTER_TAG,
+                isMember ? R.drawable.ic_personal_card_member : R.drawable.ic_personal_card_default, "卡券中心", isOpen, isMember));
+        featureList.add(new PersonalFeature(PersonalFeature.PERSONAL_SETTING_TAG, R.drawable.ic_personal_setting, "个人设置", isOpen, isMember));
+        featureList.add(new PersonalFeature(PersonalFeature.ORDER_MANAGE_TAG, R.drawable.ic_personal_order, "订单管理", isOpen, isMember));
+        featureList.add(new PersonalFeature(PersonalFeature.ADDRESS_MANAGE_TAG, R.drawable.ic_personal_address, "地址管理", isOpen, isMember));
+        featureList.add(new PersonalFeature(PersonalFeature.CONTACT_TAG, R.drawable.ic_personal_contact, "联系客服", true, isMember));
+        featureList.add(new PersonalFeature(PersonalFeature.BUY_NOTE_TAG, R.drawable.ic_personal_notes, "购买须知", true, isMember));
+        return featureList;
+    }
+
+    public List<PersonalFeature> getFeatureNew(boolean isOpen, boolean isMember) {
+        List<PersonalFeature> featureList = new ArrayList<>();
+        featureList.add(new PersonalFeature(PersonalFeature.MY_COLLECT_TAG, R.drawable.ic_personal_collection, "收藏管理", isOpen, isMember));
+        featureList.add(new PersonalFeature(PersonalFeature.ORDER_MANAGE_TAG, R.drawable.ic_personal_order, "我的订单", isOpen, isMember));
+        featureList.add(new PersonalFeature(PersonalFeature.ADDRESS_MANAGE_TAG, R.drawable.ic_personal_address, "地址管理", isOpen, isMember));
+        featureList.add(new PersonalFeature(PersonalFeature.MY_WALLET_TAG, R.drawable.ic_personal_wallet, "钱包", isOpen, isMember));
+        if (GlobalData.getInstance().isLogin() && GlobalData.getInstance().getLoginData().getMemberGrade() >= 3) {
+            featureList.add(new PersonalFeature(PersonalFeature.SALE_ORDER_TAG, R.drawable.ic_personal_sale_order, "销售订单", isOpen, isMember));
+        }
+        featureList.add(new PersonalFeature(PersonalFeature.INVITATION_CODE_TAG, R.drawable.ic_personal_invitation_code_new, "邀请码", isOpen, isMember));
+        featureList.add(new PersonalFeature(PersonalFeature.CONTACT_TAG, R.drawable.ic_personal_contact_new, "联系客服", isOpen, isMember));
+        featureList.add(new PersonalFeature(PersonalFeature.BUY_NOTE_TAG, R.drawable.ic_personal_notes, "购买须知", isOpen, isMember));
+        if (GlobalData.getInstance().isLogin() && GlobalData.getInstance().getLoginData().getMemberGrade() >= 4) {
+            featureList.add(new PersonalFeature(PersonalFeature.AUTHORIZATION_BOOK, R.drawable.ic_authorization_book, "授权书", isOpen, isMember));
+        }
+        featureList.add(new PersonalFeature(PersonalFeature.PERSONAL_SETTING_TAG, R.drawable.ic_personal_setting_new, "个人设置", isOpen, isMember));
+        featureList.add(new PersonalFeature(PersonalFeature.ARTICLE_MANAGER, R.drawable.ic_article_manage_login, "文章管理", isOpen, isMember));
+        if (GlobalData.getInstance().isLogin() && GlobalData.getInstance().getLoginData().getMemberGrade() >= 4) {
+            featureList.add(new PersonalFeature(PersonalFeature.MY_FRIEND, R.drawable.ic_my_friend_login, "我的好友", isOpen, isMember));
+        }
+        featureList.add(new PersonalFeature(PersonalFeature.After_sale,R.drawable.return_money,"售后",isOpen,isMember));
+
+
+        return featureList;
+    }
+
+    private LoginReceiver mLoginReceiver = new LoginReceiver() {
+        @Override
+        public void onLogin() {
+            LoginData data = GlobalData.getInstance().getLoginData();
+            mView.showLoginLayout();
+//            mView.setButtonText(getContext().getString(R.string.personal_exit));
+            mView.setMemberGrade(data.getMemberGradeName());
+//            mView.setUserName(data.getTelephone());
+            mView.setUserName(data.getNickName());
+            mView.setViewEnable(true);
+            mView.hideShowUpgradeText(data.getMemberGrade());
+            mView.notifyFeatureList();
+        }
+
+        @Override
+        public void onLogout() {
+
+        }
+    };
+
+    public void hxLoginInfoGet() {
+        HuanXinLoginInfo huanXinLoginData = GlobalData.getInstance().getHuanXinLoginData();
+        if (huanXinLoginData != null) {
+            huanxinLogin(huanXinLoginData.getUsername(), huanXinLoginData.getPassword());
+            return;
+        }
+        mIHuanxinData.hxLoginInfoGet()
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new BaseObserver<HuanXinLoginInfo>(getContext()) {
+                    @Override
+                    public void onNext(HuanXinLoginInfo huanXinLoginInfo) {
+                        GlobalData.getInstance().setHuanXinLoginData(huanXinLoginInfo);
+                        huanxinLogin(huanXinLoginInfo.getUsername(), huanXinLoginInfo.getPassword());
+                    }
+
+                    @Override
+                    public void onComplete() {
+
+                    }
+                });
+    }
+
+    public void hxLoginInfoRelease() {
+        HuanXinLoginInfo huanXinLoginData = GlobalData.getInstance().getHuanXinLoginData();
+        if (huanXinLoginData == null) {
+            return;
+        }
+        mIHuanxinData.hxLoginInfoRelease(huanXinLoginData.getId())
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new BaseObserver<APIResponse>(getContext()) {
+                    @Override
+                    public void onNext(APIResponse response) {
+                        if (response.isSuccess()) {
+                            GlobalData.getInstance().clearHuanXinLoginData();
+                        }
+                    }
+
+                    @Override
+                    public void onComplete() {
+
+                    }
+                });
+    }
+
+    public void huanxinLogin(String username, String password) {
+        if (ChatClient.getInstance().isLoggedInBefore()) {
+            //已经登录，可以直接进入会话界面
+            KefuHelper.getInstance().chatWithHefu(mView.getActivity());
+        } else {
+            //未登录，需要登录后，再进入会话界面
+            ChatClient.getInstance().login(username, password, new Callback() {
+                @Override
+                public void onSuccess() {
+                    KefuHelper.getInstance().chatWithHefu(mView.getActivity());
+                }
+
+                @Override
+                public void onError(int code, final String error) {
+                    mView.getActivity().runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            Toast.makeText(getContext(), "环信登录失败：" + error, Toast.LENGTH_SHORT).show();
+                        }
+                    });
+                }
+
+                @Override
+                public void onProgress(int progress, String status) {
+
+                }
+            });
+        }
+    }
+
+    //更新用户信息
+    public void updateUserInfo() {
+        LoginData loginData = GlobalData.getInstance().getLoginData();
+        if (loginData != null) {
+            apiManager.getUserInfo(String.valueOf(loginData.getId()))
+                    .subscribeOn(Schedulers.io())
+                    .compose(this.<LoginData>bindToDestroyEvent())
+                    .subscribe(new Consumer<LoginData>() {
+                        @Override
+                        public void accept(LoginData loginData) throws Exception {
+                            GlobalData.getInstance().setLoginData(loginData);
+                            mView.hideShowUpgradeText(loginData.getMemberGrade());
+                            mView.setMemberGrade(loginData.getMemberGradeName());
+                        }
+                    }, new Consumer<Throwable>() {
+                        @Override
+                        public void accept(Throwable throwable) throws Exception {
+
+                        }
+                    });
+        }
+    }
+}

@@ -1,0 +1,8 @@
+package com.a1magway.bgg.v.productReturn;
+
+import com.a1magway.bgg.v.IView;
+/**
+ * Created by lm on 2018/8/30.
+ */
+public interface IReturnContentV extends IView {
+}

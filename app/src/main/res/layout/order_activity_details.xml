@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <com.a1magway.bgg.widget.TitleBar
+        android:id="@+id/details_title_bar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:titleText="@string/order_detail_title" />
+
+    <com.a1magway.bgg.widget.OldRefreshLayout
+        android:id="@+id/details_layout_refresh"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_above="@+id/details_layout_bottom"
+        android:layout_below="@+id/details_title_bar">
+
+        <com.a1magway.bgg.widget.LoadMoreRecyclerView
+            android:id="@+id/details_recycler"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+    </com.a1magway.bgg.widget.OldRefreshLayout>
+
+    <RelativeLayout
+        android:id="@+id/details_layout_bottom"
+        android:layout_width="match_parent"
+        android:layout_height="48dp"
+        android:layout_alignParentBottom="true"
+        android:background="@color/white">
+
+        <TextView
+            android:id="@+id/details_txt_pay_count_down"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_toLeftOf="@+id/details_txt_pay"
+            android:gravity="center"
+            android:textColor="@color/black"
+            android:textSize="14sp"
+            tools:text="剩余支付时间：00:00:09" />
+
+        <TextView
+            android:id="@+id/details_txt_pay"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_alignParentRight="true"
+            android:background="@drawable/base_enable_grey_black"
+            android:gravity="center"
+            android:paddingLeft="45dp"
+            android:paddingRight="45dp"
+            android:text="@string/order_details_txt_pay"
+            android:textColor="@color/white"
+            android:textSize="16sp" />
+    </RelativeLayout>
+
+
+    <include
+        layout="@layout/include_full_loading"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@+id/details_title_bar" />
+</RelativeLayout>

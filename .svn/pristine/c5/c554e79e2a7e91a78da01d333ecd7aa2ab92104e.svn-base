@@ -1,0 +1,5 @@
+<resources>
+    <string name="app_name">Data</string>
+
+    <string name="unknown_fail">请求出错</string>
+</resources>

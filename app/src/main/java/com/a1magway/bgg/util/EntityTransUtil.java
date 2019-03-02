@@ -1,0 +1,117 @@
+package com.a1magway.bgg.util;
+
+import android.support.annotation.Nullable;
+
+import com.a1magway.bgg.App;
+import com.a1magway.bgg.R;
+import com.a1magway.bgg.data.entity.Brand;
+import com.a1magway.bgg.data.entity.CartProduct;
+import com.a1magway.bgg.data.entity.Commodity;
+import com.a1magway.bgg.data.entity.OrderDetailsCommodity;
+import com.a1magway.bgg.data.entity.PayType;
+import com.a1magway.bgg.p.brand.BrandItem;
+
+import java.util.ArrayList;
+import java.util.List;
+
+/**
+ * 实体类转换工具类
+ * Created by jph on 2017/7/29.
+ */
+public class EntityTransUtil {
+
+    /**
+     * 将服务器的品牌model转换成界面显示需要的
+     */
+    public static BrandItem transBrand(@Nullable Brand brand) {
+        if (brand == null) {
+            return null;
+        }
+        BrandItem brandItem = new BrandItem();
+        brandItem.setId(brand.getId());
+        brandItem.setName(brand.getName());
+        brandItem.setType(brand.getType());
+
+        return brandItem;
+    }
+
+
+    public static List<BrandItem> transBrandList(List<Brand> brandList) {
+        if (brandList == null) {
+            return null;
+        }
+
+        List<BrandItem> brandItemList = new ArrayList<>();
+        for (Brand brand :
+                brandList) {
+            brandItemList.add(transBrand(brand));
+        }
+
+        return brandItemList;
+    }
+
+
+    /**
+     * 将支付类型转换成显示的文字
+     */
+    public static String transPayTypeName(@PayType int type) {
+        switch (type) {
+            case PayType.ALIPAY:
+                return App.getContext().getString(R.string.order_details_pay_type_alipay);
+            case PayType.WECHAT:
+                return App.getContext().getString(R.string.order_details_pay_type_wechat);
+            case PayType.UNION:
+                return App.getContext().getString(R.string.order_details_pay_type_bank);
+            default:
+                return null;
+        }
+    }
+
+
+    /**
+     * 将购物车商品model转换成订单详情货品model
+     */
+    public static OrderDetailsCommodity cartPro2OrderDetailsCommodity(CartProduct cartProduct) {
+        OrderDetailsCommodity commodity = new OrderDetailsCommodity();
+        commodity.setProductId(cartProduct.getProductId());
+        commodity.setProductName(cartProduct.getProductName());
+        commodity.setBrand(cartProduct.getBrand());
+        commodity.setListPrice(cartProduct.getListPrice());
+        commodity.setSellPrice(cartProduct.getSellPrice());
+        commodity.setSpecs(cartProduct.getSpecs());
+        commodity.setCount(cartProduct.getCount());
+        commodity.setProductCode(cartProduct.getProductCode());
+        commodity.setSkuCover(cartProduct.getSkuCover());
+        commodity.setSkuId(cartProduct.getSkuId());
+        commodity.setCartId(cartProduct.getId());
+        commodity.setMemberPrice(cartProduct.getMemberPrice());
+        commodity.setValid(cartProduct.isValid());
+        commodity.setValidInfo(cartProduct.getValiInfo());
+        commodity.setProductType(cartProduct.getProductType());
+        return commodity;
+    }
+
+
+    /**
+     * 商品详情的货品转换成订单详情的货品
+     */
+    public static OrderDetailsCommodity commodity2OrderDetailsCommodity(Commodity proCommodity) {
+        OrderDetailsCommodity commodity = new OrderDetailsCommodity();
+        commodity.setProductId(proCommodity.getProductId());
+        commodity.setProductName(proCommodity.getProductName());
+        commodity.setBrand(proCommodity.getBrand());
+        commodity.setListPrice(proCommodity.getListPrice());
+        commodity.setSellPrice(proCommodity.getSellPrice());
+        commodity.setSpecs(proCommodity.getSpecs());
+        commodity.setCount(proCommodity.getCount());
+        commodity.setProductCode(proCommodity.getProductCode());
+        commodity.setSkuCover(proCommodity.getSkuCover());
+        commodity.setSkuId(proCommodity.getSkuId());
+        commodity.setMemberPrice(proCommodity.getMemberPrice());
+        commodity.setValid(proCommodity.isValid());
+        commodity.setProductType(proCommodity.getProductType());
+        Object val = proCommodity.getValiInfo();
+        commodity.setValidInfo(val == null ? "" : val.toString());
+        return commodity;
+    }
+}

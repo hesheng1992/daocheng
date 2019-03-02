@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context=".v.productReturn.ProductReturnSelectActivity">
+    <com.a1magway.bgg.widget.TitleBar
+        android:id="@+id/write_title_bar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:titleText="@string/product_return_write" />
+    <LinearLayout
+        android:background="@color/gray_c10"
+        android:layout_width="match_parent"
+        android:layout_height="15dp">
+    </LinearLayout>
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/write_rv"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+        </android.support.v7.widget.RecyclerView>
+        </LinearLayout>
+            <LinearLayout
+                android:background="@color/gray_c10"
+                android:layout_width="match_parent"
+                android:layout_height="15dp">
+            </LinearLayout>
+        
+        <LinearLayout
+            android:id="@+id/write_return_all_layout"
+            android:gravity="center_vertical"
+            android:paddingLeft="15dp"
+            android:layout_width="match_parent"
+            android:layout_height="60dp">
+            <ImageView
+                android:src="@mipmap/return_money"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+
+            <LinearLayout
+                android:gravity="center_vertical"
+                android:layout_marginLeft="15dp"
+                android:layout_weight="1"
+                android:layout_width="0dp"
+                android:orientation="vertical"
+                android:layout_height="match_parent">
+                <TextView
+                    android:text="退货退款"
+                    android:textColor="@color/black"
+                    android:textSize="14sp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" />
+                <TextView
+                    android:textSize="13sp"
+                    android:text="已收到货，需要退还已收到的商品"
+                    android:textColor="@color/gray_normal"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" />
+
+            </LinearLayout>
+
+            <ImageView
+                android:layout_marginRight="15dp"
+                android:src="@mipmap/onclick"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+        </LinearLayout>
+            <LinearLayout
+                android:background="@color/gray_c10"
+                android:layout_width="match_parent"
+                android:layout_height="1dp">
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/write_return_money"
+                android:gravity="center_vertical"
+                android:paddingLeft="15dp"
+                android:layout_width="match_parent"
+                android:layout_height="60dp">
+                <ImageView
+                    android:src="@mipmap/return_"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" />
+
+                <LinearLayout
+                    android:gravity="center_vertical"
+                    android:layout_marginLeft="15dp"
+                    android:layout_weight="1"
+                    android:layout_width="0dp"
+                    android:orientation="vertical"
+                    android:layout_height="match_parent">
+                    <TextView
+                        android:text="仅退款"
+                        android:textColor="@color/black"
+                        android:textSize="14sp"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content" />
+                    <TextView
+                        android:textSize="13sp"
+                        android:text="未收到的商品（未签收）"
+                        android:textColor="@color/gray_normal"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content" />
+
+                </LinearLayout>
+
+                <ImageView
+                    android:layout_marginRight="15dp"
+                    android:src="@mipmap/onclick"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" />
+            </LinearLayout>
+
+
+        </LinearLayout>
+
+    </ScrollView>
+
+
+
+</LinearLayout>

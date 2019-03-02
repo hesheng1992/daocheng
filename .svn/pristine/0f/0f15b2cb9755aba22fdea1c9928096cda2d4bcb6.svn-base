@@ -1,0 +1,132 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context="com.a1magway.bgg.v.personal.EditAddressActivity">
+
+    <com.a1magway.bgg.widget.TitleBar
+        android:id="@+id/edit_address_title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+    </com.a1magway.bgg.widget.TitleBar>
+
+    <LinearLayout
+        style="@style/Personal_Setting_Item"
+        android:layout_marginTop="8dp">
+
+        <TextView
+            style="@style/Personal_Setting_Item_Left"
+            android:text="@string/address_edit_name"/>
+
+        <EditText
+            android:maxLength="@integer/address_name_length"
+            android:id="@+id/new_address_user_name_tv"
+            style="@style/Personal_Item"
+            android:layout_marginRight="@dimen/personal_item_padding_right"
+            android:drawableRight="@null"/>
+    </LinearLayout>
+
+    <View style="@style/FullLine_View"/>
+
+    <LinearLayout
+        style="@style/Personal_Setting_Item">
+
+        <TextView
+            style="@style/Personal_Setting_Item_Left"
+            android:text="@string/address_edit_contact"/>
+
+        <EditText
+            android:id="@+id/new_address_phone_tv"
+            style="@style/Personal_Item"
+            android:maxLength="@integer/address_phone_length"
+            android:inputType="phone"
+            android:layout_marginRight="@dimen/personal_item_padding_right"
+            android:drawableRight="@null"/>
+    </LinearLayout>
+
+    <View style="@style/FullLine_View"/>
+
+    <LinearLayout
+        style="@style/Personal_Setting_Item">
+
+        <TextView
+            style="@style/Personal_Setting_Item_Left"
+            android:text="@string/address_edit_address"/>
+
+        <TextView
+            android:id="@+id/new_address_address_tv"
+            style="@style/Personal_Item"
+            android:drawablePadding="8dp"
+            android:gravity="center_vertical"
+            android:hint="请选择"
+            />
+    </LinearLayout>
+
+    <View style="@style/FullLine_View"/>
+
+    <LinearLayout
+        style="@style/Personal_Setting_Item"
+        android:layout_height="85dp"
+        android:paddingTop="23dp">
+
+        <TextView
+            style="@style/Personal_Setting_Item_Left"
+            android:gravity="top"
+            android:text="@string/address_edit_address_detail"/>
+
+        <EditText
+            android:id="@+id/new_address_address_detail_tv"
+            style="@style/Personal_Item"
+            android:maxLength="@integer/address_detail_length"
+            android:layout_height="match_parent"
+            android:layout_marginRight="10dp"
+            android:layout_weight="1"
+            android:drawableRight="@null"
+            android:gravity="top"
+            android:paddingBottom="10dp"/>
+
+        <ImageView
+            android:id="@+id/detail_clear_iv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="@dimen/personal_item_padding_right"
+            android:src="@drawable/ic_cart_delete_circle"
+            android:visibility="invisible"/>
+    </LinearLayout>
+
+    <View style="@style/FullLine_View"/>
+
+    <LinearLayout
+        style="@style/Personal_Setting_Item">
+
+        <TextView
+            style="@style/Personal_Setting_Item_Left"
+            android:text="@string/address_edit_post_code"/>
+
+        <EditText
+            android:id="@+id/new_address_post_code_tv"
+            style="@style/Personal_Item"
+            android:inputType="number"
+            android:maxLength="@integer/address_postcode_length"
+            android:layout_marginRight="@dimen/personal_item_padding_right"
+            android:drawableRight="@null"/>
+    </LinearLayout>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <Button
+            android:id="@+id/new_address_btn"
+            style="@style/Common_Btn_Style"
+            android:layout_alignParentBottom="true"
+            android:layout_marginBottom="@dimen/common_btn_margin"
+            android:layout_marginLeft="@dimen/common_btn_margin"
+            android:layout_marginRight="@dimen/common_btn_margin"
+            android:text="@string/address_edit_save"/>
+    </RelativeLayout>
+</LinearLayout>

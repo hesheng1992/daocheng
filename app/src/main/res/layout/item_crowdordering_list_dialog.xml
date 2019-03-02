@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="10dp">
+
+    <ImageView
+        android:id="@+id/item_crowdordering_list_icon"
+        android:layout_width="80dp"
+        android:layout_height="80dp"
+        android:src="@drawable/default_icon" />
+
+    <View
+        android:id="@+id/line"
+        android:layout_width="1dp"
+        android:layout_height="1dp"
+        android:visibility="gone"
+        app:layout_constraintBottom_toTopOf="@id/item_crowdordering_list_icon"
+        app:layout_constraintTop_toBottomOf="@id/item_crowdordering_list_icon" />
+
+    <TextView
+        android:id="@+id/item_crowdordering_list_user_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="5dp"
+        android:layout_marginStart="10dp"
+        app:layout_constraintBottom_toBottomOf="@id/line"
+        app:layout_constraintStart_toEndOf="@id/item_crowdordering_list_icon"
+        tools:text="用户名称" />
+
+    <TextView
+        android:id="@+id/item_crowdordering_list_down_time"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="10dp"
+        android:layout_marginTop="5dp"
+        app:layout_constraintStart_toEndOf="@id/item_crowdordering_list_icon"
+        app:layout_constraintTop_toTopOf="@id/line"
+        tools:text="剩余:23:59:59" />
+
+
+    <TextView
+        android:id="@+id/item_crowdordering_list_go_buy"
+        android:layout_width="70dp"
+        android:layout_height="30dp"
+        android:background="@color/gray_pressed"
+        android:gravity="center"
+        android:text="去拼单"
+        android:textColor="@color/white"
+        app:layout_constraintBottom_toTopOf="@id/item_crowdordering_list_icon"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/item_crowdordering_list_icon" />
+
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="20dp"
+        app:layout_constraintBottom_toTopOf="@id/item_crowdordering_list_go_buy"
+        app:layout_constraintEnd_toStartOf="@id/item_crowdordering_list_go_buy"
+        app:layout_constraintTop_toBottomOf="@id/item_crowdordering_list_go_buy"
+        tools:text="差2人拼成" />
+
+
+</android.support.constraint.ConstraintLayout>

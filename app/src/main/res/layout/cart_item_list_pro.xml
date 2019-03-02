@@ -1,0 +1,223 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="150dp"
+    android:background="@color/white"
+    tools:ignore="RtlHardcoded">
+
+    <TextView
+        android:id="@+id/pro_txt_brand"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="16dp"
+        android:layout_marginRight="16dp"
+        android:paddingTop="5dp"
+        android:paddingBottom="5dp"
+        android:maxLines="1"
+        android:ellipsize="end"
+        android:textSize="@dimen/text_size_s"
+        android:drawablePadding="8dp"
+        android:drawableLeft="@drawable/cart_brand_selector"
+        android:textColor="@color/secondaryTextColor"
+        tools:text="CHANEL"
+        />
+
+    <ImageView
+        android:id="@+id/pro_img"
+        android:layout_width="96dp"
+        android:layout_height="96dp"
+        android:scaleType="centerCrop"
+        android:layout_below="@id/pro_txt_brand"
+        android:layout_marginLeft="30dp"
+        android:layout_marginTop="11dp"
+        android:contentDescription="@null"
+        tools:src="@color/red"/>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/pro_txt_brand"
+        android:layout_toRightOf="@id/pro_img"
+        android:layout_marginLeft="14dp"
+        android:layout_marginRight="14dp"
+        android:layout_marginTop="11dp"
+        android:orientation="vertical">
+
+        <TextView
+            style="@style/TextView.2Line"
+            android:id="@+id/pro_txt_name"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textSize="@dimen/text_size_m"
+            android:textColor="@color/black"
+            tools:text="绝对是开发阶段开始放假独守空房的数据咖啡店绝对是开发阶段开据咖啡店"/>
+
+        <TextView
+            style="@style/TextView.SingleLine"
+            android:id="@+id/pro_txt_sku"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="5dp"
+            android:textSize="@dimen/text_size_smallest"
+            android:textColor="@color/black"
+            tools:text="颜色：黑色 尺码：XXL"/>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center_vertical"
+            >
+
+            <TextView
+                android:id="@+id/pro_txt_origin_price"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:gravity="center_vertical"
+                android:textSize="@dimen/text_size_smallest"
+                android:textColor="@color/primaryGreyTextColor"
+                tools:text="￥18888"/>
+
+            <TextView
+                android:id="@+id/pro_txt_price"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:layout_marginLeft="3dp"
+                android:layout_marginRight="3dp"
+                android:textSize="@dimen/text_size_s"
+                android:textColor="@color/black"
+                tools:text="￥15000"/>
+        </LinearLayout>
+
+        <TextView
+            android:visibility="gone"
+            android:id="@+id/pro_txt_discount"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textSize="@dimen/text_size_s"
+            android:textColor="@color/text_red"
+            tools:text="￥8000"/>
+
+        <LinearLayout
+            android:id="@+id/layout_goods_count"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <FrameLayout
+                android:id="@+id/pro_layout_reduce"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:paddingLeft="@dimen/cart_count_operation_padding"
+                android:paddingTop="@dimen/cart_count_operation_padding"
+                android:paddingBottom="@dimen/cart_count_operation_padding"
+                android:clickable="true"
+                android:focusable="true"
+                tools:ignore="RtlSymmetry">
+
+                <ImageView
+                    android:id="@+id/pro_img_reduce"
+                    android:layout_width="@dimen/cart_count_height"
+                    android:layout_height="@dimen/cart_count_height"
+                    android:background="@drawable/cart_count_operation_left_bg"
+                    android:duplicateParentState="true"
+                    android:contentDescription="@null"
+                    android:src="@drawable/cart_reduce_selector"/>
+            </FrameLayout>
+
+            <TextView
+                android:id="@+id/pro_txt_count"
+                android:layout_width="40dp"
+                android:layout_height="@dimen/cart_count_height"
+                android:layout_marginTop="@dimen/cart_count_operation_padding"
+                android:layout_marginBottom="@dimen/cart_count_operation_padding"
+                android:gravity="center"
+                android:background="@drawable/cart_count_bg"
+                android:duplicateParentState="true"
+                android:textSize="@dimen/text_size_s"
+                tools:ignore="HardcodedText"
+                android:textColor="@color/black"
+                android:text="1"/>
+
+            <FrameLayout
+                android:id="@+id/pro_layout_plus"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:paddingRight="@dimen/cart_count_operation_padding"
+                android:paddingTop="@dimen/cart_count_operation_padding"
+                android:paddingBottom="@dimen/cart_count_operation_padding"
+                app:layout_constraintLeft_toRightOf="@+id/pro_layout_count"
+                app:layout_constraintTop_toTopOf="@+id/pro_layout_count"
+                android:clickable="true"
+                android:focusable="true"
+                tools:ignore="RtlSymmetry">
+
+                <ImageView
+                    android:id="@+id/pro_img_plus"
+                    android:layout_width="@dimen/cart_count_height"
+                    android:layout_height="@dimen/cart_count_height"
+                    android:background="@drawable/cart_count_operation_right_bg"
+                    android:duplicateParentState="true"
+                    android:contentDescription="@null"
+                    android:src="@drawable/cart_plus_selector"/>
+            </FrameLayout>
+
+            <TextView
+                android:id="@+id/pro_txt_stock"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:visibility="gone"
+                tools:visibility="visible"
+                android:layout_gravity="center_vertical"
+                android:layout_marginLeft="3dp"
+                android:textSize="@dimen/text_size_smallest"
+                android:textColor="@color/text_red"
+                tools:text="最大库存：3"/>
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+    <View
+        android:id="@+id/pro_v_layer"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        android:background="@color/black_36" />
+
+    <TextView
+        android:id="@+id/pro_txt_valid"
+        android:layout_width="96dp"
+        android:layout_height="96dp"
+        android:visibility="gone"
+        tools:visibility="visible"
+        android:layout_below="@id/pro_txt_brand"
+        android:layout_marginLeft="30dp"
+        android:layout_marginTop="11dp"
+        android:gravity="center"
+        android:textSize="20sp"
+        android:textColor="@color/white"
+        tools:text="@string/cart_txt_invalid"/>
+
+    <TextView
+        android:id="@+id/pro_txt_delete"
+        android:layout_width="wrap_content"
+        android:layout_height="16dp"
+        android:layout_gravity="center_vertical"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentBottom="true"
+        android:layout_marginRight="16dp"
+        android:layout_marginBottom="10dp"
+        android:gravity="center_vertical"
+        android:drawableLeft="@drawable/ic_search_clear"
+        android:drawablePadding="5dp"
+        android:textSize="@dimen/text_size_smallest"
+        tools:ignore="RelativeOverlap"
+        android:textColor="@color/black"
+        android:text="@string/delete"/>
+</RelativeLayout>

@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@drawable/title_bar_bg"
+    android:orientation="horizontal">
+
+    <LinearLayout
+        android:id="@+id/recommend_tab_comprehensive"
+        android:layout_width="0dp"
+        android:layout_height="@dimen/search_tab_result_height"
+        android:layout_weight="1"
+        android:gravity="center"
+        android:orientation="horizontal">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:duplicateParentState="true"
+            android:gravity="center"
+            android:text="综合"
+            android:textColor="@color/base_select_grey_black"
+            android:textSize="@dimen/text_size_m" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/recommend_tab_price"
+        android:layout_width="0dp"
+        android:layout_height="@dimen/search_tab_result_height"
+        android:layout_weight="1"
+        android:gravity="center"
+        android:orientation="horizontal">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:duplicateParentState="true"
+            android:gravity="center"
+            android:text="价格"
+            android:textColor="@color/base_select_grey_black"
+            android:textSize="@dimen/text_size_m" />
+
+        <ImageView
+            android:id="@+id/recommend_tab_img_price_sort"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="4dp"
+            android:duplicateParentState="true"
+            android:src="@drawable/ic_search_tab" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/recommend_tab_discount"
+        android:layout_width="0dp"
+        android:layout_height="@dimen/search_tab_result_height"
+        android:layout_weight="1"
+        android:gravity="center"
+        android:orientation="horizontal">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:duplicateParentState="true"
+            android:gravity="center"
+            android:text="折扣"
+            android:textColor="@color/base_select_grey_black"
+            android:textSize="@dimen/text_size_m" />
+
+        <ImageView
+            android:id="@+id/recommend_tab_img_discount_sort"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="4dp"
+            android:duplicateParentState="true"
+            android:src="@drawable/ic_search_tab" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/recommend_tab_sale_count"
+        android:layout_width="0dp"
+        android:layout_height="@dimen/search_tab_result_height"
+        android:layout_weight="1"
+        android:gravity="center"
+        android:orientation="horizontal">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:duplicateParentState="true"
+            android:gravity="center"
+            android:text="销量"
+            android:textColor="@color/base_select_grey_black"
+            android:textSize="@dimen/text_size_m" />
+
+        <ImageView
+            android:id="@+id/recommend_tab_img_sale_sort"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="4dp"
+            android:duplicateParentState="true"
+            android:src="@drawable/ic_search_tab" />
+    </LinearLayout>
+</LinearLayout>

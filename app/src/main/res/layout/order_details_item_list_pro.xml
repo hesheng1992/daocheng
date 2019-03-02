@@ -1,0 +1,146 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/white">
+    <FrameLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+        <ImageView
+            android:id="@+id/pro_img_pic"
+            android:layout_width="77dp"
+            android:layout_height="77dp"
+            android:scaleType="centerCrop"
+            android:layout_marginLeft="@dimen/order_details_margin_horizontal"
+            android:layout_marginTop="@dimen/order_details_margin_horizontal"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:src="@color/red"/>
+        <TextView
+            android:id="@+id/text_return_goods"
+            android:layout_width="60dp"
+            android:layout_height="60dp"
+            android:layout_gravity="center"
+            android:layout_marginLeft="15dp"
+            android:layout_marginTop="4dp"
+            android:background="@drawable/shape_return_goods_text"
+            android:gravity="center"
+            android:padding="5dp"
+            android:text="退货中..."
+            android:textColor="@color/white"
+            android:textSize="10sp"
+            android:visibility="visible"
+            android:layout_marginRight="7dp"/>
+    </FrameLayout>
+
+    <TextView
+        android:id="@+id/pro_txt_num"
+        style="@style/TextView.2Line"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="15dp"
+        android:textColor="@color/black"
+        android:textSize="@dimen/text_size_smallest"
+        app:layout_constraintLeft_toRightOf="@+id/pro_img_pic"
+        app:layout_constraintRight_toLeftOf="@+id/pro_txt_count"
+        app:layout_constraintTop_toTopOf="@+id/pro_img_pic"
+        tools:text="商品编号：JJJJF99999999999"/>
+
+    <TextView
+        android:id="@+id/pro_txt_name"
+        style="@style/TextView.SingleLine"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginRight="15dp"
+        android:layout_marginTop="6dp"
+        android:textColor="@color/black"
+        android:textSize="@dimen/text_size_s"
+        app:layout_constraintLeft_toLeftOf="@+id/pro_txt_num"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/pro_txt_num"
+        tools:text="垃圾分类的咖啡剑荡四方垃圾分类的咖啡剑荡四方垃圾分类的咖啡剑荡四方垃圾分类的咖啡剑荡四方"/>
+
+    <TextView
+        android:id="@+id/pro_txt_brand"
+        style="@style/TextView.SingleLine"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="6dp"
+        android:textColor="@color/text_grey"
+        android:textSize="@dimen/text_size_smallest"
+        app:layout_constraintLeft_toLeftOf="@+id/pro_txt_num"
+        app:layout_constraintTop_toBottomOf="@+id/pro_txt_name"
+        tools:text="ABCDE FGH"/>
+
+    <TextView
+        android:id="@+id/pro_txt_sku"
+        style="@style/TextView.SingleLine"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="6dp"
+        android:textColor="@color/black"
+        android:textSize="@dimen/text_size_smallest"
+        app:layout_constraintLeft_toLeftOf="@+id/pro_txt_num"
+        app:layout_constraintTop_toBottomOf="@+id/pro_txt_brand"
+        tools:text="黑色 XXL"/>
+
+    <TextView
+        android:id="@+id/pro_txt_count"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginRight="@dimen/order_details_margin_horizontal"
+        android:layout_marginTop="6dp"
+        android:textColor="@color/black"
+        android:textSize="@dimen/text_size_smallest"
+        app:layout_constraintBottom_toBottomOf="@id/pro_txt_sku"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/pro_txt_num"
+        tools:text="x2"/>
+
+    <TextView
+        android:id="@+id/pro_txt_discount"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginRight="@dimen/order_details_margin_horizontal"
+        android:textColor="@color/text_red"
+        android:textSize="13sp"
+        android:visibility="invisible"
+        app:layout_constraintBottom_toBottomOf="@+id/pro_txt_sku"
+        app:layout_constraintRight_toRightOf="parent"
+        tools:text="25% OFF"/>
+
+    <TextView
+        android:id="@+id/pro_txt_price"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginRight="@dimen/order_details_margin_horizontal"
+        android:layout_marginTop="9dp"
+        android:textColor="@color/black"
+        android:textSize="13sp"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/pro_txt_sku"
+        tools:text="￥100000"/>
+
+    <TextView
+        android:id="@+id/pro_txt_origin_price"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginRight="6dp"
+        android:layout_marginTop="9dp"
+        android:textColor="@color/text_grey"
+        android:textSize="@dimen/text_size_smallest"
+        app:layout_constraintBottom_toBottomOf="@+id/pro_txt_price"
+        app:layout_constraintRight_toLeftOf="@+id/pro_txt_price"
+        tools:text="￥100000"/>
+
+    <View
+        style="@style/ConstrainLayout_Param_Full_Width"
+        android:layout_height="1dp"
+        android:layout_marginTop="@dimen/order_details_margin_horizontal"
+        android:background="@color/bg_page"
+        app:layout_constraintTop_toBottomOf="@+id/pro_txt_price"/>
+
+</android.support.constraint.ConstraintLayout>

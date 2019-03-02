@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                xmlns:app="http://schemas.android.com/apk/res-auto"
+                xmlns:tools="http://schemas.android.com/tools"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@color/white"
+                android:descendantFocusability="blocksDescendants">
+
+    <include layout="@layout/v_null_status_bar"/>
+
+    <com.a1magway.bgg.widget.OldRefreshLayout
+        android:id="@+id/home_layout_refresh"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@+id/null_status_bar">
+
+        <com.a1magway.bgg.widget.LoadMoreRecyclerView
+            android:id="@+id/home_recycler"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"/>
+    </com.a1magway.bgg.widget.OldRefreshLayout>
+
+    <include
+        layout="@layout/home_include_title"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/title_bar_height"
+        android:layout_below="@+id/null_status_bar"/>
+
+    <include
+        layout="@layout/include_full_loading"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@+id/null_status_bar"/>
+</RelativeLayout>

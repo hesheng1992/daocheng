@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@id/layout_member_upgrade"
+    android:layout_width="match_parent"
+    android:layout_height="40dp"
+    android:layout_alignParentBottom="true">
+
+    <LinearLayout
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:background="@color/white">
+
+        <LinearLayout
+            android:id="@+id/layout_member_list_price"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:gravity="center|right"
+            android:orientation="vertical"
+            tools:ignore="NestedWeights,RtlHardcoded">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:text="@string/limited_edition"
+                android:textColor="@color/text_grey"
+                android:textSize="@dimen/text_size_smallest" />
+
+            <TextView
+                android:id="@+id/text_member_list_price"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/text_grey"
+                android:textSize="@dimen/text_size_s"
+                tools:text="$12999/年" />
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/text_member_sell_price"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_gravity="center"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            android:gravity="center"
+            android:textColor="@color/member_upgrade_price_color"
+            android:textSize="@dimen/text_size_l"
+            tools:text="$ 999/年" />
+    </LinearLayout>
+
+    <Button
+        android:id="@+id/bt_member_upgrade"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_gravity="center"
+        android:layout_weight="1"
+        android:background="@drawable/member_upgrade_bt_bg"
+        android:gravity="center"
+        android:text="@string/upgrade_immediately"
+        android:textColor="#361B10"
+        android:textSize="@dimen/text_size_l" />
+</LinearLayout>

@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/white"
+    android:orientation="vertical"
+    tools:context="com.a1magway.bgg.v.mainhome.SpecialProductActivity">
+
+    <com.a1magway.bgg.widget.TitleBar
+        android:id="@+id/special_product_title_bar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
+
+    <com.a1magway.bgg.refactor.AppRefreshLayout
+        android:id="@+id/special_product_refresh"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <android.support.v4.widget.NestedScrollView
+                android:id="@+id/nestedScrollView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+
+                    <com.a1magway.bgg.widget.banner.BannerView
+                        android:id="@+id/banner"
+                        android:layout_width="match_parent"
+                        android:layout_height="200dp"
+                        android:visibility="gone"
+                        app:layout_constraintLeft_toLeftOf="parent"
+                        app:layout_constraintRight_toRightOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"
+                        tools:background="@color/red" />
+
+
+                    <com.a1magway.bgg.widget.LoadMoreRecyclerView
+                        android:id="@+id/special_product_recyclerview"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent" />
+                </LinearLayout>
+
+            </android.support.v4.widget.NestedScrollView>
+
+            <RelativeLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:paddingTop="60dp">
+
+                <include layout="@layout/include_full_loading" />
+            </RelativeLayout>
+
+        </FrameLayout>
+
+    </com.a1magway.bgg.refactor.AppRefreshLayout>
+
+
+</LinearLayout>

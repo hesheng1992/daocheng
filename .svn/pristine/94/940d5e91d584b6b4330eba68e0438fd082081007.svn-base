@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical">
+    <com.a1magway.bgg.widget.TitleBar
+        android:id="@+id/order_list_title_bar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:titleText="@string/after_sale"/>
+
+    <android.support.design.widget.TabLayout
+        android:id="@+id/order_list_layout_tab"
+        style="@style/PageTabLayout"
+        android:background="@color/white"/>
+
+
+    <com.a1magway.bgg.widget.NoSwitchViewPager
+        android:isScrollContainer="false"
+        android:id="@+id/order_list_pager"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"/>
+
+</LinearLayout>

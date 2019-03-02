@@ -1,0 +1,49 @@
+package com.a1magway.bgg.p.productReturn;
+
+import android.support.annotation.NonNull;
+
+import com.a1magway.bgg.data.entity.OrderItem;
+import com.a1magway.bgg.p.BasePresenter;
+import com.a1magway.bgg.v.productReturn.IApplyReturnV;
+
+import java.util.ArrayList;
+import java.util.List;
+
+/**
+ * Created by lm on 2018/8/30.
+ */
+public class ApplyReturnP extends BasePresenter<IApplyReturnV> {
+
+    private IApplyReturnV mView;
+    private OrderItem orderItem;
+    private ReturnProductListdapter mAdapter;
+    private PhotoSelectadapter mPhotoAdapter;
+
+    public ApplyReturnP(@NonNull IApplyReturnV view, OrderItem orderItem) {
+        super(view);
+        mView=view;
+        this.orderItem=orderItem;
+    }
+
+
+    public  void initRV(){
+        mAdapter=new ReturnProductListdapter(orderItem.getSkuList());
+        mAdapter.setHideSelct(true);
+        mView.initAdapter(mAdapter);
+
+        List<String>list=new ArrayList<>();
+        list.add("");
+        mPhotoAdapter=new PhotoSelectadapter(list);
+        mView.initPhotoAdapter(mPhotoAdapter);
+
+        mPhotoAdapter.setItemOperationListener(
+                new PhotoSelectadapter.ItemOperationListener() {
+
+                    @Override
+                    public void onItemClickSelectChange() {
+                        
+                    }
+                });
+
+    }
+}

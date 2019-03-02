@@ -1,0 +1,79 @@
+package com.a1magway.bgg.v.productReturn;
+
+import android.os.Bundle;
+import android.support.annotation.Nullable;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
+import android.view.View;
+import android.widget.ImageView;
+import android.widget.TextView;
+
+import com.a1magway.bgg.R;
+import com.a1magway.bgg.common.PFragment;
+import com.a1magway.bgg.data.entity.OrderItem;
+import com.a1magway.bgg.data.entity.SalesReturn;
+import com.a1magway.bgg.p.productReturn.ReturnProductListdapter;
+
+import butterknife.BindView;
+
+/**
+ * Created by enid on 2018/9/8.
+ *
+ */
+
+/**
+ * 退货物流信息
+ */
+public class ReturnLogisticsInfoFragment extends PFragment {
+
+    private static final String EXTRA_OUTTRADENO = "EXTRA_OUTTRADENO";
+    private static final String SALES_RETURN = "SALES_RETURN";
+    //商品列表
+    @BindView(R.id.return_content_goods)
+    RecyclerView return_content_goods;
+    //退款金额
+    @BindView(R.id.apply_money_tv)
+    TextView apply_money_tv;
+    //商品数量
+    @BindView(R.id.apply_count_tv)
+    TextView apply_count_tv;
+    //寄回快递的编号
+    @BindView(R.id.text_log_number)
+    TextView text_log_number;
+
+    @BindView(R.id.image_right)
+    ImageView image_right;
+    //物流信息
+    @BindView(R.id.log_recycler)
+    RecyclerView log_recycler;
+    //商品列表
+    private ReturnProductListdapter mGoodsAdapter;
+    private OrderItem orderItem;
+
+    public static ReturnLogisticsInfoFragment newIntance(OrderItem item, SalesReturn salesReturn) {
+        // Required empty public constructor
+        Bundle bundle = new Bundle();
+        bundle.putSerializable(EXTRA_OUTTRADENO,item);
+        bundle.putSerializable(SALES_RETURN,salesReturn);
+        ReturnLogisticsInfoFragment fragment = new ReturnLogisticsInfoFragment();
+        fragment.setArguments(bundle);
+        return fragment;
+    }
+
+    @Override
+    public int getContentViewLayoutId() {
+        return R.layout.fragment_return_logistics_info;
+    }
+
+    @Override
+    public void initView(@Nullable Bundle savedInstanceState, @Nullable View contentView) {
+        super.initView(savedInstanceState, contentView);
+        orderItem= (OrderItem) getArguments().getSerializable(EXTRA_OUTTRADENO);
+        return_content_goods.setLayoutManager(new LinearLayoutManager(getContext()));
+        mGoodsAdapter=new ReturnProductListdapter(orderItem.getSkuList());
+        mGoodsAdapter.setHideSelct(true);
+        return_content_goods.setAdapter(mGoodsAdapter);
+
+
+    }
+}

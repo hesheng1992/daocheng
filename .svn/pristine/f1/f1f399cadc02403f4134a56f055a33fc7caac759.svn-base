@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:orientation="vertical"
+              android:layout_width="match_parent"
+             android:layout_height="@dimen/common_item_height">
+
+        <EditText
+            android:focusable="true"
+            android:id="@+id/input_edt"
+            style="@style/EditText_Style_Comm"
+            android:inputType="number"
+            android:maxLength="@integer/phoneLength"/>
+
+        <ImageView
+            android:id="@+id/input_clear_iv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="right|center_vertical"
+            android:paddingRight="8dp"
+            android:src="@drawable/ic_search_clear"
+            android:visibility="gone"/>
+
+</FrameLayout>

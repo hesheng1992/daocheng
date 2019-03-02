@@ -1,0 +1,49 @@
+package com.a1magway.bgg.p.productReturn;
+
+
+import android.support.annotation.NonNull;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.ImageView;
+
+import com.a1magway.bgg.R;
+import com.a1magway.bgg.common.adapter.BaseRecyclerVH;
+
+import butterknife.BindView;
+
+
+/**
+ * Created by lm on 2018/8/30.
+ */
+public class PhotoVH extends BaseRecyclerVH<String> {
+    @BindView(R.id.select_photo)
+    ImageView selectPhoto;
+
+    public PhotoVH(@NonNull ViewGroup parent, int layoutResId) {
+        super(parent, R.layout.item_photo_layout);
+    }
+
+
+    private PhotoSelectadapter.ItemOperationListener mItemOperationListener;
+
+
+    public PhotoVH setItemOperationListener(PhotoSelectadapter.ItemOperationListener itemOperationListener) {
+        mItemOperationListener = itemOperationListener;
+        return this;
+    }
+
+    public void showViewContent(String url, final PhotoSelectadapter returnProductListdapter, final int position) {
+
+        if (url.equals("")) {
+            selectPhoto.setImageResource(R.mipmap.add_photo);
+            selectPhoto.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    mItemOperationListener.onItemClickSelectChange();
+                }
+            });
+        }
+
+
+    }
+}

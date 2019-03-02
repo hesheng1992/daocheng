@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+            xmlns:app="http://schemas.android.com/apk/res-auto"
+            xmlns:tools="http://schemas.android.com/tools"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@color/white"
+            android:scrollbars="none">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:paddingLeft="14dp"
+        android:paddingRight="14dp">
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="@dimen/search_filter_cate_title_margin_top"
+            android:gravity="center"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/cate_txt_cate_tag"
+                style="@style/Search_Filter_Cate1"
+                android:text="@string/search_filter_title_cate"/>
+
+            <View
+                android:layout_width="1dp"
+                android:layout_height="15dp"
+                android:layout_marginLeft="15dp"
+                android:layout_marginRight="15dp"
+                android:background="@color/black"/>
+
+            <TextView
+                android:id="@+id/cate_txt_cate1"
+                style="@style/Search_Filter_Cate1"
+                tools:text="1级分类"/>
+        </LinearLayout>
+
+        <LinearLayout
+            android:visibility="gone"
+            android:id="@+id/cate2_woman_layout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/cate_txt_woman"
+                style="@style/Search_Filter_Cate2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="32dp"
+                tools:text="女士"/>
+
+            <com.google.android.flexbox.FlexboxLayout
+                android:id="@+id/cate_layout_cate2_woman"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="80dp"
+                android:layout_marginRight="24dp"
+                android:layout_marginTop="10dp"
+                app:alignContent="center"
+                app:dividerDrawableHorizontal="@drawable/search_filter_divider_cate2_v"
+                app:dividerDrawableVertical="@drawable/search_filter_divider_cate2_h"
+                app:flexDirection="row"
+                app:flexWrap="wrap"
+                app:justifyContent="center"
+                app:showDividerHorizontal="middle"
+                app:showDividerVertical="middle"/>
+        </LinearLayout>
+
+        <LinearLayout
+            android:visibility="gone"
+            android:id="@+id/cate2_man_layout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+        <TextView
+            android:id="@+id/cate_txt_man"
+            style="@style/Search_Filter_Cate2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="32dp"
+            tools:text="男士"/>
+
+        <com.google.android.flexbox.FlexboxLayout
+            android:id="@+id/cate_layout_cate2_man"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="80dp"
+            android:layout_marginRight="24dp"
+            android:layout_marginTop="10dp"
+            app:alignContent="center"
+            app:dividerDrawableHorizontal="@drawable/search_filter_divider_cate2_v"
+            app:dividerDrawableVertical="@drawable/search_filter_divider_cate2_h"
+            app:flexDirection="row"
+            app:flexWrap="wrap"
+            app:justifyContent="center"
+            app:showDividerHorizontal="middle"
+            app:showDividerVertical="middle"/>
+        </LinearLayout>
+
+    </LinearLayout>
+
+</ScrollView>

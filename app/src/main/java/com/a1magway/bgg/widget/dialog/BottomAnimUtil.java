@@ -1,0 +1,74 @@
+package com.a1magway.bgg.widget.dialog;
+
+import android.view.View;
+import android.view.animation.Animation;
+import android.view.animation.TranslateAnimation;
+
+/**
+ * Created by jph on 2017/8/21.
+ */
+public class BottomAnimUtil {
+    public interface AnimationListener{
+        void onFinish();
+    }
+
+    public static void slideToUp(View view){
+        Animation slide = new TranslateAnimation(Animation.RELATIVE_TO_SELF, 0.0f,
+                Animation.RELATIVE_TO_SELF, 0.0f, Animation.RELATIVE_TO_SELF,
+                1.0f, Animation.RELATIVE_TO_SELF, 0.0f);
+
+        slide.setDuration(200);
+        slide.setFillAfter(true);
+        slide.setFillEnabled(true);
+        view.startAnimation(slide);
+
+        slide.setAnimationListener(new Animation.AnimationListener() {
+            @Override
+            public void onAnimationStart(Animation animation) {
+
+            }
+
+            @Override
+            public void onAnimationEnd(Animation animation) {
+
+            }
+
+            @Override
+            public void onAnimationRepeat(Animation animation) {
+
+            }
+        });
+
+    }
+
+    public static void slideToDown(View view, final AnimationListener listener){
+        Animation slide = new TranslateAnimation(Animation.RELATIVE_TO_SELF, 0.0f,
+                Animation.RELATIVE_TO_SELF, 0.0f, Animation.RELATIVE_TO_SELF,
+                0.0f, Animation.RELATIVE_TO_SELF, 1.0f);
+
+        slide.setDuration(100);
+        slide.setFillAfter(true);
+        slide.setFillEnabled(true);
+        view.startAnimation(slide);
+
+        slide.setAnimationListener(new Animation.AnimationListener() {
+            @Override
+            public void onAnimationStart(Animation animation) {
+
+            }
+
+            @Override
+            public void onAnimationEnd(Animation animation) {
+                if (listener != null) {
+                    listener.onFinish();
+                }
+            }
+
+            @Override
+            public void onAnimationRepeat(Animation animation) {
+
+            }
+        });
+
+    }
+}

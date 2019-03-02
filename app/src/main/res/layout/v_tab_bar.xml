@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_alignParentLeft="true"
+    android:layout_alignParentStart="true"
+    android:layout_alignParentTop="true"
+  >
+
+    <RadioGroup
+        android:layout_width="match_parent"
+        android:id="@+id/tab_rgroup"
+        android:layout_height="@dimen/tab_bar_height"
+        android:background="#222222"
+        android:orientation="horizontal">
+
+    <RadioButton
+        android:id="@+id/tab_rbtn_main_home"
+        style="@style/TabBar_Tab"
+        android:drawableTop="@drawable/check_main_tab_home"
+        android:text="@string/main_tab_home" />
+
+    <RadioButton
+        android:visibility="gone"
+        android:id="@+id/tab_rbtn_home"
+        style="@style/TabBar_Tab"
+        android:drawableTop="@drawable/check_main_tab_home"
+        android:text="@string/main_tab_home" />
+
+
+    <RadioButton
+        android:id="@+id/tab_rbtn_cate"
+        style="@style/TabBar_Tab"
+        android:drawableTop="@drawable/check_main_tab_cate"
+        android:text="@string/main_tab_cate" />
+
+    <RadioButton
+        android:id="@+id/tab_rbtn_found"
+        style="@style/TabBar_Tab"
+        android:gravity="center|bottom"
+        android:paddingBottom="5dp"
+        android:text="@string/main_tab_found" />
+
+
+
+    <RadioButton
+        android:id="@+id/tab_rbtn_cart"
+        style="@style/TabBar_Tab"
+        android:drawableTop="@drawable/check_main_tab_cart"
+        android:text="@string/main_tab_cart" />
+
+    <RadioButton
+        android:id="@+id/tab_rbtn_personal"
+        style="@style/TabBar_Tab"
+        android:drawableTop="@drawable/check_main_tab_personal"
+        android:text="@string/main_tab_personal" />
+    </RadioGroup>
+
+
+</RelativeLayout>

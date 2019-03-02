@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/member_upgrade_info_bg"
+    tools:context="com.a1magway.bgg.v.member.MemberUpgradeInfoActivity">
+
+    <com.a1magway.bgg.refactor.LoadingView
+        android:id="@+id/view_load"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_above="@+id/layout_member_upgrade">
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/recycler_member_upgrade_info"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            />
+    </com.a1magway.bgg.refactor.LoadingView>
+
+    <include
+        android:id="@+id/layout_member_upgrade"
+        layout="@layout/layout_member_upgrade_price"/>
+</RelativeLayout>

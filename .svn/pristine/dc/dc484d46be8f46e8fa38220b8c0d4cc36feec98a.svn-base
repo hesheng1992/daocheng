@@ -1,0 +1,104 @@
+package com.a1magway.bgg.v.productReturn;
+
+
+import android.os.Bundle;
+import android.support.annotation.Nullable;
+import android.support.v4.app.Fragment;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.TextView;
+
+import com.a1magway.bgg.R;
+import com.a1magway.bgg.common.PFragment;
+import com.a1magway.bgg.data.entity.OrderItem;
+import com.a1magway.bgg.data.entity.SalesReturn;
+import com.a1magway.bgg.p.productReturn.PhotoSelectadapter;
+import com.a1magway.bgg.p.productReturn.ReturnProductListdapter;
+
+import java.util.ArrayList;
+
+import butterknife.BindView;
+import butterknife.ButterKnife;
+import butterknife.Unbinder;
+
+/**
+ * A simple {@link Fragment} subclass.
+ */
+public class ReturnProductInfoFragment extends PFragment {
+
+    private static final String EXTRA_OUTTRADENO = "EXTRA_OUTTRADENO";
+    private static final String SALES_RETURN = "SALES_RETURN";
+    @BindView(R.id.return_content_goods)
+    RecyclerView returnContentGoods;
+    @BindView(R.id.return_content_phone)
+    TextView returnContentPhone;
+    @BindView(R.id.return_content_reason)
+    TextView returnContentReason;
+    @BindView(R.id.return_content_descibe)
+    TextView returnContentDescibe;
+    @BindView(R.id.return_content_money)
+    TextView returnContentMoney;
+    @BindView(R.id.return_content_code)
+    TextView returnContentCode;
+    @BindView(R.id.return_content_img_info)
+    RecyclerView returnContentImgInfo;
+
+    private OrderItem orderItem;
+    private SalesReturn salesReturn;
+
+    private PhotoSelectadapter mPhotoAdapter;
+
+    public static ReturnProductInfoFragment newIntance(OrderItem item, SalesReturn salesReturn) {
+        // Required empty public constructor
+        Bundle bundle = new Bundle();
+        bundle.putSerializable(EXTRA_OUTTRADENO,item);
+        bundle.putSerializable(SALES_RETURN,salesReturn);
+        ReturnProductInfoFragment fragment = new ReturnProductInfoFragment();
+        fragment.setArguments(bundle);
+        return fragment;
+    }
+
+    @Override
+    public int getContentViewLayoutId() {
+        return R.layout.fragment_return_product_info;
+    }
+
+    @Override
+    public void initView(@Nullable Bundle savedInstanceState, @Nullable View contentView) {
+        super.initView(savedInstanceState, contentView);
+        orderItem= (OrderItem) getArguments().getSerializable(EXTRA_OUTTRADENO);
+        salesReturn= (SalesReturn) getArguments().getSerializable(SALES_RETURN);
+
+        returnContentGoods.setLayoutManager(new LinearLayoutManager(getContext()));
+        ReturnProductListdapter mGoodsAdapter=new ReturnProductListdapter(orderItem.getSkuList());
+        mGoodsAdapter.setHideSelct(true);
+        returnContentGoods.setAdapter(mGoodsAdapter);
+        returnContentImgInfo.setLayoutManager(new LinearLayoutManager(getContext(),LinearLayoutManager.HORIZONTAL,false));
+        if (salesReturn.getImgs()==null){
+            mPhotoAdapter=new PhotoSelectadapter(new ArrayList<String>());
+        }else{
+            mPhotoAdapter=new PhotoSelectadapter(salesReturn.getImgs());
+        }
+        returnContentImgInfo.setAdapter(mPhotoAdapter);
+    }
+    //获取显示退货详情
+    public void setSalesReturn(SalesReturn salesReturn){
+        if (salesReturn!=null){
+            returnContentPhone.setText("联系电话: "+salesReturn.getPhone());
+            returnContentReason.setText("退货原因: "+salesReturn.getReason());
+            returnContentDescibe.setText("退货说明: "+salesReturn.getDescribe());
+            returnContentMoney.setText("退款金额: "+salesReturn.getMoney());
+            if (salesReturn.getImgs()!=null && salesReturn.getImgs().size()>0){
+                mPhotoAdapter.setList(salesReturn.getImgs());
+            }
+        }
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+    }
+}

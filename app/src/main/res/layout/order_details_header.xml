@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/white_88">
+
+    <View
+        android:id="@+id/details_v_divider_1"
+        style="@style/ConstrainLayout_Param_Full_Width"
+        android:layout_height="8dp"
+        android:background="@color/bg_page"/>
+
+    <TextView
+        android:id="@+id/details_txt_name"
+        style="@style/TextView.SingleLine"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/order_details_margin_horizontal"
+        android:layout_marginTop="@dimen/order_details_margin_vertical"
+        android:maxWidth="150dp"
+        android:textColor="@color/black"
+        android:textSize="@dimen/text_size_m"
+        android:textStyle="bold"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/details_v_divider_1"
+        tools:text="超载鸡"/>
+
+    <TextView
+        android:id="@+id/details_txt_phone"
+        style="@style/TextView.SingleLine"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/order_details_margin_horizontal"
+        android:textColor="@color/black"
+        android:textSize="@dimen/text_size_m"
+        app:layout_constraintBaseline_toBaselineOf="@+id/details_txt_name"
+        app:layout_constraintLeft_toRightOf="@+id/details_txt_name"
+        tools:text="18888888888"/>
+
+    <TextView
+        android:id="@+id/details_txt_address"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginRight="35dp"
+        android:layout_marginTop="12dp"
+        android:textColor="@color/black"
+        android:textSize="@dimen/text_size_s"
+        app:layout_constraintLeft_toLeftOf="@+id/details_txt_name"
+        app:layout_constraintRight_toLeftOf="@+id/details_txt_postcode"
+        app:layout_constraintTop_toBottomOf="@+id/details_txt_name"
+        tools:text="四川省成都市锦江区新光华街7号航天科技大厦48楼麦迈国际地"/>
+
+    <TextView
+        android:id="@+id/details_txt_postcode"
+        style="@style/TextView.SingleLine"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginRight="@dimen/order_details_margin_horizontal"
+        android:layout_marginTop="12dp"
+        android:textColor="@color/black"
+        android:textSize="@dimen/text_size_s"
+        app:layout_constraintBottom_toBottomOf="@+id/details_txt_address"
+        app:layout_constraintRight_toRightOf="parent"
+        tools:text="638400"/>
+
+    <View
+        android:id="@+id/details_v_divider_2"
+        style="@style/ConstrainLayout_Param_Full_Width"
+        android:layout_height="8dp"
+        android:layout_marginTop="@dimen/order_details_margin_horizontal"
+        android:background="@color/bg_page"
+        app:layout_constraintTop_toBottomOf="@+id/details_txt_address"/>
+
+
+    <TextView
+        android:id="@+id/details_txt_code"
+        style="@style/TextView.SingleLine"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/order_details_margin_horizontal"
+        android:layout_marginTop="@dimen/order_details_margin_vertical"
+        android:textColor="@color/black"
+        android:textSize="@dimen/text_size_s"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/details_v_divider_2"
+        tools:text="订单编号：100000000000"/>
+
+    <TextView
+        android:id="@+id/details_txt_time"
+        style="@style/TextView.SingleLine"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginRight="@dimen/order_details_margin_horizontal"
+        android:layout_marginTop="8dp"
+        android:textColor="@color/black"
+        android:textSize="@dimen/text_size_s"
+        app:layout_constraintLeft_toLeftOf="@+id/details_txt_code"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/details_txt_code"
+        tools:text="下单时间：2017-07-17 17:00:00"/>
+
+    <View
+        android:id="@+id/details_v_divider_3"
+        style="@style/ConstrainLayout_Param_Full_Width"
+        android:layout_height="1dp"
+        android:layout_marginTop="@dimen/order_details_margin_vertical"
+        android:background="@color/bg_page"
+        app:layout_constraintTop_toBottomOf="@+id/details_txt_time"/>
+</android.support.constraint.ConstraintLayout>

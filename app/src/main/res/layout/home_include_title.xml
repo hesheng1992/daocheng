@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="@dimen/title_bar_height"
+    android:background="@color/white_50"
+    android:paddingBottom="@dimen/title_edt_margin_v"
+    android:paddingLeft="@dimen/title_edt_margin_left"
+    android:paddingRight="@dimen/title_edt_margin_right"
+    android:paddingTop="@dimen/title_edt_margin_v"
+    tools:ignore="RtlHardcoded">
+
+    <TextView
+        android:id="@+id/home_txt_search"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@drawable/home_search_edt_bg"
+        android:drawableLeft="@drawable/ic_home_search"
+        android:drawablePadding="6dp"
+        android:gravity="center_vertical"
+        android:paddingLeft="8dp"
+        android:text="@string/search"
+        android:textColor="@color/text_grey"
+        android:textSize="@dimen/text_size_s"
+        tools:ignore="RtlHardcoded,RtlSymmetry" />
+</FrameLayout>

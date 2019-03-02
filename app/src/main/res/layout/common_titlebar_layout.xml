@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_gravity="center_horizontal"
+    android:background="@drawable/title_bar_bg">
+
+    <ImageView
+        android:id="@+id/title_img_left"
+        android:layout_width="@dimen/title_bar_height"
+        android:layout_height="@dimen/title_bar_height"
+        android:layout_alignParentLeft="true"
+        android:scaleType="center"
+        android:src="@drawable/ic_arrow_left" />
+
+    <TextView
+        android:id="@+id/title_txt_title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:ellipsize="marquee"
+        android:focusable="true"
+        android:focusableInTouchMode="true"
+        android:gravity="center"
+        android:marqueeRepeatLimit="marquee_forever"
+        android:paddingLeft="@dimen/title_bar_title_padding"
+        android:paddingRight="@dimen/title_bar_title_padding"
+        android:singleLine="true"
+        android:textColor="@color/black"
+        android:textSize="@dimen/text_size_title"
+        tools:text="标题标题" />
+
+    <ImageView
+        android:id="@+id/title_more_right"
+        android:layout_width="@dimen/title_bar_height"
+        android:layout_height="@dimen/title_bar_height"
+        android:layout_alignParentRight="true"
+        android:layout_centerVertical="true"
+        android:contentDescription="@null"
+        android:scaleType="center"
+        android:visibility="gone"
+        tools:ignore="RtlHardcoded" />
+
+</RelativeLayout>

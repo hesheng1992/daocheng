@@ -1,0 +1,143 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/home_special_recommend_top"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/yellow"
+    android:gravity="center_horizontal"
+    android:orientation="vertical">
+
+    <View
+        android:id="@+id/null_status_bar"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:background="@color/yellow">
+
+
+    </View>
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        android:padding="16dp">
+
+        <View
+            android:visibility="gone"
+            android:layout_width="2dp"
+            android:layout_height="16dp"
+            android:layout_gravity="center_vertical"
+            android:background="@color/black" />
+
+        <TextView
+            android:id="@+id/recommend_top_name_tv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="10dp"
+            android:layout_weight="1"
+            android:textColor="@color/black"
+            android:textSize="18sp"
+            tools:text="好物推荐" />
+
+
+
+
+        <FrameLayout
+            android:visibility="gone"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+
+
+
+            <com.a1magway.bgg.widget.CountDownTextView
+
+                android:id="@+id/recommend_top_count_down_tv"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="right|center_vertical"
+                android:layout_marginLeft="25dp"
+                android:paddingRight="4dp"
+                android:paddingLeft="8dp"
+                android:background="@color/black"
+                android:gravity="right|center_vertical"
+                android:text="00:00:00"
+                android:textColor="@color/yellow"
+                android:textSize="16sp" />
+
+            <ImageView
+
+                android:src="@drawable/ic_end_time"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+        </FrameLayout>
+
+    </LinearLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/gray_e5" />
+
+    <com.a1magway.bgg.widget.RecommendTabLayout
+        android:id="@+id/recommend_tab_layout_top"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:layout_weight="1"
+        android:orientation="horizontal"
+        android:visibility="gone">
+
+        <TextView
+            android:id="@+id/home_special_recommend_tv1"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:text="综合"
+            android:textColor="@color/black"
+            android:textSize="14sp" />
+
+        <TextView
+            android:id="@+id/home_special_recommend_tv2"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:text="价格"
+            android:textColor="@color/primaryGreyTextColor"
+            android:textSize="14sp" />
+
+        <TextView
+            android:id="@+id/home_special_recommend_tv3"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:text="折扣"
+            android:textColor="@color/primaryGreyTextColor"
+            android:textSize="14sp" />
+
+        <TextView
+            android:id="@+id/home_special_recommend_tv4"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:text="销量"
+            android:textColor="@color/primaryGreyTextColor"
+            android:textSize="14sp" />
+    </LinearLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/gray_e5" />
+
+</LinearLayout>

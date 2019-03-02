@@ -1,0 +1,122 @@
+package com.a1magway.bgg.v.productReturn;
+
+
+
+import  android.support.v4.app.FragmentManager;
+import android.content.Context;
+import android.content.Intent;
+import android.os.Bundle;
+import android.support.annotation.Nullable;
+import android.support.v4.app.FragmentTransaction;
+import android.support.v4.app.ListFragment;
+import android.view.View;
+import android.widget.FrameLayout;
+import android.widget.LinearLayout;
+import android.widget.TextView;
+import android.widget.Toast;
+
+import com.a1magway.bgg.R;
+import com.a1magway.bgg.common.PActivity;
+import com.a1magway.bgg.data.entity.OrderItem;
+
+import com.a1magway.bgg.data.entity.SalesReturn;
+import com.a1magway.bgg.p.productReturn.ReturnContentP;
+import com.a1magway.bgg.util.JumpUtil;
+import com.a1magway.bgg.widget.TitleBar;
+import com.a1magway.bgg.widget.dialog.DialogOnclickBtnlistener;
+import com.a1magway.bgg.widget.dialog.DialogUtil;
+
+
+import butterknife.BindView;
+import butterknife.OnClick;
+
+/**
+ * Created by lm on 2018/8/30.
+ */
+public class ReturnContentActivity extends PActivity<ReturnContentP> implements IReturnContentV {
+
+    private static final String EXTRA_OUTTRADENO = "EXTRA_OUTTRADENO";
+    private static final String SALES_RETURN = "SALES_RETURN";
+    @BindView(R.id.return_content_title_bar)
+    TitleBar returnContentTitleBar;
+    @BindView(R.id.return_product_tip)
+    TextView returnProductTip;
+    @BindView(R.id.content_view)
+    FrameLayout contentView;
+    @BindView(R.id.contact_kf_lay)
+    LinearLayout contactKfLay;
+    @BindView(R.id.update_apply_lay)
+    LinearLayout updateApplyLay;
+    @BindView(R.id.cancel_apply)
+    LinearLayout cancelApply;
+
+    private OrderItem orderItem;
+    private SalesReturn salesReturn;
+
+    private DialogUtil dialogUtil;
+
+    public static final void start(Context context, OrderItem orderItem, SalesReturn salesReturn) {
+        Intent intent = new Intent(context, ReturnContentActivity.class);
+        intent.putExtra(EXTRA_OUTTRADENO, orderItem);
+        intent.putExtra(SALES_RETURN,salesReturn);
+        JumpUtil.startActivity(context, intent);
+    }
+
+
+
+
+    @Override
+    public void initData(@Nullable Bundle savedInstanceState) {
+        super.initData(savedInstanceState);
+        orderItem = (OrderItem) getIntent().getSerializableExtra(EXTRA_OUTTRADENO);
+        salesReturn = (SalesReturn) getIntent().getSerializableExtra(SALES_RETURN);
+        initFragment();
+        dialogUtil=new DialogUtil(this, new DialogOnclickBtnlistener() {
+            @Override
+            public void onClickOk() {
+                Toast.makeText(getContext(),"你点击了确定",Toast.LENGTH_SHORT).show();
+            }
+
+            @Override
+            public void onClickCancle() {
+
+            }
+        });
+        
+    }
+
+    private void initFragment() {
+
+        FragmentManager fragmentManager = getSupportFragmentManager();
+        FragmentTransaction transaction = fragmentManager.beginTransaction();
+        transaction.add(R.id.content_view, ReturnProductInfoFragment.newIntance(orderItem,salesReturn));
+        transaction.commit();
+    }
+
+    @Override
+    public int getContentViewLayoutId() {
+        return R.layout.activity_return_content;
+    }
+
+
+    @OnClick(R.id.return_content_title_bar)
+    public void onClickBack(View v) {
+        onBackButtonClick();
+    }
+
+    @OnClick({R.id.cancel_apply,R.id.update_apply_lay,R.id.contact_kf_lay})
+    public void onClick(View view){
+        switch (view.getId()){
+            case R.id.cancel_apply:
+                dialogUtil.showDialog("确定放弃改操作");
+                break;
+            case R.id.update_apply_lay:
+                dialogUtil.showDialog("确定放弃改操作");
+                break;
+            case R.id.contact_kf_lay:
+                dialogUtil.showDialog("确定放弃改操作");
+                break;
+        }
+    }
+
+}

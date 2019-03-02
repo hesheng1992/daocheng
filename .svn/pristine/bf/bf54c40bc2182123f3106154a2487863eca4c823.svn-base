@@ -1,0 +1,695 @@
+package com.a1magway.bgg.v.productReturn;
+
+import android.content.Context;
+import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.Paint;
+import android.graphics.drawable.BitmapDrawable;
+import android.net.Uri;
+import android.os.Bundle;
+import android.os.Environment;
+import android.os.Handler;
+import android.os.PersistableBundle;
+import android.support.annotation.Nullable;
+import android.support.v7.widget.GridLayoutManager;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
+import android.view.Gravity;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.WindowManager;
+import android.widget.Button;
+import android.widget.CheckBox;
+import android.widget.EditText;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.PopupWindow;
+import android.widget.TextView;
+import android.widget.Toast;
+
+import com.a1magway.bgg.R;
+import com.a1magway.bgg.common.PActivity;
+import com.a1magway.bgg.common.adapter.BaseRecyclerAdapter;
+import com.a1magway.bgg.data.entity.APIResponse;
+import com.a1magway.bgg.data.entity.OrderCommodity;
+import com.a1magway.bgg.data.entity.OrderItem;
+import com.a1magway.bgg.data.entity.OrderStatus;
+import com.a1magway.bgg.data.entity.ReturnGoodsReasonBean;
+import com.a1magway.bgg.data.entity.SalesReturn;
+import com.a1magway.bgg.data.entity.UploadPicBean;
+import com.a1magway.bgg.p.productReturn.ApplyReturnP;
+import com.a1magway.bgg.p.productReturn.ReturnProductListdapter;
+import com.a1magway.bgg.util.GlobalData;
+import com.a1magway.bgg.util.ImageUpLoadUtils;
+import com.a1magway.bgg.util.JumpUtil;
+import com.a1magway.bgg.util.dialog.DialogUtil;
+import com.a1magway.bgg.v.productReturn.adapter.ApplyReturnReasonAdapter;
+import com.a1magway.bgg.v.productReturn.adapter.UpLoadPicVoucherAdapter;
+import com.a1magway.bgg.v.productReturn.bean.ReturnResason;
+import com.a1magway.bgg.v.productReturn.dailog.TakePhotoChooseDailog;
+import com.a1magway.bgg.widget.TitleBar;
+import com.a1magway.bgg.widget.divider.LinearItemDecoration;
+import com.almagway.common.AppConfig;
+import com.almagway.common.utils.StringUtil;
+import com.almagway.common.utils.ToastUtil;
+import com.jph.takephoto.app.TakePhoto;
+import com.jph.takephoto.app.TakePhotoImpl;
+import com.jph.takephoto.compress.CompressConfig;
+import com.jph.takephoto.model.InvokeParam;
+import com.jph.takephoto.model.TContextWrap;
+import com.jph.takephoto.model.TResult;
+import com.jph.takephoto.permission.InvokeListener;
+import com.jph.takephoto.permission.PermissionManager;
+import com.jph.takephoto.permission.TakePhotoInvocationHandler;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.File;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+
+import butterknife.BindView;
+import butterknife.OnClick;
+import okhttp3.Call;
+
+/**
+ * Created by lm on 2018/8/30.
+ * //申请退款退货页面
+ */
+public class ApplyReturnActivity extends PActivity<ApplyReturnP> implements IApplyReturnV,TakePhoto.TakeResultListener,InvokeListener {
+
+
+    private static final String EXTRA_OUTTRADENO = "EXTRA_OUTTRADENO";
+
+    @BindView(R.id.apply_title_bar)
+    TitleBar applyTitleBar;
+    @BindView(R.id.select_rv)
+    RecyclerView select_rv;
+    @BindView(R.id.apply_money_tv)
+    TextView applyMoneyTv;
+    @BindView(R.id.apply_count_tv)
+    TextView applyCountTv;
+    @BindView(R.id.apply_phone_et)
+    EditText applyPhoneEt;
+    @BindView(R.id.apply_reason_tv)
+    TextView applyReasonTv;
+    @BindView(R.id.apply_reason_layout)
+    LinearLayout applyReasonLayout;
+    @BindView(R.id.apply_describe_tv)
+    EditText applyDescribeTv;
+    @BindView(R.id.apply_img_rv)
+    RecyclerView applyImgRv;
+    @BindView(R.id.apply_ok_btn)
+    Button applyOkBtn;
+    //购物须知
+    @BindView(R.id.return_product_is_select)
+    CheckBox return_product_is_select;
+    @BindView(R.id.text_buy_nocation)
+    TextView text_buy_nocation;
+
+
+    //添加上传凭证图片
+    @BindView(R.id.pic_recycler)
+    RecyclerView pic_recycler;
+    private UpLoadPicVoucherAdapter upLoadPicVoucherAdapter;
+    private List<String> listPic=new ArrayList<>();
+    //装载需要上传的图片
+    private List<String> listUploadPic=new ArrayList<>();
+
+
+
+    private OrderItem orderItem;
+
+    private ApplyReturnP applyReturnP;
+    private PopupWindow mPopupWindow;
+    //装有退款理由的list
+    private List<ReturnGoodsReasonBean> list=new ArrayList<>();
+
+    //选择退货理由的适配器
+    private ApplyReturnReasonAdapter applyReturnReasonAdapter;
+
+    //上传图片辅助工具类
+    private ImageUpLoadUtils imageUpLoadUtils;
+    //TakePhoto
+    private TakePhoto takePhoto;
+    private InvokeParam invokeParam;
+    private CompressConfig compressConfig;  //压缩参数
+
+    private TakePhotoChooseDailog dailog;
+
+    private int immageNum=5;
+    /**
+     * 创建或者修改退款申请标识 退货id
+     */
+    private String createOrUpdateOrderID=null;
+
+    @BindView(R.id.return_product_all_select)
+    ImageView returnProductAllSelect;
+    @BindView(R.id.return_product_select)
+    TextView returnProductSelect;
+
+    private boolean isSelect=false;
+
+
+    public static final void start(Context context, OrderItem orderItem) {
+        Intent intent = new Intent(context, ApplyReturnActivity.class);
+        intent.putExtra(EXTRA_OUTTRADENO, orderItem);
+        JumpUtil.startActivity(context, intent);
+    }
+
+
+
+    @Override
+    public void initData(@Nullable Bundle savedInstanceState) {
+        super.initData(savedInstanceState);
+        getTakePhoto().onCreate(savedInstanceState);
+        //设置压缩参数
+        compressConfig=new CompressConfig.Builder().setMaxSize(20*1024).setMaxPixel(800).create();
+        takePhoto.onEnableCompress(compressConfig,true);
+
+        orderItem = (OrderItem) getIntent().getSerializableExtra(EXTRA_OUTTRADENO);
+
+        if (orderItem!=null){
+            //退款金额
+            int totalNum=0;
+            double totalPrice=0;
+            List<OrderCommodity> getSkuList=orderItem.getSkuList();
+            if (getSkuList!=null && getSkuList.size()>0){
+                for (OrderCommodity oc:getSkuList
+                     ) {
+                    if (oc.getRefundType()==0){
+                        totalNum+=oc.getCommodityNumbers();
+                        totalPrice+=oc.getCommoditySellPrice();
+                    }
+                }
+            }
+            applyCountTv.setText("商品数量："+0);
+            applyMoneyTv.setText("退款金额: "+0);
+            if (orderItem.getOrderStatus()== OrderStatus.WAIT_DELIVER){
+                applyTitleBar.setTitleTxt("申请退款");
+            }
+
+            if (orderItem.getRefundId()!=0){
+                createOrUpdateOrderID=String.valueOf(orderItem.getRefundId());
+            }
+        }
+
+        applyReturnP = new ApplyReturnP(this,orderItem,getReturnGoodsReasonListenr);
+        applyReturnP.initRV();
+        select_rv.setLayoutManager(new LinearLayoutManager(getContext()));
+        select_rv.addItemDecoration(new LinearItemDecoration(getContext(), R.color.gray_c10,
+                R.dimen.product_detail_divider));
+        //设置下划线
+        text_buy_nocation .getPaint().setFlags(Paint. UNDERLINE_TEXT_FLAG ); //下划线
+        text_buy_nocation .getPaint().setAntiAlias(true);//抗锯齿
+        setReason();
+        initPopUpWindow();
+        initRecycler();
+        imageUpLoadUtils=new ImageUpLoadUtils(this);
+        imageUpLoadUtils.setChoosePicUploadListener(choosePicUploadListener);
+        dailog=new TakePhotoChooseDailog(this,R.style.picdialog);
+        dailog.setClickChooseListener(onClickChooseListener);
+    }
+
+    private void initRecycler() {
+        listPic.add("1");
+        upLoadPicVoucherAdapter=new UpLoadPicVoucherAdapter(listPic,this);
+        upLoadPicVoucherAdapter.setPicNum(immageNum);
+        upLoadPicVoucherAdapter.setOnClickImageAdd(onClickImageAdd);
+        pic_recycler.setLayoutManager(new GridLayoutManager(this,4));
+        pic_recycler.setAdapter(upLoadPicVoucherAdapter);
+
+    }
+
+    @Override
+    public int getContentViewLayoutId() {
+        return R.layout.activity_apply_return;
+    }
+
+    @Override
+    public void initAdapter(BaseRecyclerAdapter adapter) {
+        select_rv.setAdapter(adapter);
+    }
+
+    @Override
+    public void initPhotoAdapter(BaseRecyclerAdapter adapter) {
+        applyImgRv.setAdapter(adapter);
+    }
+    //发起退款退货成功
+    @Override
+    public void onSucess(APIResponse apiResponse) {
+//        ToastUtil.showShort(apiResponse.getMsg());
+        hideLoadingDialog();
+        //18
+        if (apiResponse.getData()!=null){
+            GlobalData.getInstance().getUserId();
+            try {
+                JSONObject jsonObject=new JSONObject(apiResponse.getData().toString());
+                int refound=jsonObject.getInt("id");
+                if (refound!=0){
+                    orderItem.setRefundId(refound);
+                    SalesReturn salesReturn=new SalesReturn();
+                    salesReturn.setPhone(applyPhoneEt.getText().toString());
+                    ReturnContentActivity.start(this,orderItem,salesReturn);
+                }else{
+                    ToastUtil.showShort("未获取到退货ID！");
+                }
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        }
+
+    }
+    //发起退款退货失败
+    @Override
+    public void onFaile(Throwable e) {
+        hideLoadingDialog();
+        ToastUtil.showShort(e.getMessage());
+    }
+    //选择商品
+    @Override
+    public void GoodsInfo(BaseRecyclerAdapter mAdapter) {
+        select_rv.setAdapter(mAdapter);
+    }
+
+    @Override
+    public void selectNumber(Integer number) {
+        applyCountTv.setText("商品数量："+number);
+        returnProductSelect.setText("已选择商品："+number);
+        if (number==select_rv.getAdapter().getItemCount()){
+            returnProductAllSelect.setImageResource(R.mipmap.is_select);
+        }else{
+            returnProductAllSelect.setImageResource(R.mipmap.is_select_normal);
+        }
+        ReturnProductListdapter returnProductListdapter= (ReturnProductListdapter) select_rv.getAdapter();
+        List<OrderCommodity> list = returnProductListdapter.getList();
+        if (list.size()>0){
+            double totalPrice=0;
+            for (OrderCommodity com:list
+                    ) {
+                if (com.isCheck()){
+                    if (com.getRefundType()==0){
+                        totalPrice+=com.getCommodityListPrice();
+                    }
+                }
+            }
+            applyMoneyTv.setText("退款金额: "+totalPrice);
+        }
+    }
+
+    @Override
+    public void selectGoods(OrderItem orderItem) {
+        if (orderItem.getSkuList().size()==0){
+            Toast.makeText(this,"请选择商品",Toast.LENGTH_SHORT).show();
+        }else {
+            ApplyReturnActivity.start(this,orderItem);
+            finish();
+        }
+    }
+
+    @Override
+    public void getPhone(String phone) {
+        applyPhoneEt.setText(phone);
+    }
+
+    /**
+     * 获取退货理由回调
+     */
+    private ApplyReturnP.GetReturnGoodsReasonListenr  getReturnGoodsReasonListenr
+            =new ApplyReturnP.GetReturnGoodsReasonListenr() {
+        @Override
+        public void onGetGoodsReasontrue(List<ReturnGoodsReasonBean> listAPIResponse) {
+            if (listAPIResponse!=null){
+                list=listAPIResponse;
+                applyReturnReasonAdapter.setList(list);
+            }
+        }
+
+        @Override
+        public void onGetGoodsReasonFaile(Throwable e) {
+
+        }
+    };
+
+
+    @OnClick({R.id.apply_ok_btn,R.id.apply_reason_layout,R.id.return_product_all_select})
+    public  void onClick(View view){
+        switch (view.getId()){
+            case R.id.apply_ok_btn:
+                commitOrUpdateApply();
+                break;
+            case R.id.apply_reason_layout:
+                showPopWindow();
+                break;
+            case R.id.return_product_all_select:
+                if (isSelect){
+                    returnProductAllSelect.setImageResource(R.mipmap.is_select_normal);
+                    isSelect=false;
+                    returnProductSelect.setText("已选择商品：0");
+                    applyCountTv.setText("商品数量："+0);
+                    applyMoneyTv.setText("退款金额: "+0);
+                }else {
+                    returnProductAllSelect.setImageResource(R.mipmap.is_select);
+                    isSelect=true;
+                    ReturnProductListdapter returnProductListdapter= (ReturnProductListdapter) select_rv.getAdapter();
+                    List<OrderCommodity> list = returnProductListdapter.getList();
+                    int num=0;
+                    double numPrice=0;
+                    double tatolPrice=0;
+                    if (list.size()>0){
+                        for (OrderCommodity com:list
+                             ) {
+                            if (com.getRefundType()!=0){
+                                num++;
+                            }else{
+                                numPrice+=com.getCommoditySellPrice();
+                            }
+                            tatolPrice+=com.getCommoditySellPrice();
+                        }
+                    }
+                    if (num!=0){
+                        applyCountTv.setText("商品数量："+(list.size()-num));
+                        applyMoneyTv.setText("退款金额: "+numPrice);
+                        returnProductSelect.setText("已选择商品："+(list.size()-num));
+                    }else{
+                        applyCountTv.setText("商品数量："+select_rv.getAdapter().getItemCount());
+                        applyMoneyTv.setText("退款金额: "+tatolPrice);
+                        returnProductSelect.setText("已选择商品："+select_rv.getAdapter().getItemCount());
+                    }
+                }
+                applyReturnP.onClickAllSelect(isSelect);
+                break;
+        }
+    }
+
+    /**
+     * 提交或是更新退款退货申请
+     */
+    public void commitOrUpdateApply(){
+        String skuId = "";
+        String num="";
+        String pic="";
+        int reasonId=0;//退款理由id
+//        List<OrderCommodity> skuList=orderItem.getSkuList();
+//        if (skuList!=null && skuList.size()>0){
+//            for (OrderCommodity oderComm:skuList
+//                    ) {
+//                skuId+=oderComm.getCommodityId()+",";
+//                num+=oderComm.getCommodityNumbers()+",";
+//            }
+//        }
+        if (listUploadPic.size()>0){
+            for (String s:listUploadPic
+                    ) {
+                pic+=s+";";
+            }
+        }
+
+        String phone= applyPhoneEt.getText().toString();
+        if (StringUtil.isEmpty(phone)&& !StringUtil.isMobileNumber(phone)){
+            ToastUtil.showShort("电话号码有误!");
+            return ;
+        }
+        //获取填写的退款理由
+        String editReson=applyDescribeTv.getText().toString();
+        if (StringUtil.isEmpty(editReson)){
+            editReson="";
+        }
+
+        List<ReturnGoodsReasonBean> listReson=applyReturnReasonAdapter.getList();
+        if (listReson.size()>0){
+            for (ReturnGoodsReasonBean rson:listReson
+                    ) {
+                if (rson.isClick()){
+                    reasonId=rson.getId();
+                }
+            }
+        }
+        if (reasonId==0){
+            ToastUtil.showShort("请选择退款理由！");
+            return;
+        }
+
+        if (!return_product_is_select.isChecked()){
+            ToastUtil.showShort("请勾选购物须知！");
+            return;
+        }
+
+        ReturnProductListdapter returnProductListdapter=
+                (ReturnProductListdapter) select_rv.getAdapter();
+        if (returnProductListdapter.getList()!=null && returnProductListdapter.getList().size()>0){
+            for (OrderCommodity orderCommodity: returnProductListdapter.getList()
+                 ) {
+
+                if (orderCommodity.isCheck()){
+                    skuId+=orderCommodity.getCommodityId()+",";
+                    num+=orderCommodity.getCommodityNumbers()+",";
+                }
+            }
+            if (StringUtil.isEmpty(skuId)){
+                ToastUtil.showShort("没有选择任何宝贝！");
+                return;
+            }
+
+        }else{
+            ToastUtil.showShort("没有可选择的宝贝！");
+            return;
+        }
+
+        showLoadingDialog();
+        applyReturnP.applyRefund(GlobalData.getInstance().getUserId(),
+                createOrUpdateOrderID,orderItem.getType(),orderItem.getId(),skuId,num,phone
+                ,reasonId,editReson,pic
+        );
+    }
+
+    /**
+     * 加入退款原因
+     */
+    public void setReason(){
+        applyReturnP.getReturnReason();
+    }
+
+
+    public void initPopUpWindow(){
+        //popupWindow 的基础配置
+        View popupView = getLayoutInflater().inflate(R.layout.pop_up_window_list_layout, null);
+        mPopupWindow = new PopupWindow(popupView, LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT, true);
+        RecyclerView mRecyclerView=popupView.findViewById(R.id.pop_window_rv);
+        applyReturnReasonAdapter=new ApplyReturnReasonAdapter(ApplyReturnActivity.this);
+        applyReturnReasonAdapter.setOnClickImageChange(new ApplyReturnReasonAdapter.OnClickImageChange() {
+            @Override
+            public void onClickImage(String reason) {
+                applyReasonTv.setText(reason);
+                for (int i = 0; i <list.size() ; i++) {
+                    if (list.get(i).getName().equals(reason)){
+                        continue;
+                    }
+                    list.get(i).setClick(false);
+                }
+                new Handler().postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        mPopupWindow.dismiss();
+                    }
+                },100);
+            }
+        });
+        mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
+        mRecyclerView.setAdapter(applyReturnReasonAdapter);
+//        applyReturnReasonAdapter.setList(list);
+        mPopupWindow.setTouchable(true);
+        mPopupWindow.setOutsideTouchable(true);
+        mPopupWindow.setBackgroundDrawable(new BitmapDrawable(getResources(), (Bitmap) null));
+        mPopupWindow.getContentView().setFocusableInTouchMode(true);
+        mPopupWindow.getContentView().setFocusable(true);
+        mPopupWindow.setAnimationStyle(R.style.anim_menu_bottombar);// 动画
+        mPopupWindow.setOnDismissListener(new PopupWindow.OnDismissListener() {
+            @Override
+            public void onDismiss() {
+                // popupWindow隐藏时恢复屏幕正常透明度
+                setBackgroundAlpha(1.0f);
+            }
+        });
+    }
+
+    public void  showPopWindow(){
+        View rootview = LayoutInflater.from(this).inflate(R.layout.activity_apply_return, null);
+        mPopupWindow.showAtLocation(rootview, Gravity.BOTTOM, 0, 0);//popuwindow在底部
+        setBackgroundAlpha(0.5f);
+        if (list.size()<=0){
+            setReason();
+        }else{
+            applyReturnReasonAdapter.setList(list);
+        }
+
+    }
+
+    //点击切换图片
+    private UpLoadPicVoucherAdapter.OnClickImageAdd onClickImageAdd=new UpLoadPicVoucherAdapter.OnClickImageAdd() {
+        @Override
+        public void onClickImageChange(String urlImage, int postion) {
+            if (dailog!=null){
+                if (dailog.isShowing()){
+                    dailog.dismiss();
+                }
+                dailog.show();
+            }
+        }
+        //删除图片
+        @Override
+        public void deleteImage(String urlImage,int postion) {
+            if (listPic.size()>0){
+                for (String str:listPic
+                     ) {
+                    if ((AppConfig.BASE_URL+str).equals(urlImage)){
+                        listPic.remove(str);
+                        break;
+                    }
+                }
+            }
+            upLoadPicVoucherAdapter.getList().remove(postion);
+            upLoadPicVoucherAdapter.notifyDataSetChanged();
+        }
+    };
+    /**
+     *  获取TakePhoto实例
+     * @return
+     */
+    public TakePhoto getTakePhoto(){
+        if (takePhoto==null){
+            takePhoto= (TakePhoto) TakePhotoInvocationHandler.of(this).bind(new TakePhotoImpl(this,this));
+        }
+        return takePhoto;
+    }
+
+    public void setBackgroundAlpha(float bgAlpha) {
+        WindowManager.LayoutParams lp = getWindow()
+                .getAttributes();
+        lp.alpha = bgAlpha;
+        getWindow().setAttributes(lp);
+    }
+
+
+    @OnClick(R.id.apply_title_bar)
+    public void onClickBack(View v) {
+        onBackButtonClick();
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        getTakePhoto().onSaveInstanceState(outState);
+        super.onSaveInstanceState(outState);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        getTakePhoto().onActivityResult(requestCode, resultCode, data);
+        //修改申请
+        if (requestCode==20){
+            if (data!=null){
+                createOrUpdateOrderID=data.getStringExtra("refoundID");
+            }
+        }
+    }
+    //选择图片或拍照成功
+    @Override
+    public void takeSuccess(TResult result) {
+        String iconPath = result.getImage().getOriginalPath();
+//        String iconPath=result.getImage().getCompressPath();
+        //Toast显示图片路径
+//        ToastUtil.showShort(iconPath);
+        imageUpLoadUtils.postPic(iconPath);
+
+    }
+    //失败
+    @Override
+    public void takeFail(TResult result, String msg) {
+        ToastUtil.showShort("获取图片失败");
+    }
+    //取消
+    @Override
+    public void takeCancel() {
+
+    }
+
+
+
+    @Override
+    public void onPointerCaptureChanged(boolean hasCapture) {
+
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        PermissionManager.TPermissionType type=PermissionManager.onRequestPermissionsResult(requestCode,permissions,grantResults);
+        PermissionManager.handlePermissionsResult(this,type,invokeParam,this);
+    }
+
+    @Override
+    public PermissionManager.TPermissionType invoke(InvokeParam invokeParam) {
+        PermissionManager.TPermissionType type=PermissionManager.checkPermission(TContextWrap.of(this),invokeParam.getMethod());
+        if(PermissionManager.TPermissionType.WAIT.equals(type)){
+            this.invokeParam=invokeParam;
+        }
+        return type;
+    }
+
+    //拍照或者选择图库点击
+    private TakePhotoChooseDailog.OnClickChooseListener onClickChooseListener=new TakePhotoChooseDailog.OnClickChooseListener() {
+        @Override
+        public void clickTake() {
+            Uri imageUri=getImageCropUri();
+            takePhoto.onPickFromCapture(imageUri);
+        }
+
+        @Override
+        public void clickGally() {
+            takePhoto.onPickFromGallery();
+        }
+    };
+    //图片上传成功与失败回调
+    private ImageUpLoadUtils.ChoosePicUploadListener choosePicUploadListener=new ImageUpLoadUtils.ChoosePicUploadListener() {
+        @Override
+        public void startUplaod() {
+            showLoadingDialog();
+        }
+
+        @Override
+        public void onFailure(IOException e) {
+            hideLoadingDialog();
+            ToastUtil.showShort(e.getMessage());
+        }
+
+        @Override
+        public void onResponse(Call call, UploadPicBean response,Uri localUri) {
+            hideLoadingDialog();
+            if (response!=null){
+                if (!StringUtil.isEmpty(response.getImg())){
+                    upLoadPicVoucherAdapter.addItem(localUri.toString());
+                    //将图片地址添加到集合
+                    if (listUploadPic.size()<immageNum){
+                        if (listUploadPic.size()>0){
+                            listUploadPic.add(listUploadPic.size()-1,response.getImg());
+                        }else{
+                            listUploadPic.add(response.getImg());
+                        }
+                    }
+                }else{
+                    ToastUtil.showShort("图片上传失败,请重新上传！");
+                }
+            }
+        }
+    };
+
+    //获得照片的输出保存Uri
+    private Uri getImageCropUri() {
+        File file=new File(Environment.getExternalStorageDirectory(), "/temp/"+System.currentTimeMillis() + ".jpg");
+        if (!file.getParentFile().exists())file.getParentFile().mkdirs();
+        return Uri.fromFile(file);
+    }
+}

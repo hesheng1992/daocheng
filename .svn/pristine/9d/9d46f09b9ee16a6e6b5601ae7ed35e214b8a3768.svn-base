@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="@color/white"
+    tools:context=".v.productReturn.ProductReturnSelectActivity">
+    <com.a1magway.bgg.widget.TitleBar
+        android:id="@+id/return_content_title_bar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:titleText="@string/product_return_select" />
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <ScrollView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+            <LinearLayout
+                android:orientation="vertical"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+                <LinearLayout
+                    android:background="@color/gray_c10"
+                    android:layout_width="match_parent"
+                    android:layout_height="90dp">
+
+                    <TextView
+                        android:id="@+id/return_product_tip"
+                        android:paddingLeft="15dp"
+                        android:drawablePadding="10dp"
+                        android:drawableLeft="@mipmap/return_money"
+                        android:gravity="center_vertical"
+                        android:text="xxxxxxxxxxxxxxxxx"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent" />
+                </LinearLayout>
+
+                <FrameLayout
+                    android:layout_marginBottom="80dp"
+                    android:id="@+id/content_view"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"/>
+
+
+            </LinearLayout>
+
+        </ScrollView>
+
+        <LinearLayout
+            android:background="@color/gray_c10"
+            android:layout_width="match_parent"
+            android:layout_gravity="bottom"
+            android:layout_marginBottom="44dp"
+            android:layout_height="1dp"></LinearLayout>
+        <LinearLayout
+            android:background="@color/white"
+            android:textSize="14sp"
+            android:layout_gravity="bottom"
+            android:layout_width="match_parent"
+            android:layout_height="44dp" >
+
+            <LinearLayout
+                android:id="@+id/contact_kf_lay"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:layout_height="match_parent">
+            <TextView
+                android:drawablePadding="10dp"
+                android:drawableLeft="@mipmap/contact_kf"
+                android:gravity="center"
+                android:text="@string/product_return_contact_kf"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent" />
+            </LinearLayout>
+            <LinearLayout
+                android:background="@color/gray_c10"
+                android:layout_width="1dp"
+                android:layout_height="match_parent"></LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/update_apply_lay"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:layout_height="match_parent">
+                <TextView
+                    android:drawablePadding="10dp"
+                    android:drawableLeft="@mipmap/update_apply"
+                    android:gravity="center"
+                    android:text="@string/product_return_update_apply"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent" />
+            </LinearLayout>
+            <LinearLayout
+                android:background="@color/gray_c10"
+                android:layout_width="1dp"
+                android:layout_height="match_parent"></LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/cancel_apply"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:layout_height="match_parent">
+                <TextView
+                    android:drawablePadding="10dp"
+                    android:drawableLeft="@mipmap/cancle_apply"
+                    android:gravity="center"
+                    android:text="@string/product_return_cancle_apply_chexiao"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent" />
+            </LinearLayout>
+
+        </LinearLayout>
+    </FrameLayout>
+
+</LinearLayout>

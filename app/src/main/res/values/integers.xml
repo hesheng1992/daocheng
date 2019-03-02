@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <integer name="phoneLength">11</integer>
+    <integer name="pwd_min_length">6</integer>
+    <integer name="pwd_max_length">20</integer>
+    <integer name="verification_code_length">4</integer>
+    <integer name="page_slide_duration">300</integer>
+    <integer name="invitation_code_length">1</integer>
+    <integer name="edit_text_length_default">1</integer>
+
+    <!-- 地址 -->
+    <integer name="address_name_length">7</integer>
+    <integer name="address_phone_length">11</integer>
+    <integer name="address_detail_length">25</integer>
+    <integer name="address_postcode_length">20</integer>
+
+    <!--搜索-->
+    <integer name="search_price_length">8</integer>
+
+    <integer name="personal_setting_name_lenght">10</integer>
+
+</resources>

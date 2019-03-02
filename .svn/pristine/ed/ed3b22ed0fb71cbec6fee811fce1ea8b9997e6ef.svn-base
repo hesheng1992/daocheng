@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/white"
+    android:padding="10dp">
+
+
+    <ImageView
+        android:id="@+id/item_crowdordering_icon"
+        android:layout_width="30dp"
+        android:layout_height="30dp"
+        android:src="@drawable/default_icon" />
+
+    <View
+        android:id="@+id/line"
+        android:layout_width="1dp"
+        android:layout_height="1dp"
+        android:visibility="gone"
+        app:layout_constraintBottom_toTopOf="@id/item_crowdordering_icon"
+        app:layout_constraintTop_toBottomOf="@id/item_crowdordering_icon" />
+
+
+    <TextView
+        android:id="@+id/item_crowdordering_go_buy"
+        android:layout_width="60dp"
+        android:layout_height="25dp"
+        android:background="@drawable/pingtuan_btn_bg"
+        android:gravity="center"
+        android:text="去拼团"
+        android:textColor="@color/black"
+        app:layout_constraintBottom_toTopOf="@id/item_crowdordering_icon"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/item_crowdordering_icon" />
+
+
+    <TextView
+        android:id="@+id/item_crowdordering_user_name"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="2dp"
+        android:layout_marginEnd="80dp"
+        android:layout_marginStart="50dp"
+        android:ellipsize="end"
+        android:singleLine="true"
+        android:textColor="@color/black"
+        app:layout_constraintBottom_toTopOf="@id/line"
+        app:layout_constraintStart_toEndOf="@id/item_crowdordering_icon"
+        tools:text="小白哎呀呀" />
+
+
+    <TextView
+        android:id="@+id/item_crowdordering_much_people"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="20dp"
+        android:layout_marginTop="2dp"
+        android:textColor="@color/gray_pressed"
+        android:textSize="12sp"
+        app:layout_constraintStart_toEndOf="@id/item_crowdordering_icon"
+        app:layout_constraintTop_toBottomOf="@+id/line"
+        tools:text="还差1人, 剩余" />
+
+    <com.a1magway.bgg.widget.PingtuanCountDownTextView
+        android:id="@+id/item_crowdordering_down_time"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="2dp"
+        android:text="00:00:00"
+        android:textColor="@color/gray_pressed"
+        android:textSize="12sp"
+        app:layout_constraintStart_toEndOf="@id/item_crowdordering_much_people"
+        app:layout_constraintTop_toBottomOf="@+id/line" />
+
+</android.support.constraint.ConstraintLayout>

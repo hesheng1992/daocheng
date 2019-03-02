@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context="com.a1magway.bgg.v.personal.AddressManagerActivity">
+
+    <com.a1magway.bgg.widget.TitleBar
+        android:id="@+id/address_titleBar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:titleText="@string/address_title">
+
+    </com.a1magway.bgg.widget.TitleBar>
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:orientation="vertical">
+
+        <com.a1magway.bgg.widget.OldRefreshLayout
+            android:id="@+id/address_layout_refresh"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="#ebebeb">
+
+            <com.a1magway.bgg.widget.LoadMoreRecyclerView
+
+                android:id="@+id/address_recycler"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"/>
+        </com.a1magway.bgg.widget.OldRefreshLayout>
+
+        <include layout="@layout/include_full_loading"/>
+    </FrameLayout>
+
+    <Button
+        android:id="@+id/address_add_new_btn"
+        style="@style/Common_Btn_Style"
+        android:layout_gravity="bottom"
+        android:layout_marginBottom="@dimen/common_btn_margin"
+        android:layout_marginLeft="@dimen/common_btn_margin"
+        android:layout_marginRight="@dimen/common_btn_margin"
+        android:text="@string/address_new"/>
+</LinearLayout>

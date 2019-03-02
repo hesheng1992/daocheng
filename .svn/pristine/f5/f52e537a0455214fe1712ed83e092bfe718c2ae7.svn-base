@@ -1,0 +1,16 @@
+package com.a1magway.bgg.p.productReturn;
+
+import android.support.annotation.NonNull;
+
+import com.a1magway.bgg.p.BasePresenter;
+import com.a1magway.bgg.v.productReturn.IApplyReturnV;
+import com.a1magway.bgg.v.productReturn.IReturnContentV;
+
+/**
+ * Created by lm on 2018/8/30.
+ */
+public class ReturnContentP extends BasePresenter<IReturnContentV> {
+    public ReturnContentP(@NonNull IReturnContentV view) {
+        super(view);
+    }
+}
